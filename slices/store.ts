@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import searchReducer from './searchSlice';
-// import googleReducer from "./googleSlice";
+import googleReducer from './googleSlice';
 
 export const store = configureStore({
   reducer: {
     search: searchReducer,
-    // google: googleReducer,
+    google: googleReducer,
   },
 });
 
