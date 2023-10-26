@@ -70,8 +70,11 @@ function Menu() {
               >
                 {/* List for the Sub Menu */}
                 <h1 className='text-xl font-semibold'>I nostri servizi</h1>
-                <ul className='divide-y'>
-                  <li className='text-sm p-4' onClick={void 0}>
+                <ul className='divide-y flex flex-col'>
+                  <li
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
+                    onClick={void 0}
+                  >
                     <Link
                       onClick={() => {
                         setIsMenuOpen(false);
@@ -88,7 +91,10 @@ function Menu() {
                       />
                     </Link>
                   </li>
-                  <li className='text-sm p-4' onClick={void 0}>
+                  <li
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
+                    onClick={void 0}
+                  >
                     <Link
                       onClick={() => {
                         setIsMenuOpen(false);
@@ -105,7 +111,10 @@ function Menu() {
                       />
                     </Link>
                   </li>
-                  <li className='text-sm p-4' onClick={void 0}>
+                  <li
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
+                    onClick={void 0}
+                  >
                     <Link
                       onClick={() => {
                         setIsMenuOpen(false);
@@ -122,7 +131,10 @@ function Menu() {
                       />
                     </Link>
                   </li>
-                  <li className='text-sm p-4' onClick={void 0}>
+                  <li
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
+                    onClick={void 0}
+                  >
                     <Link
                       onClick={() => {
                         setIsMenuOpen(false);
@@ -139,7 +151,10 @@ function Menu() {
                       />
                     </Link>
                   </li>
-                  <li className='text-sm p-4' onClick={void 0}>
+                  <li
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
+                    onClick={void 0}
+                  >
                     <Link
                       onClick={() => {
                         setIsMenuOpen(false);
@@ -156,7 +171,10 @@ function Menu() {
                       />
                     </Link>
                   </li>
-                  <li className='text-sm p-4' onClick={void 0}>
+                  <li
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
+                    onClick={void 0}
+                  >
                     <Link
                       onClick={() => {
                         setIsMenuOpen(false);
@@ -173,7 +191,10 @@ function Menu() {
                       />
                     </Link>
                   </li>
-                  <li className='text-sm p-4' onClick={void 0}>
+                  <li
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
+                    onClick={void 0}
+                  >
                     <Link
                       onClick={() => {
                         setIsMenuOpen(false);
@@ -190,7 +211,10 @@ function Menu() {
                       />
                     </Link>
                   </li>
-                  <li className='text-sm p-4' onClick={void 0}>
+                  <li
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
+                    onClick={void 0}
+                  >
                     <Link
                       onClick={() => {
                         setIsMenuOpen(false);

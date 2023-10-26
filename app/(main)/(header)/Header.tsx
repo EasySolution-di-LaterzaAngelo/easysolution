@@ -15,6 +15,7 @@ import styles from './Header.module.css';
 import { Disclosure } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import Menu from './Menu';
+import User from './User';
 
 const SubHeader = () => {
   return (
@@ -57,15 +58,15 @@ const SubHeader = () => {
 
 const EasySolutionLogo = () => {
   return (
-    <div className='flex justify-center items-center sm:flex-grow-0 lg:fixed lg:top-8 lg:left-1/2 lg:-translate-x-[110px]'>
+    <div className='flex justify-center items-center sm:flex-grow-0 lg:fixed lg:top-2 lg:left-1/2 lg:-translate-x-[110px]'>
       {/* Traslare immagine su asse x della meta' della lunghezza della immagine*/}
       <Link title='Home' passHref href='/'>
         <Image
           alt='Easy Solution Logo'
           src='/easysolutionlogo.jpeg'
-          width={220}
+          width={260}
           height={100}
-          className='w-[180px] lg:w-[220px] object-contain cursor-pointer'
+          className='w-[180px] lg:w-[260px] object-contain cursor-pointer'
           unoptimized={true}
         />
       </Link>
@@ -116,14 +117,6 @@ const SearchBar = () => {
         <MagnifyingGlassIcon width={20} height={20} className='stroke-[2px]' />
       </button>
     </form>
-  );
-};
-
-const User = () => {
-  return (
-    <div className='flex w-10 h-10 justify-center items-center cursor-pointer hover:bg-slate-200 hover:rounded-full'>
-      <UserIcon width={20} height={20} className='stroke-[2px]' />
-    </div>
   );
 };
 
