@@ -6,10 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { update } from '@/slices/searchSlice';
 import {
-  Bars3Icon,
   MagnifyingGlassIcon,
   ShoppingCartIcon,
-  UserIcon,
 } from '@heroicons/react/24/outline';
 import styles from './Header.module.css';
 import { Disclosure } from '@headlessui/react';
