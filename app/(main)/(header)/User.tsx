@@ -16,7 +16,7 @@ const FloatingMenu = ({ loggedUser }: { loggedUser: User | undefined }) => {
   const router = useRouter();
   return (
     <Menu.Items className='absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
-      {loggedUser && (
+      {/* {loggedUser && (
         <div className='px-1 py-1 '>
           <Menu.Item>
             {({ active }) => (
@@ -106,7 +106,7 @@ const FloatingMenu = ({ loggedUser }: { loggedUser: User | undefined }) => {
             </Menu.Item>
           </>
         )}
-      </div>
+      </div> */}
       <div className='px-1 py-1'>
         <Menu.Item>
           {({ active }) => (
@@ -144,14 +144,6 @@ function User() {
       <Menu as='div' className='relative inline-block text-left'>
         <div>
           <Menu.Button className='inline-flex w-full justify-center items-center gap-2 rounded-md text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
-            {loggedUser ? (
-              <div className='text-slate-900 hover:underline hover:underline-offset-4'>
-                Ciao,{' '}
-                {loggedUser.displayName
-                  ? loggedUser.displayName.split(' ', 1)
-                  : null}
-              </div>
-            ) : null}
             <div className='flex w-10 h-10 justify-center items-center cursor-pointer hover:bg-slate-200 hover:rounded-full'>
               <UserIcon
                 width={20}

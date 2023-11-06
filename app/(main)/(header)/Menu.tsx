@@ -72,13 +72,12 @@ function Menu() {
                 <h1 className='text-xl font-semibold'>I nostri servizi</h1>
                 <ul className='divide-y flex flex-col'>
                   <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
-                    onClick={void 0}
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                    }}
                   >
                     <Link
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                      }}
                       title={`Test`}
                       passHref
                       href={`/`}
@@ -92,13 +91,12 @@ function Menu() {
                     </Link>
                   </li>
                   <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
-                    onClick={void 0}
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                    }}
                   >
                     <Link
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                      }}
                       title={`Test`}
                       passHref
                       href={`/`}
@@ -112,13 +110,12 @@ function Menu() {
                     </Link>
                   </li>
                   <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
-                    onClick={void 0}
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                    }}
                   >
                     <Link
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                      }}
                       title={`Test`}
                       passHref
                       href={`/`}
@@ -132,13 +129,12 @@ function Menu() {
                     </Link>
                   </li>
                   <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
-                    onClick={void 0}
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                    }}
                   >
                     <Link
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                      }}
                       title={`Test`}
                       passHref
                       href={`/`}
@@ -152,13 +148,12 @@ function Menu() {
                     </Link>
                   </li>
                   <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
-                    onClick={void 0}
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                    }}
                   >
                     <Link
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                      }}
                       title={`Test`}
                       passHref
                       href={`/`}
@@ -172,13 +167,12 @@ function Menu() {
                     </Link>
                   </li>
                   <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
-                    onClick={void 0}
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                    }}
                   >
                     <Link
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                      }}
                       title={`Test`}
                       passHref
                       href={`/`}
@@ -192,13 +186,12 @@ function Menu() {
                     </Link>
                   </li>
                   <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
-                    onClick={void 0}
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                    }}
                   >
                     <Link
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                      }}
                       title={`Test`}
                       passHref
                       href={`/`}
@@ -212,13 +205,12 @@ function Menu() {
                     </Link>
                   </li>
                   <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg'
-                    onClick={void 0}
+                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                    }}
                   >
                     <Link
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                      }}
                       title={`Test`}
                       passHref
                       href={`/`}

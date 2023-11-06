@@ -143,7 +143,7 @@ function Header() {
           <EasySolutionLogo />
           <div className='flex gap-4'>
             <User />
-            <Cart />
+            {/* <Cart /> */}
           </div>
         </div>
         <div className='flex row-span-1 lg:hidden'>
