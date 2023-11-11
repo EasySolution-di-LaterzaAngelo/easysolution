@@ -1,0 +1,47 @@
+.main {
+  min-block-size: 100svh;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.card::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.card {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.drop_container {
+  background-color: #d4e5ff;
+  position: relative;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  margin-top: 2rem;
+  border-radius: 20px;
+  border: 2px dashed #a4c8fe;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
+}
+
+.drop_container:hover {
+  background: rgba(94, 180, 249, 0.487);
+  border-color: rgba(17, 17, 17, 0.616);
+}
+
+.drop_container:hover .drop_title {
+  color: #222;
+}
+
+.drop_title {
+  color: #444;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  transition: color 0.2s ease-in-out;
+}
