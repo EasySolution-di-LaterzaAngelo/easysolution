@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Product from './Product';
 import Lottie from 'lottie-react';
 import Product404 from '../../../public/Product404.json';
+import MyLoading from '../MyLoading';
 
 function Producs() {
   const inputValue = useSelector(selectSearchValue);
@@ -93,7 +94,7 @@ function Producs() {
             </>
           ) : (
             <div className='flex justify-center items-center h-screen'>
-              {/* <MyLoading /> */}
+              <MyLoading />
             </div>
           )}
         </div>

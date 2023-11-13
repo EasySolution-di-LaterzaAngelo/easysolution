@@ -83,88 +83,24 @@ function Gestisci() {
             className='relative block w-full rounded-md border-0 bg-transparent py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
           >
             <option aria-label='None' value='' />
-            {/* Elettrodomestici */}
-            <option value={'Elettrodomestici'} className='bg-green-200'>
-              Elettrodomestici
+            <option value={'Cartoleria'}>Cartoleria</option>
+            <option value={'Idee Regalo'}>Idee Regalo</option>
+            <option value={'Articoli per feste'}>Articoli per feste</option>
+            <option value={'Incisioni su accaio e legno'}>
+              Incisioni su accaio e legno
             </option>
-            <option value={'Elettrodomestici/Frigoriferi'} className='italic'>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Frigoriferi
+            <option value={'Prodotti di elettronica'}>
+              Prodotti di elettronica
             </option>
-            <option value={'Elettrodomestici/Congelatori'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Congelatori
+            <option value={'Bomboniere artigianali'}>
+              Bomboniere artigianali
             </option>
-            <option value={'Elettrodomestici/Lavatrici'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lavatrici
+            <option value={'Articoli da personalizzare'}>
+              Articoli da personalizzare
             </option>
-            <option value={'Elettrodomestici/Asciugatrici'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Asciugatrici
+            <option value={'Riparazioni smartphone / PC / Bimby / Folletto'}>
+              Riparazioni smartphone / PC / Bimby / Folletto
             </option>
-            <option value={'Elettrodomestici/Lavastoviglie'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lavastoviglie
-            </option>
-            <option value={'Elettrodomestici/Forni'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Forni
-            </option>
-            <option value={'Elettrodomestici/Climatizzatori'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Climatizzatori
-            </option>
-            <option value={'Elettrodomestici/Ventilatori'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ventilatori
-            </option>
-            <option value={'Elettrodomestici/Stufe'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stufe
-            </option>
-            <option value={'Elettrodomestici/Asciugatrici'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Asciugatrici
-            </option>
-
-            {/* Telefonia */}
-            <option value={'Telefonia'}>Telefonia</option>
-            <option value={'Telefonia/Smartphone e Cellulari'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Smartphone e Cellulari
-            </option>
-            <option value={'Cordless'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cordless
-            </option>
-            <option value={'Cordless/Accessori Telefonia'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Accessori Telefonia
-            </option>
-
-            {/* Televisori */}
-            <option value={'Televisori'}>Televisori</option>
-            <option value={'Televisori/Televisori'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Televisori
-            </option>
-            <option value={'Televisori/DVD e Blu-ray'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DVD e Blu-ray
-            </option>
-            <option value={'Televisori/Accessori Televisori'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Accessori Televisori
-            </option>
-
-            {/* Informatica */}
-            <option value={'Informatica'}>Informatica</option>
-            <option value={'Informatica/Notebook'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Notebook
-            </option>
-            <option value={'Informatica/Tablet'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tablet
-            </option>
-            <option value={'Informatica/Accessori Informatica'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Accessori Informatica
-            </option>
-
-            {/* Console e Videogiochi */}
-            <option value={'Console e Videogiochi'}>Console</option>
-            <option value={'Console e Videogiochi/Console'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console
-            </option>
-            <option value={'Console e Videogiochi/Videogiochi'}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Videogiochi
-            </option>
-
-            {/* Monopattini */}
-            <option value={'Monopattini'}>Monopattini</option>
           </select>
         </div>
       </form>

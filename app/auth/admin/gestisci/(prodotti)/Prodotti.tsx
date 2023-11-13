@@ -8,9 +8,9 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './Gestisci.module.css';
-// import Lottie from 'lottie-react';
-// import Product404 from '../../../../../public/Product404.json';
-// import MyLoading from '@/app/(main)/MyLoading';
+import Lottie from 'lottie-react';
+import Product404 from '../../../../../public/Product404.json';
+import MyLoading from '@/app/(main)/MyLoading';
 
 function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
   const inputValue = useSelector(selectSearchValue);
@@ -92,10 +92,10 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
           className={`flex m-auto items-center justify-center bg-white h-[28rem] content-start max-w-4xl md:w-full md:h-2/3 rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll ${styles.card}`}
         >
           <div className='flex flex-col justify-center items-center mx-10 -mt-20 py-10 px-5 z-10'>
-            {/* <Lottie
+            <Lottie
               animationData={Product404}
               className='flex w-full sm:w-1/2 lg:w-1/3 z-10'
-            /> */}
+            />
             <p className='text-base font-mono font-light text-center md:mx-40 md:text-lg'>
               La ricerca del prodotto non è andata a buon fine. Tuttavia,
               potrebbe essersi verificato un errore nella digitazione del nome
@@ -107,7 +107,7 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
         <div
           className={`flex m-auto items-center justify-center bg-white h-96 w-80 md:w-96 content-start max-w-4xl rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll ${styles.card}`}
         >
-          {/* <MyLoading /> */}
+          <MyLoading />
         </div>
       )}
     </>
