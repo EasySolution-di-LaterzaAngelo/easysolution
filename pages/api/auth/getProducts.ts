@@ -38,6 +38,46 @@ export async function getProducts() {
   return prodotti;
 }
 
+export async function getDiscountedProducts() {
+  const dbProdotti = await db
+    .collection('prodotti')
+    .orderBy('sconto', 'asc') // Order by 'sconto'
+    .get();
+
+  const discountedProducts = dbProdotti.docs
+    .filter((doc) => doc.data().sconto !== null)
+    .map(async (prodotti) => {
+      const myarray = Object.entries(prodotti.data());
+
+      const myObject: any = await myarray.reduce(
+        async (objPromise, [key, value]) => {
+          const obj = await objPromise;
+
+          if (key === 'immagini') {
+            const downloadURLs = [];
+            for (let i = 0; i < value.length; i++) {
+              const downloadURL = await getDownloadURL(
+                ref(storage, `immagini/${value[i]}`)
+              );
+              downloadURLs.push(downloadURL);
+            }
+            return { ...obj, [key]: downloadURLs };
+          } else {
+            return { ...obj, [key]: value };
+          }
+        },
+        Promise.resolve({})
+      );
+      myObject.id = prodotti.id;
+      return myObject;
+    });
+
+  const prodotti = await Promise.all(discountedProducts);
+  prodotti.sort((a, b) => a.nome.localeCompare(b.nome)); // Sort the final result by 'nome'
+
+  return prodotti;
+}
+
 export async function getProduct(id: any) {
   const prodotto = await db.collection('prodotti').doc(id).get();
   const data = prodotto.data();

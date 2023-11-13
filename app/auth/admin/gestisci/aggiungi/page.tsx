@@ -316,7 +316,11 @@ function AddProduct() {
             100
         ).toString(),
       }));
-    } else if (e.target.name === 'Sconto' && inputs?.prezzo !== '') {
+    } else if (
+      e.target.name === 'Sconto' &&
+      inputs?.prezzo !== null &&
+      e.target.value !== ''
+    ) {
       setInputs((prevState: any) => ({
         ...prevState,
         [e.target.name.charAt(0).toLowerCase() + e.target.name.slice(1)]:
@@ -328,7 +332,22 @@ function AddProduct() {
             100
         ).toString(),
       }));
-    } else if (e.target.name === 'Percentuale' && inputs?.prezzo !== '') {
+    } else if (
+      e.target.name === 'Sconto' &&
+      inputs?.prezzo !== null &&
+      e.target.value === ''
+    ) {
+      setInputs((prevState: any) => ({
+        ...prevState,
+        [e.target.name.charAt(0).toLowerCase() + e.target.name.slice(1)]:
+          e.target.value.replace(/\n/g, ''),
+        ['percentuale']: '',
+      }));
+    } else if (
+      e.target.name === 'Percentuale' &&
+      inputs?.prezzo !== null &&
+      e.target.value !== ''
+    ) {
       setInputs((prevState: any) => ({
         ...prevState,
         [e.target.name.charAt(0).toLowerCase() + e.target.name.slice(1)]:
@@ -339,6 +358,17 @@ function AddProduct() {
               Number(e.target.value.replace(',', '.'))) /
               100
         ).toString(),
+      }));
+    } else if (
+      e.target.name === 'Percentuale' &&
+      inputs?.prezzo !== null &&
+      e.target.value === ''
+    ) {
+      setInputs((prevState: any) => ({
+        ...prevState,
+        [e.target.name.charAt(0).toLowerCase() + e.target.name.slice(1)]:
+          e.target.value.replace(/\n/g, ''),
+        ['sconto']: '',
       }));
     } else {
       e.target.type !== 'file' &&

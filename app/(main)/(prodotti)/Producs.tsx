@@ -1,6 +1,10 @@
 'use client';
 import { auth } from '@/firebase';
-import { getFilterProducts, getProducts } from '@/pages/api/auth/getProducts';
+import {
+  getDiscountedProducts,
+  getFilterProducts,
+  getProducts,
+} from '@/pages/api/auth/getProducts';
 import { clear, selectSearchValue } from '@/slices/searchSlice';
 import { Prodotto } from '@/types';
 import { XMarkIcon } from '@heroicons/react/24/outline';
@@ -28,7 +32,7 @@ function Producs() {
             const productsFilterData = await getFilterProducts(inputValue);
             setProducts(productsFilterData);
           } else {
-            const productsData = await getProducts();
+            const productsData = await getDiscountedProducts();
             setProducts(productsData);
           }
         }
@@ -46,11 +50,13 @@ function Producs() {
         <div className='mx-auto'>
           {products ? (
             <>
-              <h1 className='mt-[170px] lg:mt-[200px] text-center text-3xl font-bold text-slate-700'>
-                Le nostre Offerte
-              </h1>
+              {inputValue === '' && (
+                <h1 className='mt-[170px] lg:mt-[200px] text-center text-3xl font-bold text-slate-700'>
+                  Le nostre Offerte
+                </h1>
+              )}
               {inputValue && (
-                <div className='z-50 mt-10 md:mt-10 w-full flex justify-center'>
+                <div className='z-50 mt-[170px] lg:mt-[200px] w-full flex justify-center'>
                   <h1
                     onClick={() => dispatch(clear())}
                     className='flex items-center pl-4 pr-2 p-2 gap-1 rounded-full bg-zinc-300 border border-gray-400 font-medium text-xl cursor-pointer'

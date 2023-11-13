@@ -318,7 +318,11 @@ function Product({ params }: any) {
             100
         ).toString(),
       }));
-    } else if (e.target.name === 'Sconto' && prodotto?.prezzo !== null) {
+    } else if (
+      e.target.name === 'Sconto' &&
+      prodotto?.prezzo !== null &&
+      e.target.value !== ''
+    ) {
       setProdotto((prevState: any) => ({
         ...prevState,
         [e.target.name.charAt(0).toLowerCase() + e.target.name.slice(1)]:
@@ -330,7 +334,22 @@ function Product({ params }: any) {
             100
         ).toString(),
       }));
-    } else if (e.target.name === 'Percentuale' && prodotto?.prezzo !== null) {
+    } else if (
+      e.target.name === 'Sconto' &&
+      prodotto?.prezzo !== null &&
+      e.target.value === ''
+    ) {
+      setProdotto((prevState: any) => ({
+        ...prevState,
+        [e.target.name.charAt(0).toLowerCase() + e.target.name.slice(1)]:
+          e.target.value.replace(/\n/g, ''),
+        ['percentuale']: '',
+      }));
+    } else if (
+      e.target.name === 'Percentuale' &&
+      prodotto?.prezzo !== null &&
+      e.target.value !== ''
+    ) {
       setProdotto((prevState: any) => ({
         ...prevState,
         [e.target.name.charAt(0).toLowerCase() + e.target.name.slice(1)]:
@@ -341,6 +360,17 @@ function Product({ params }: any) {
               Number(e.target.value.replace(',', '.'))) /
               100
         ).toString(),
+      }));
+    } else if (
+      e.target.name === 'Percentuale' &&
+      prodotto?.prezzo !== null &&
+      e.target.value === ''
+    ) {
+      setProdotto((prevState: any) => ({
+        ...prevState,
+        [e.target.name.charAt(0).toLowerCase() + e.target.name.slice(1)]:
+          e.target.value.replace(/\n/g, ''),
+        ['sconto']: '',
       }));
     } else if (e.target.type !== 'file') {
       setProdotto((prevState: any) => ({
@@ -436,7 +466,6 @@ function Product({ params }: any) {
       setOpen(true);
     }
   };
-
   return (
     <div className='relative m-auto flex flex-col'>
       <form onSubmit={handleEditProduct}>

@@ -25,37 +25,37 @@ const SubHeader = () => {
   return (
     <div className='flex w-full text-slate-900 gap-8 font-bold text-sm text-center items-center justify-between'>
       <p
-        onClick={() => setInputFromMenu('Test')}
+        onClick={() => setInputFromMenu('Cartoleria')}
         className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
       >
         Cartoleria
       </p>
       <p
-        onClick={() => setInputFromMenu('Test')}
+        onClick={() => setInputFromMenu('Idea Regalo')}
         className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
       >
         Idea Regalo
       </p>
       <p
-        onClick={() => setInputFromMenu('Test')}
+        onClick={() => setInputFromMenu('Articoli per feste')}
         className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
       >
         Articoli per feste
       </p>
       <p
-        onClick={() => setInputFromMenu('Test')}
+        onClick={() => setInputFromMenu('Incisioni su accaio e legno')}
         className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
       >
         Incisioni su accaio e legno
       </p>
       <p
-        onClick={() => setInputFromMenu('Test')}
+        onClick={() => setInputFromMenu('Prodotti di elettronica')}
         className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
       >
         Prodotti di elettronica
       </p>
       <p
-        onClick={() => setInputFromMenu('Test')}
+        onClick={() => setInputFromMenu('Bomboniere artigianali')}
         className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
       >
         Bomboniere artigianali
@@ -80,15 +80,19 @@ const SubHeader = () => {
           <Menu.Items className='absolute -right-4 top-10 flex gap-10 h-12 px-4 w-screen bg-[#F9F9F9] shadow-lg focus:outline-none items-center'>
             <Menu.Item>
               <p
-                onClick={() => setInputFromMenu('Test')}
+                onClick={() => setInputFromMenu('Articoli da personalizzare')}
                 className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
               >
-                Articolari da personalizzare
+                Articoli da personalizzare
               </p>
             </Menu.Item>
             <Menu.Item>
               <p
-                onClick={() => setInputFromMenu('Test')}
+                onClick={() =>
+                  setInputFromMenu(
+                    'Riparazioni smartphone / PC / Bimby / Folletto'
+                  )
+                }
                 className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
               >
                 Riparazioni smartphone / PC / Bimby / Folletto
