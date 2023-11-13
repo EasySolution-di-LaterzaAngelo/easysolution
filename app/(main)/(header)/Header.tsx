@@ -10,46 +10,97 @@ import {
   ShoppingCartIcon,
 } from '@heroicons/react/24/outline';
 import styles from './Header.module.css';
-import { Disclosure } from '@headlessui/react';
+import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import Menu from './Menu';
+import Sidebar from './Sidebar';
 import User from './User';
 
 const SubHeader = () => {
+  const dispatch = useDispatch();
+
+  const setInputFromMenu = (input: string) => {
+    const trimmedValue = input.replace(/\s+/g, ' ').trim();
+    dispatch(update(trimmedValue));
+  };
   return (
-    <div className='flex text-slate-900 gap-8 font-bold text-sm text-center'>
-      <p className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'>
+    <div className='flex w-full text-slate-900 gap-8 font-bold text-sm text-center items-center justify-between'>
+      <p
+        onClick={() => setInputFromMenu('Cartoleria')}
+        className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
+      >
         Cartoleria
       </p>
-      <p className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'>
+      <p
+        onClick={() => setInputFromMenu('Idea Regalo')}
+        className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
+      >
         Idea Regalo
       </p>
-      <p className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'>
+      <p
+        onClick={() => setInputFromMenu('Articoli per feste')}
+        className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
+      >
         Articoli per feste
       </p>
-      <p className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'>
+      <p
+        onClick={() => setInputFromMenu('Incisioni su accaio e legno')}
+        className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
+      >
         Incisioni su accaio e legno
       </p>
-      <p className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'>
+      <p
+        onClick={() => setInputFromMenu('Prodotti di elettronica')}
+        className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
+      >
         Prodotti di elettronica
       </p>
-      <p className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'>
+      <p
+        onClick={() => setInputFromMenu('Bomboniere artigianali')}
+        className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
+      >
         Bomboniere artigianali
       </p>
-      <Disclosure>
-        <Disclosure.Button className='flex gap-2 decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'>
-          Altro
-          <ChevronDownIcon height={20} className='stroke-black' />
-        </Disclosure.Button>
-        <Disclosure.Panel className='absolute top-[120px] left-0 w-full bg-[#F9F9F9] text-slate-900 h-20 items-center flex gap-8 p-4 shadow-lg'>
-          <p className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'>
-            Articolari da personalizzare
-          </p>
-          <p className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'>
-            Riparazioni smartphone / PC / Bimby / Folletto
-          </p>
-        </Disclosure.Panel>
-      </Disclosure>
+
+      <Menu as='div' className='flex relative isolate z-0'>
+        <Menu.Button className='inline-flex w-full justify-center items-center gap-2 rounded-md text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
+          <div className='flex text-slate-900 font-bold text-sm text-center items-center justify-center decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'>
+            Altro
+            <ChevronDownIcon height={20} className='stroke-black' />
+          </div>
+        </Menu.Button>
+
+        <Transition
+          enter='transition ease-out duration-200'
+          enterFrom='opacity-0 -translate-y-1'
+          enterTo='opacity-100 translate-y-0'
+          leave='transition ease-in duration-150'
+          leaveFrom='opacity-100 translate-y-0'
+          leaveTo='opacity-0 -translate-y-1'
+        >
+          <Menu.Items className='absolute -right-4 top-10 flex gap-10 h-12 px-4 w-screen bg-[#F9F9F9] shadow-lg focus:outline-none items-center'>
+            <Menu.Item>
+              <p
+                onClick={() => setInputFromMenu('Articoli da personalizzare')}
+                className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
+              >
+                Articoli da personalizzare
+              </p>
+            </Menu.Item>
+            <Menu.Item>
+              <p
+                onClick={() =>
+                  setInputFromMenu(
+                    'Riparazioni smartphone / PC / Bimby / Folletto'
+                  )
+                }
+                className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
+              >
+                Riparazioni smartphone / PC / Bimby / Folletto
+              </p>
+            </Menu.Item>
+          </Menu.Items>
+        </Transition>
+      </Menu>
     </div>
   );
 };
@@ -84,7 +135,7 @@ const SearchBar = () => {
     const trimmedValue = input.replace(/\s+/g, ' ').trim();
     dispatch(update(trimmedValue));
     setInput('');
-    router.push('/prodotti');
+    router.push('/');
     if (inputRef.current) {
       inputRef.current.blur(); // Hide the keyboard
     }
@@ -136,12 +187,12 @@ function Header() {
     <header className='z-50 fixed w-full'>
       <div className='grid grid-rows-2 grid-flow-col gap-2 items-center p-4 lg:pt-6 bg-[#F9F9F9] shadow-lg z-50'>
         <div className='flex rows-span-1 justify-between'>
-          <Menu />
+          <Sidebar />
           <div className='hidden w-80 lg:flex'>
             <SearchBar />
           </div>
           <EasySolutionLogo />
-          <div className='flex gap-4'>
+          <div className='z-20 flex gap-4'>
             <User />
             {/* <Cart /> */}
           </div>
@@ -149,7 +200,7 @@ function Header() {
         <div className='flex row-span-1 lg:hidden'>
           <SearchBar />
         </div>
-        <div className='hidden lg:flex h-12 items-center'>
+        <div className='hidden lg:flex h-12 items-center w-full'>
           <SubHeader />
         </div>
       </div>

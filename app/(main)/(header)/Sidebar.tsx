@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
+import { update } from '@/slices/searchSlice';
 
 export const EasySolutionLogo = ({ setIsMenuOpen }: { setIsMenuOpen: any }) => {
   return (
@@ -54,6 +55,11 @@ function Menu() {
     } else {
       document.body.style.overflow = 'auto';
     }
+
+    const setInputFromMenu = (input: string) => {
+      const trimmedValue = input.replace(/\s+/g, ' ').trim();
+      dispatch(update(trimmedValue));
+    };
     return (
       <>
         {isMenuOpen && (
@@ -75,6 +81,7 @@ function Menu() {
                     className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
                     onClick={() => {
                       setIsMenuOpen(false);
+                      setInputFromMenu('Cartoleria');
                     }}
                   >
                     <Link
@@ -94,6 +101,7 @@ function Menu() {
                     className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
                     onClick={() => {
                       setIsMenuOpen(false);
+                      setInputFromMenu('Idea Regalo');
                     }}
                   >
                     <Link
@@ -113,6 +121,7 @@ function Menu() {
                     className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
                     onClick={() => {
                       setIsMenuOpen(false);
+                      setInputFromMenu('Articoli per feste');
                     }}
                   >
                     <Link
@@ -132,6 +141,7 @@ function Menu() {
                     className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
                     onClick={() => {
                       setIsMenuOpen(false);
+                      setInputFromMenu('Incisioni su accaio e legno');
                     }}
                   >
                     <Link
@@ -151,6 +161,7 @@ function Menu() {
                     className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
                     onClick={() => {
                       setIsMenuOpen(false);
+                      setInputFromMenu('Prodotti di elettronica');
                     }}
                   >
                     <Link
@@ -170,6 +181,7 @@ function Menu() {
                     className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
                     onClick={() => {
                       setIsMenuOpen(false);
+                      setInputFromMenu('Bomboniere artigianali');
                     }}
                   >
                     <Link
@@ -189,6 +201,7 @@ function Menu() {
                     className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
                     onClick={() => {
                       setIsMenuOpen(false);
+                      setInputFromMenu('Articolari da personalizzare');
                     }}
                   >
                     <Link
@@ -208,6 +221,9 @@ function Menu() {
                     className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
                     onClick={() => {
                       setIsMenuOpen(false);
+                      setInputFromMenu(
+                        'Riparazioni smartphone / PC / Bimby / Folletto'
+                      );
                     }}
                   >
                     <Link
