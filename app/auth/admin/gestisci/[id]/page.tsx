@@ -380,7 +380,7 @@ function Product({ params }: any) {
 
   const handleDeleteProduct = async (e: any) => {
     setMessage('Prodotto eliminato.');
-    setSeverity('success');
+    setSeverity('delete');
     setOpen(true);
     e.preventDefault();
     await deleteDoc(doc(db, 'prodotti', `${params.id}`));
@@ -1005,7 +1005,9 @@ function Product({ params }: any) {
             className={` flex w-min mx-auto items-center shadow-2xl ring-2 rounded-md p-4 ${
               severity === 'success'
                 ? ' bg-green-50 ring-green-300'
-                : 'bg-yellow-50 ring-yellow-300'
+                : severity === 'waring'
+                ? 'bg-yellow-50 ring-yellow-300'
+                : 'bg-red-50 ring-red-300'
             }`}
           >
             <div className='flex w-max'>
@@ -1015,9 +1017,14 @@ function Product({ params }: any) {
                     className='h-5 w-5 text-green-400'
                     aria-hidden='true'
                   />
-                ) : (
+                ) : severity === 'waring' ? (
                   <ExclamationCircleIcon
                     className='h-5 w-5 text-yellow-400'
+                    aria-hidden='true'
+                  />
+                ) : (
+                  <ExclamationCircleIcon
+                    className='h-5 w-5 text-red-400'
                     aria-hidden='true'
                   />
                 )}
@@ -1027,9 +1034,13 @@ function Product({ params }: any) {
                   <p className='text-sm font-medium text-green-800'>
                     Prodotto modificato
                   </p>
-                ) : (
+                ) : severity === 'waring' ? (
                   <p className='text-sm font-medium text-yellow-800'>
                     Nessuna modifica
+                  </p>
+                ) : (
+                  <p className='text-sm font-medium text-red-800'>
+                    Prodotto eliminato
                   </p>
                 )}
               </div>
@@ -1040,7 +1051,9 @@ function Product({ params }: any) {
                     className={`inline-flex rounded-md ${
                       severity === 'success'
                         ? 'bg-green-50 p-1.5 text-green-500 hover:bg-green-100  focus:ring-green-600 focus:ring-offset-green-50'
-                        : 'bg-yellow-50 p-1.5 text-yellow-500 hover:bg-yellow-100  focus:ring-yellow-600 focus:ring-offset-yellow-50'
+                        : severity === 'warning'
+                        ? 'bg-yellow-50 p-1.5 text-yellow-500 hover:bg-yellow-100  focus:ring-yellow-600 focus:ring-offset-yellow-50'
+                        : 'bg-red-50 p-1.5 text-red-500 hover:bg-red-100  focus:ring-red-600 focus:ring-offset-red-50'
                     }  focus:outline-none focus:ring-2 focus:ring-offset-2`}
                   >
                     <span className='sr-only'>Dismiss</span>
