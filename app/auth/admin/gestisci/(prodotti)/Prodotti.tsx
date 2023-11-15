@@ -2,7 +2,7 @@ import { auth } from '@/firebase';
 import { getFilterProducts, getProducts } from '@/pages/api/auth/getProducts';
 import { selectSearchValue } from '@/slices/searchSlice';
 import { Prodotto } from '@/types';
-import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
+import { User, onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -18,9 +18,19 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
 
   const [products, setProducts] = useState<Prodotto[]>();
 
+  const [loggedUser, setLoggedUser] = useState<User>();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user?.email) {
+      setLoggedUser(user);
+    } else {
+      setLoggedUser(undefined);
+    }
+  });
+
   useEffect(() => {
     setProducts(prodotti);
-  }, []);
+  }, [prodotti]);
 
   useEffect(() => {
     async function fetchData() {
@@ -33,8 +43,13 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
             const productsFilterData = await getFilterProducts(inputValue);
             setProducts(productsFilterData);
           } else {
-            const productsData = await getProducts();
-            setProducts(productsData);
+            if (
+              loggedUser !== undefined &&
+              loggedUser?.uid !== process.env.UID
+            ) {
+              const productsData = await getProducts();
+              setProducts(productsData);
+            }
           }
         }
       });
