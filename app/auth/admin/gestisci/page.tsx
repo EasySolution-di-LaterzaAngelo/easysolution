@@ -35,7 +35,7 @@ function Gestisci() {
       setProdotti(prodottiData);
     }
     if (loggedUser !== undefined) {
-      if (loggedUser?.uid !== process.env.NEXT_PUBLIC) {
+      if (loggedUser?.uid !== process.env.NEXT_PUBLIC_UID) {
         router.push('/');
       } else {
         fetchData();
