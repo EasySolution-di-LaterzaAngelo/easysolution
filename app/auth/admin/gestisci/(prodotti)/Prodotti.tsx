@@ -45,7 +45,7 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
           } else {
             if (
               loggedUser !== undefined &&
-              loggedUser?.uid !== process.env.UID
+              loggedUser?.uid !== process.env.NEXT_PUBLIC_UID
             ) {
               const productsData = await getProducts();
               setProducts(productsData);

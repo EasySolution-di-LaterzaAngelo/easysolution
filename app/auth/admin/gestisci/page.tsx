@@ -34,11 +34,12 @@ function Gestisci() {
       const prodottiData = await getProducts();
       setProdotti(prodottiData);
     }
-
-    if (loggedUser !== undefined && loggedUser?.uid !== process.env.UID) {
-      router.push('/');
-    } else {
-      fetchData();
+    if (loggedUser !== undefined) {
+      if (loggedUser?.uid !== process.env.NEXT_PUBLIC) {
+        router.push('/');
+      } else {
+        fetchData();
+      }
     }
   }, [loggedUser]);
 
