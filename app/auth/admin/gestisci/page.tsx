@@ -13,6 +13,8 @@ import {
 } from '../../../../slices/searchSlice';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import { PlusIcon } from '@heroicons/react/24/outline';
+import { User, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/firebase';
 
 function Gestisci() {
   const [prodotti, setProdotti] = useState<Prodotto[]>();
@@ -52,6 +54,21 @@ function Gestisci() {
       setInput('');
     }
   };
+
+  const [loggedUser, setLoggedUser] = useState<User>();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user?.email) {
+      setLoggedUser(user);
+    } else {
+      setLoggedUser(undefined);
+    }
+  });
+
+  if (loggedUser !== undefined && loggedUser?.uid !== process.env.UID) {
+    router.push('/');
+  }
+
   return (
     <div className='relative m-auto flex flex-col gap-4 px-6'>
       <form
