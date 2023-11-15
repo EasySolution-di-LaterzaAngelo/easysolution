@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { Analytics } from '@vercel/analytics/react';
 import ProvidersWrapper from './ProvidersWrapper';
 import styles from './Main.module.css';
 import Header from './(header)/Header';
@@ -22,6 +23,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </ProvidersWrapper>
+        <Analytics />
       </body>
     </html>
   );
