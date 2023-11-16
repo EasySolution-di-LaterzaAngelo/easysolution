@@ -162,7 +162,7 @@ function User() {
           leaveTo='transform opacity-0 scale-95'
         >
           <div
-            className={`absolute -top-14 -right-4 bottom-0 h-screen w-screen bg-gray-500 opacity-25`}
+            className={`absolute -top-14 lg:-top-[68px] -right-4  h-screen w-screen bg-gray-500 opacity-25`}
           />
           <FloatingMenu loggedUser={loggedUser} />
         </Transition>
