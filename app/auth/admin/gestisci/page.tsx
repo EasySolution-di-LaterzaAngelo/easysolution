@@ -21,19 +21,20 @@ function Gestisci() {
 
   const [loggedUser, setLoggedUser] = useState<User>();
 
-  onAuthStateChanged(auth, (user) => {
-    if (user?.email) {
-      setLoggedUser(user);
-    } else {
-      setLoggedUser(undefined);
-    }
-  });
-
   useEffect(() => {
     async function fetchData() {
       const prodottiData = await getProducts();
       setProdotti(prodottiData);
     }
+
+    onAuthStateChanged(auth, (user) => {
+      if (user?.email) {
+        setLoggedUser(user);
+      } else {
+        setLoggedUser(undefined);
+      }
+    });
+
     if (loggedUser !== undefined) {
       if (loggedUser?.uid !== process.env.NEXT_PUBLIC_UID) {
         router.push('/');
@@ -68,6 +69,17 @@ function Gestisci() {
     } else if (e.target.name === 'Categoria') {
       dispatch(update(e.target.value.toString()));
       setInput('');
+    }
+  };
+
+  const handleClearSearch = () => {
+    dispatch(clear()); // Clear the search value
+    const selectElement = document.getElementById(
+      'grouped-native-select'
+    ) as HTMLSelectElement;
+    if (selectElement) {
+      selectElement.value = ''; // Reset select element to its first option
+      handleChange({ target: { value: '', name: 'Categoria' } }); // Update state or Redux store accordingly
     }
   };
 
@@ -126,7 +138,7 @@ function Gestisci() {
       {inputValue && (
         <div className=' w-full flex justify-center'>
           <h1
-            onClick={() => dispatch(clear())}
+            onClick={handleClearSearch}
             className='flex items-center pl-4 pr-2 p-1 md:p-2 gap-1 rounded-full bg-zinc-300 border border-gray-400 font-medium text-sm md:text-xl cursor-pointer'
           >
             {inputValue}

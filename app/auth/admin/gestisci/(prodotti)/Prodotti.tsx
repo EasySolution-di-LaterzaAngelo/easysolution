@@ -18,16 +18,6 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
 
   const [products, setProducts] = useState<Prodotto[]>();
 
-  const [loggedUser, setLoggedUser] = useState<User>();
-
-  onAuthStateChanged(auth, (user) => {
-    if (user?.email) {
-      setLoggedUser(user);
-    } else {
-      setLoggedUser(undefined);
-    }
-  });
-
   useEffect(() => {
     setProducts(prodotti);
   }, [prodotti]);
@@ -43,10 +33,7 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
             const productsFilterData = await getFilterProducts(inputValue);
             setProducts(productsFilterData);
           } else {
-            if (
-              loggedUser !== undefined &&
-              loggedUser?.uid !== process.env.NEXT_PUBLIC_UID
-            ) {
+            if (user.uid === process.env.NEXT_PUBLIC_UID) {
               const productsData = await getProducts();
               setProducts(productsData);
             }
