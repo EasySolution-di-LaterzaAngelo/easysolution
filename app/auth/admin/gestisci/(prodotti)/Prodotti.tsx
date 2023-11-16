@@ -29,11 +29,11 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
           signInAnonymously(auth);
         }
         if (user) {
-          if (inputValue !== '') {
-            const productsFilterData = await getFilterProducts(inputValue);
-            setProducts(productsFilterData);
-          } else {
-            if (user.uid === process.env.NEXT_PUBLIC_UID) {
+          if (user.uid === process.env.NEXT_PUBLIC_UID) {
+            if (inputValue !== '') {
+              const productsFilterData = await getFilterProducts(inputValue);
+              setProducts(productsFilterData);
+            } else {
               const productsData = await getProducts();
               setProducts(productsData);
             }
