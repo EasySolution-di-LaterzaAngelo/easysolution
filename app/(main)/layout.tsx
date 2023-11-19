@@ -4,12 +4,15 @@ import ProvidersWrapper from './ProvidersWrapper';
 import styles from './Main.module.css';
 import Header from './(header)/Header';
 import Footer from './(footer)/Footer';
+import getGoogleData from './getGoogleData';
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const data: object = await getGoogleData();
+
   return (
     <html lang='en'>
       <Head>
@@ -21,7 +24,7 @@ export default function RootLayout({
         <ProvidersWrapper>
           <Header />
           {children}
-          <Footer />
+          <Footer googleData={data} />
         </ProvidersWrapper>
         <Analytics />
       </body>
