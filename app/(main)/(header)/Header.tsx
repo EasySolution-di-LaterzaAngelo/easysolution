@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
@@ -14,52 +14,29 @@ import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import Sidebar from './Sidebar';
 import User from './User';
+import { getProducts } from '@/pages/api/auth/getProducts';
 
-const SubHeader = () => {
+const SubHeader = ({ categories }: { categories: any }) => {
   const dispatch = useDispatch();
 
   const setInputFromMenu = (input: string) => {
     const trimmedValue = input.replace(/\s+/g, ' ').trim();
     dispatch(update(trimmedValue));
   };
+
   return (
-    <div className='flex w-full text-slate-900 gap-8 font-bold text-sm text-center items-center justify-between'>
-      <p
-        onClick={() => setInputFromMenu('Cartoleria')}
-        className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
-      >
-        Cartoleria
-      </p>
-      <p
-        onClick={() => setInputFromMenu('Idea Regalo')}
-        className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
-      >
-        Idea Regalo
-      </p>
-      <p
-        onClick={() => setInputFromMenu('Articoli per feste')}
-        className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
-      >
-        Articoli per feste
-      </p>
-      <p
-        onClick={() => setInputFromMenu('Incisioni su accaio e legno')}
-        className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
-      >
-        Incisioni su accaio e legno
-      </p>
-      <p
-        onClick={() => setInputFromMenu('Prodotti di elettronica')}
-        className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
-      >
-        Prodotti di elettronica
-      </p>
-      <p
-        onClick={() => setInputFromMenu('Bomboniere artigianali')}
-        className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
-      >
-        Bomboniere artigianali
-      </p>
+    <div className='flex w-full text-slate-900 gap-8 font-bold text-sm text-center items-center '>
+      <div className='flex w-full items-center justify-start gap-8'>
+        {categories?.map((category: string) => (
+          <p
+            key={category}
+            onClick={() => setInputFromMenu(`${category}`)}
+            className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
+          >
+            {category}
+          </p>
+        ))}
+      </div>
 
       <Menu as='div' className='flex relative isolate z-0'>
         <Menu.Button className='inline-flex w-full justify-center items-center gap-2 rounded-md text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
@@ -78,14 +55,6 @@ const SubHeader = () => {
           leaveTo='opacity-0 -translate-y-1'
         >
           <Menu.Items className='absolute -right-4 top-10 flex gap-10 h-12 px-4 w-screen bg-[#F9F9F9] shadow-lg focus:outline-none items-center'>
-            <Menu.Item>
-              <p
-                onClick={() => setInputFromMenu('Articoli da personalizzare')}
-                className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
-              >
-                Articoli da personalizzare
-              </p>
-            </Menu.Item>
             <Menu.Item>
               <p
                 onClick={() =>
@@ -183,11 +152,30 @@ const Cart = () => {
 };
 
 function Header() {
+  const [categories, setCategories] = useState<any>();
+
+  useEffect(() => {
+    async function fetchData() {
+      const prodottiData = await getProducts();
+
+      const categoriesArray: any[] = [];
+
+      for (const product of prodottiData) {
+        if (!categoriesArray.includes(product.categoria)) {
+          categoriesArray.push(product.categoria);
+        }
+      }
+
+      setCategories(categoriesArray);
+    }
+
+    fetchData();
+  }, []);
   return (
     <header className='z-50 fixed w-full'>
       <div className='grid grid-rows-2 grid-flow-col gap-2 items-center p-4 lg:pt-6 bg-[#F9F9F9] shadow-lg z-50'>
         <div className='flex rows-span-1 justify-between'>
-          <Sidebar />
+          <Sidebar categories={categories} />
           <div className='hidden w-80 lg:flex'>
             <SearchBar />
           </div>
@@ -201,7 +189,7 @@ function Header() {
           <SearchBar />
         </div>
         <div className='hidden lg:flex h-12 items-center w-full'>
-          <SubHeader />
+          <SubHeader categories={categories} />
         </div>
       </div>
     </header>
