@@ -18,12 +18,4 @@ export interface Prodotto {
 type Menu = {
   page: string | null;
   text: string;
-  color: string;
-  icon: any;
-  subMenu: { page: string; text: string }[] | null;
 };
-
-interface SubMenuItem {
-  page: string;
-  text: string;
-}
