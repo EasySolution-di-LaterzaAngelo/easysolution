@@ -59,6 +59,7 @@ function Sidebar({ categories }: { categories: any }) {
     const setInputFromMenu = (input: string) => {
       const trimmedValue = input.replace(/\s+/g, ' ').trim();
       dispatch(update(trimmedValue));
+      router.push('/');
     };
     return (
       <>

@@ -22,7 +22,6 @@ interface GoogleData {
 
 export default function Footer({ googleData }: { googleData: GoogleData }) {
   const pathname = usePathname();
-  console.log(googleData);
   return (
     <div className='relative w-screen'>
       <div
@@ -116,7 +115,7 @@ export default function Footer({ googleData }: { googleData: GoogleData }) {
                 </p>
               </a>
               {/* <a
-                href='https://www.instagram.com/multistoretaranto'
+                href='https://www.instagram.com/easy_solution_taranto'
                 className={`flex items-center gap-2 hover:underline hover:text-[#F6753D] cursor-pointer`}
               >
                 <Image

@@ -2,10 +2,11 @@
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { update } from '@/slices/searchSlice';
 import {
+  HomeIcon,
   MagnifyingGlassIcon,
   ShoppingCartIcon,
 } from '@heroicons/react/24/outline';
@@ -18,10 +19,12 @@ import { getProducts } from '@/pages/api/auth/getProducts';
 
 const SubHeader = ({ categories }: { categories: any }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const setInputFromMenu = (input: string) => {
     const trimmedValue = input.replace(/\s+/g, ' ').trim();
     dispatch(update(trimmedValue));
+    router.push('/');
   };
 
   return (
@@ -152,6 +155,7 @@ const Cart = () => {
 };
 
 function Header() {
+  const pathname = usePathname();
   const [categories, setCategories] = useState<any>();
 
   useEffect(() => {
@@ -180,7 +184,17 @@ function Header() {
             <SearchBar />
           </div>
           <EasySolutionLogo />
-          <div className='z-20 flex gap-4'>
+          <div className='z-20 flex gap-4 items-center'>
+            <Link
+              href={'/'}
+              className={` ${
+                pathname === '/'
+                  ? 'hidden'
+                  : 'relative flex h-10 w-10 justify-center items-center md:gap-[2px] md:top-0 md:left-0 cursor-pointer hover:bg-slate-200 hover:rounded-full'
+              } ${styles.home}`}
+            >
+              <HomeIcon height={24} />
+            </Link>
             <User />
             {/* <Cart /> */}
           </div>
