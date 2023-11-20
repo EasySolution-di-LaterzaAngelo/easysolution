@@ -12,19 +12,4 @@ export const orderedCategories = [
   'Admin',
 ];
 
-export const optionalInputs = [
-  'Processore',
-  'Display',
-  'Fotocamera',
-  'Webcam',
-  'Sistema Operativo',
-  'RAM',
-  'ROM',
-  'Batteria',
-  'Memoria',
-  'Scheda Video',
-  'Colore',
-  'Peso',
-  'Dimensioni',
-  'Giri',
-];
+export const optionalInputs = ['Colore', 'Peso', 'Dimensioni'];

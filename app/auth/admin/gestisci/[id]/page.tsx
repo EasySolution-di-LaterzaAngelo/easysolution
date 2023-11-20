@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import { Prodotto } from '@/types';
-import { getProduct } from '@/pages/api/auth/getProducts';
+import { getProduct, getProducts } from '@/pages/api/auth/getProducts';
 import styles from './Prodotto.module.css';
 import Link from 'next/link';
 import db, { storage } from '@/firebase';
@@ -204,6 +204,8 @@ function Product({ params }: any) {
 
   const [images, setImages] = useState<any>([]);
   const [imagesUrls, setImagesUrls] = useState<string[]>([]);
+  const [categories, setCategories] = useState<any>();
+
   const [isDualSim, setIsDualSim] = useState(
     prodotto?.dual_sim ? prodotto?.dual_sim : false
   );
@@ -248,6 +250,22 @@ function Product({ params }: any) {
       prodottiData ? setIsDualSim(prodottiData.dual_sim) : null;
     }
     fetchData(params);
+
+    async function fetchDataForCategories() {
+      const prodottiData = await getProducts();
+
+      const categoriesArray: any[] = [];
+
+      for (const product of prodottiData) {
+        if (!categoriesArray.includes(product.categoria)) {
+          categoriesArray.push(product.categoria);
+        }
+      }
+
+      setCategories(categoriesArray);
+    }
+
+    fetchDataForCategories();
   }, []);
 
   useEffect(() => {
@@ -371,6 +389,38 @@ function Product({ params }: any) {
         [e.target.name.charAt(0).toLowerCase() + e.target.name.slice(1)]:
           e.target.value.replace(/\n/g, ''),
         ['sconto']: '',
+      }));
+    } else if (e.target.id === 'InputCategoria') {
+      const selectDropdown = document.getElementById('grouped-native-select');
+
+      if (selectDropdown && selectDropdown instanceof HTMLSelectElement) {
+        // Set the first option to 'None' or an empty value
+        selectDropdown.selectedIndex = 0; // This assumes the 'None' option is the first one
+
+        // If you want to set a specific value as 'None', you can do:
+        // selectDropdown.value = ''; // or any other specific value
+
+        // Optionally, trigger a change event if needed
+        const event = new Event('change');
+        selectDropdown.dispatchEvent(event);
+      }
+
+      setProdotto((prevState: any) => ({
+        ...prevState,
+        [e.target.name.charAt(0).toLowerCase() + e.target.name.slice(1)]:
+          e.target.value.replace(/\n/g, ''),
+      }));
+    } else if (e.target.id === 'grouped-native-select') {
+      const inputCategoria = document.getElementById(
+        'InputCategoria'
+      ) as HTMLInputElement | null;
+      if (inputCategoria) {
+        inputCategoria.value = ''; // Clears the input field
+      }
+      setProdotto((prevState: any) => ({
+        ...prevState,
+        [e.target.name.charAt(0).toLowerCase() + e.target.name.slice(1)]:
+          e.target.value.replace(/\n/g, ''),
       }));
     } else if (e.target.type !== 'file') {
       setProdotto((prevState: any) => ({
@@ -552,7 +602,10 @@ function Product({ params }: any) {
             handleChange={handleChange}
           />
 
-          <div className='relative flex flex-row w-full items-center justify-center py-4'>
+          <div
+            aria-required
+            className='relative flex flex-col w-full items-center justify-center py-4'
+          >
             <label
               htmlFor='Categoria'
               className='absolute z-50 top-2 inline-block bg-white px-1 text-xs font-medium text-gray-900'
@@ -560,7 +613,6 @@ function Product({ params }: any) {
               Categoria
             </label>
             <select
-              required
               value={prodotto?.categoria}
               id='grouped-native-select'
               name='Categoria'
@@ -569,25 +621,20 @@ function Product({ params }: any) {
               className='relative block w-[70%] rounded-md border-0 bg-transparent py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
             >
               <option aria-label='None' value='' />
-              <option value={'Cartoleria'}>Cartoleria</option>
-              <option value={'Idee Regalo'}>Idee Regalo</option>
-              <option value={'Articoli per feste'}>Articoli per feste</option>
-              <option value={'Incisioni su accaio e legno'}>
-                Incisioni su accaio e legno
-              </option>
-              <option value={'Prodotti di elettronica'}>
-                Prodotti di elettronica
-              </option>
-              <option value={'Bomboniere artigianali'}>
-                Bomboniere artigianali
-              </option>
-              <option value={'Articoli da personalizzare'}>
-                Articoli da personalizzare
-              </option>
-              <option value={'Riparazioni smartphone / PC / Bimby / Folletto'}>
-                Riparazioni smartphone / PC / Bimby / Folletto
-              </option>
+              {categories?.map((category: any) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
             </select>
+            <input
+              type='text'
+              id='InputCategoria'
+              name='Categoria'
+              placeholder='Inserisci una nuova categoria'
+              onChange={handleChange}
+              className='mt-2 p-2 rounded-md border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-[70%] sm:text-sm'
+            />
           </div>
 
           <div className='md:hidden'>
@@ -1034,7 +1081,7 @@ function Product({ params }: any) {
             className={` flex w-min mx-auto items-center shadow-2xl ring-2 rounded-md p-4 ${
               severity === 'success'
                 ? ' bg-green-50 ring-green-300'
-                : severity === 'waring'
+                : severity === 'warning'
                 ? 'bg-yellow-50 ring-yellow-300'
                 : 'bg-red-50 ring-red-300'
             }`}
@@ -1046,7 +1093,7 @@ function Product({ params }: any) {
                     className='h-5 w-5 text-green-400'
                     aria-hidden='true'
                   />
-                ) : severity === 'waring' ? (
+                ) : severity === 'warning' ? (
                   <ExclamationCircleIcon
                     className='h-5 w-5 text-yellow-400'
                     aria-hidden='true'
@@ -1063,7 +1110,7 @@ function Product({ params }: any) {
                   <p className='text-sm font-medium text-green-800'>
                     Prodotto modificato
                   </p>
-                ) : severity === 'waring' ? (
+                ) : severity === 'warning' ? (
                   <p className='text-sm font-medium text-yellow-800'>
                     Nessuna modifica
                   </p>

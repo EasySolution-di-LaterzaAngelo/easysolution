@@ -18,13 +18,23 @@ import { auth } from '@/firebase';
 
 function Gestisci() {
   const [prodotti, setProdotti] = useState<Prodotto[]>();
-
+  const [categories, setCategories] = useState<any>();
   const [loggedUser, setLoggedUser] = useState<User>();
 
   useEffect(() => {
     async function fetchData() {
       const prodottiData = await getProducts();
       setProdotti(prodottiData);
+
+      const categoriesArray: any[] = [];
+
+      for (const product of prodottiData) {
+        if (!categoriesArray.includes(product.categoria)) {
+          categoriesArray.push(product.categoria);
+        }
+      }
+
+      setCategories(categoriesArray);
     }
 
     onAuthStateChanged(auth, (user) => {
@@ -114,24 +124,11 @@ function Gestisci() {
             className='relative block w-full rounded-md border-0 bg-transparent py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
           >
             <option aria-label='None' value='' />
-            <option value={'Cartoleria'}>Cartoleria</option>
-            <option value={'Idee Regalo'}>Idee Regalo</option>
-            <option value={'Articoli per feste'}>Articoli per feste</option>
-            <option value={'Incisioni su accaio e legno'}>
-              Incisioni su accaio e legno
-            </option>
-            <option value={'Prodotti di elettronica'}>
-              Prodotti di elettronica
-            </option>
-            <option value={'Bomboniere artigianali'}>
-              Bomboniere artigianali
-            </option>
-            <option value={'Articoli da personalizzare'}>
-              Articoli da personalizzare
-            </option>
-            <option value={'Riparazioni smartphone / PC / Bimby / Folletto'}>
-              Riparazioni smartphone / PC / Bimby / Folletto
-            </option>
+            {categories?.map((category: any) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
           </select>
         </div>
       </form>

@@ -44,7 +44,7 @@ export const TopNavMenu = ({ setIsMenuOpen }: { setIsMenuOpen: any }) => {
   );
 };
 
-function Menu() {
+function Sidebar({ categories }: { categories: any }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -59,6 +59,7 @@ function Menu() {
     const setInputFromMenu = (input: string) => {
       const trimmedValue = input.replace(/\s+/g, ' ').trim();
       dispatch(update(trimmedValue));
+      router.push('/');
     };
     return (
       <>
@@ -77,146 +78,30 @@ function Menu() {
                 {/* List for the Sub Menu */}
                 <h1 className='text-xl font-semibold'>I nostri servizi</h1>
                 <ul className='divide-y flex flex-col'>
-                  <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setInputFromMenu('Cartoleria');
-                    }}
-                  >
-                    <Link
-                      title={`Test`}
-                      passHref
-                      href={`/`}
-                      className='flex justify-between items-center'
+                  {categories?.map((category: string) => (
+                    <li
+                      key={category}
+                      className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setInputFromMenu(`${category}`);
+                      }}
                     >
-                      Cartoleria
-                      <ChevronRightIcon
-                        height={24}
-                        className='stroke-blue-500 justify-item-end'
-                      />
-                    </Link>
-                  </li>
-                  <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setInputFromMenu('Idea Regalo');
-                    }}
-                  >
-                    <Link
-                      title={`Test`}
-                      passHref
-                      href={`/`}
-                      className='flex justify-between items-center'
-                    >
-                      Idea Regalo
-                      <ChevronRightIcon
-                        height={24}
-                        className='stroke-blue-500 justify-item-end'
-                      />
-                    </Link>
-                  </li>
-                  <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setInputFromMenu('Articoli per feste');
-                    }}
-                  >
-                    <Link
-                      title={`Test`}
-                      passHref
-                      href={`/`}
-                      className='flex justify-between items-center'
-                    >
-                      Articoli per feste
-                      <ChevronRightIcon
-                        height={24}
-                        className='stroke-blue-500 justify-item-end'
-                      />
-                    </Link>
-                  </li>
-                  <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setInputFromMenu('Incisioni su accaio e legno');
-                    }}
-                  >
-                    <Link
-                      title={`Test`}
-                      passHref
-                      href={`/`}
-                      className='flex justify-between items-center'
-                    >
-                      Incisioni su accaio e legno
-                      <ChevronRightIcon
-                        height={24}
-                        className='stroke-blue-500 justify-item-end'
-                      />
-                    </Link>
-                  </li>
-                  <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setInputFromMenu('Prodotti di elettronica');
-                    }}
-                  >
-                    <Link
-                      title={`Test`}
-                      passHref
-                      href={`/`}
-                      className='flex justify-between items-center'
-                    >
-                      Prodotti di elettronica
-                      <ChevronRightIcon
-                        height={24}
-                        className='stroke-blue-500 justify-item-end'
-                      />
-                    </Link>
-                  </li>
-                  <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setInputFromMenu('Bomboniere artigianali');
-                    }}
-                  >
-                    <Link
-                      title={`Test`}
-                      passHref
-                      href={`/`}
-                      className='flex justify-between items-center'
-                    >
-                      Bomboniere artigianali
-                      <ChevronRightIcon
-                        height={24}
-                        className='stroke-blue-500 justify-item-end'
-                      />
-                    </Link>
-                  </li>
-                  <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setInputFromMenu('Articolari da personalizzare');
-                    }}
-                  >
-                    <Link
-                      title={`Test`}
-                      passHref
-                      href={`/`}
-                      className='flex justify-between items-center'
-                    >
-                      Articolari da personalizzare
-                      <ChevronRightIcon
-                        height={24}
-                        className='stroke-blue-500 justify-item-end'
-                      />
-                    </Link>
-                  </li>
+                      <Link
+                        title={category}
+                        passHref
+                        href={`/`}
+                        className='flex justify-between items-center'
+                      >
+                        {category}
+                        <ChevronRightIcon
+                          height={24}
+                          className='stroke-blue-500 justify-item-end'
+                        />
+                      </Link>
+                    </li>
+                  ))}
+
                   <li
                     className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
                     onClick={() => {
@@ -271,4 +156,4 @@ function Menu() {
   );
 }
 
-export default Menu;
+export default Sidebar;

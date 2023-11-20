@@ -19,6 +19,7 @@ import {
   PaperAirplaneIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+import { getProducts } from '@/pages/api/auth/getProducts';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -226,11 +227,32 @@ function AddProduct() {
   const [isDualSim, setIsDualSim] = useState(false);
   const [is5G, setIs5G] = useState(false);
   const [isNFC, setIsNFC] = useState(false);
+  const [prodotti, setProdotti] = useState<Prodotto[]>();
+  const [categories, setCategories] = useState<any>();
 
   let inputRefImage = useRef<HTMLInputElement | null>(null);
 
   let categoria = inputs?.categoria;
   let immagini = inputs?.immagini;
+
+  useEffect(() => {
+    async function fetchData() {
+      const prodottiData = await getProducts();
+      setProdotti(prodottiData);
+
+      const categoriesArray: any[] = [];
+
+      for (const product of prodottiData) {
+        if (!categoriesArray.includes(product.categoria)) {
+          categoriesArray.push(product.categoria);
+        }
+      }
+
+      setCategories(categoriesArray);
+    }
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     let input = document.querySelector(
@@ -370,6 +392,38 @@ function AddProduct() {
           e.target.value.replace(/\n/g, ''),
         ['sconto']: '',
       }));
+    } else if (e.target.id === 'InputCategoria') {
+      const selectDropdown = document.getElementById('grouped-native-select');
+
+      if (selectDropdown && selectDropdown instanceof HTMLSelectElement) {
+        // Set the first option to 'None' or an empty value
+        selectDropdown.selectedIndex = 0; // This assumes the 'None' option is the first one
+
+        // If you want to set a specific value as 'None', you can do:
+        // selectDropdown.value = ''; // or any other specific value
+
+        // Optionally, trigger a change event if needed
+        const event = new Event('change');
+        selectDropdown.dispatchEvent(event);
+      }
+
+      setInputs((prevState: any) => ({
+        ...prevState,
+        [e.target.name.charAt(0).toLowerCase() + e.target.name.slice(1)]:
+          e.target.value.replace(/\n/g, ''),
+      }));
+    } else if (e.target.id === 'grouped-native-select') {
+      const inputCategoria = document.getElementById(
+        'InputCategoria'
+      ) as HTMLInputElement | null;
+      if (inputCategoria) {
+        inputCategoria.value = ''; // Clears the input field
+      }
+      setInputs((prevState: any) => ({
+        ...prevState,
+        [e.target.name.charAt(0).toLowerCase() + e.target.name.slice(1)]:
+          e.target.value.replace(/\n/g, ''),
+      }));
     } else {
       e.target.type !== 'file' &&
         setInputs((prevState: any) => ({
@@ -480,6 +534,7 @@ function AddProduct() {
       <CameraIcon height={22} className='stroke-black stroke-2' />
     </label>
   );
+
   return (
     <div className='relative w-full flex flex-col px-6'>
       {/* Form */}
@@ -551,7 +606,10 @@ function AddProduct() {
           />
 
           {/* Category field */}
-          <div className='relative flex flex-row  items-center justify-center py-4'>
+          <div
+            aria-required
+            className='relative flex flex-col  items-center justify-center py-4'
+          >
             <label
               htmlFor='Categoria'
               className='absolute z-50 top-2 inline-block bg-white px-1 text-xs font-medium text-gray-900'
@@ -559,7 +617,6 @@ function AddProduct() {
               Categoria
             </label>
             <select
-              required
               defaultValue=''
               id='grouped-native-select'
               name='Categoria'
@@ -568,25 +625,20 @@ function AddProduct() {
               className='relative block w-[70%] rounded-md border-0 bg-transparent py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
             >
               <option aria-label='None' value='' />
-              <option value={'Cartoleria'}>Cartoleria</option>
-              <option value={'Idee Regalo'}>Idee Regalo</option>
-              <option value={'Articoli per feste'}>Articoli per feste</option>
-              <option value={'Incisioni su accaio e legno'}>
-                Incisioni su accaio e legno
-              </option>
-              <option value={'Prodotti di elettronica'}>
-                Prodotti di elettronica
-              </option>
-              <option value={'Bomboniere artigianali'}>
-                Bomboniere artigianali
-              </option>
-              <option value={'Articoli da personalizzare'}>
-                Articoli da personalizzare
-              </option>
-              <option value={'Riparazioni smartphone / PC / Bimby / Folletto'}>
-                Riparazioni smartphone / PC / Bimby / Folletto
-              </option>
+              {categories?.map((category: any) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
             </select>
+            <input
+              type='text'
+              id='InputCategoria'
+              name='Categoria'
+              placeholder='Inserisci una nuova categoria'
+              onChange={handleChange}
+              className='mt-2 p-2 rounded-md border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-[70%] sm:text-sm'
+            />
           </div>
 
           {/* Checkboxes */}
