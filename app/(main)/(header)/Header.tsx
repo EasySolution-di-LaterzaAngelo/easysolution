@@ -93,17 +93,15 @@ const EasySolutionLogo = () => {
 
 const EasySolutionVideo = () => {
   return (
-    <div className='fixed justify-center items-center w-208 shrink-0 top-2 left-1/2 -translate-x-[104px]'>
-      {/* Traslare immagine su asse x della meta' della lunghezza della immagine*/}
+    <div className='fixed justify-center items-center w-[240px] h-[120px] shrink-0 top-2 left-1/2 -translate-x-[124px]'>
       <Link title='Home' passHref href='/'>
-        <video
-          src='/easysolutionvideo.mp4'
-          width={208}
-          height={100}
-          className='max-h-[104px] object-contain cursor-pointer'
-          autoPlay
-          loop
-          muted
+        <div
+          dangerouslySetInnerHTML={{
+            __html: `<video className="app__backgroundVideo" height="300" width="240" poster="/poster.png" autoplay loop muted playsinline>
+                      <source src="/easysolutionvideo.mp4" type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>`,
+          }}
         />
       </Link>
     </div>
@@ -192,7 +190,7 @@ function Header() {
   }, []);
   return (
     <header className='z-50 fixed w-full'>
-      <div className='grid grid-rows-3 grid-flow-col gap-4 lg:gap-0 items-center p-4 lg:pt-6 bg-[#F9F9F9] shadow-lg z-50'>
+      <div className='grid grid-rows-3 grid-flow-col gap-5 lg:gap-0 items-center p-4 lg:pt-6 bg-[#F9F9F9] shadow-lg z-50'>
         <div className='flex h-24 row-span-2 justify-between'>
           <Sidebar categories={categories} />
           <div className='hidden w-80 lg:flex'>
