@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
-import { update } from '@/slices/searchSlice';
+import { update, clear } from '@/slices/searchSlice';
 import {
   HomeIcon,
   MagnifyingGlassIcon,
@@ -57,7 +57,7 @@ const SubHeader = ({ categories }: { categories: any }) => {
           leaveFrom='opacity-100 translate-y-0'
           leaveTo='opacity-0 -translate-y-1'
         >
-          <Menu.Items className='absolute -right-4 top-10 flex gap-10 h-12 px-4 w-screen bg-[#F9F9F9] shadow-lg focus:outline-none items-center'>
+          <Menu.Items className='absolute -right-4 top-8 flex gap-10 h-12 px-4 w-screen bg-[#F9F9F9] shadow-lg focus:outline-none items-center'>
             <Menu.Item>
               <p
                 onClick={() => ''}
@@ -85,6 +85,25 @@ const EasySolutionLogo = () => {
           height={100}
           className='w-[180px] lg:w-[260px] object-contain cursor-pointer'
           unoptimized={true}
+        />
+      </Link>
+    </div>
+  );
+};
+
+const EasySolutionVideo = () => {
+  return (
+    <div className='fixed justify-center items-center w-208 shrink-0 top-2 left-1/2 -translate-x-[104px]'>
+      {/* Traslare immagine su asse x della meta' della lunghezza della immagine*/}
+      <Link title='Home' passHref href='/'>
+        <video
+          src='/easysolutionvideo.mp4'
+          width={208}
+          height={100}
+          className='max-h-[104px] object-contain cursor-pointer'
+          autoPlay
+          loop
+          muted
         />
       </Link>
     </div>
@@ -173,32 +192,33 @@ function Header() {
   }, []);
   return (
     <header className='z-50 fixed w-full'>
-      <div className='grid grid-rows-2 grid-flow-col gap-2 items-center p-4 lg:pt-6 bg-[#F9F9F9] shadow-lg z-50'>
-        <div className='flex rows-span-1 justify-between'>
+      <div className='grid grid-rows-3 grid-flow-col gap-4 lg:gap-0 items-center p-4 lg:pt-6 bg-[#F9F9F9] shadow-lg z-50'>
+        <div className='flex h-24 row-span-2 justify-between'>
           <Sidebar categories={categories} />
           <div className='hidden w-80 lg:flex'>
             <SearchBar />
           </div>
-          <EasySolutionLogo />
-          <div className='z-20 flex gap-4 items-center'>
+          {/* <EasySolutionLogo /> */}
+          <EasySolutionVideo />
+          <div className='z-20 flex flex-col lg:flex-row gap-4 items-center lg:items-start'>
+            <User />
             <Link
               href={'/'}
               className={` ${
                 pathname === '/'
                   ? 'hidden'
-                  : 'relative flex h-10 w-10 justify-center items-center md:gap-[2px] md:top-0 md:left-0 cursor-pointer hover:bg-slate-200 hover:rounded-full'
+                  : 'relative flex h-10 w-10 justify-center items-center md:gap-[2px] md:top-0 md:left-0 cursor-pointer hover:bg-slate-200 hover:rounded-full lg:order-first'
               } ${styles.home}`}
             >
               <HomeIcon height={24} />
             </Link>
-            <User />
             {/* <Cart /> */}
           </div>
         </div>
         <div className='flex row-span-1 lg:hidden'>
           <SearchBar />
         </div>
-        <div className='hidden lg:flex h-12 items-center w-full'>
+        <div className='hidden lg:flex items-end w-full'>
           <SubHeader categories={categories} />
         </div>
       </div>

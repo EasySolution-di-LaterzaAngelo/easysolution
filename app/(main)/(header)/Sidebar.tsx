@@ -136,7 +136,7 @@ function Sidebar({ categories }: { categories: any }) {
   return (
     <div className='flex lg:hidden'>
       <button
-        className={`flex items-center ${styles.hamburger}`}
+        className={`flex items-center justify-center ${styles.hamburger} h-10 w-10 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-slate-200 hover:rounded-full`}
         onClick={() => setIsMenuOpen(true)}
       >
         <Bars3Icon height={24} className='stroke-black' />

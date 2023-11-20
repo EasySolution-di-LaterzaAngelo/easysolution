@@ -52,7 +52,7 @@ function Producs() {
           {products ? (
             <>
               {inputValue === '' && (
-                <h1 className='mt-[170px] lg:mt-[200px] text-center text-3xl font-bold text-slate-700'>
+                <h1 className='mt-[220px] lg:mt-[240px] text-center text-3xl font-bold text-slate-700'>
                   Le nostre Offerte
                 </h1>
               )}
