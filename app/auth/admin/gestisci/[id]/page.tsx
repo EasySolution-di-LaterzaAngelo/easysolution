@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Switch } from '@headlessui/react';
 import { optionalInputs } from '../../../../../global_data';
-import { ref, uploadBytes } from 'firebase/storage';
+import { deleteObject, ref, uploadBytes } from 'firebase/storage';
 import {
   ArrowSmallLeftIcon,
   CheckCircleIcon,
@@ -463,6 +463,11 @@ function Product({ params }: any) {
     setSeverity('delete');
     setOpen(true);
     e.preventDefault();
+    prodotto?.immagini.map(async (imageData: any, index: number) => {
+      const immagine = prodotto?.immagini[index]; // Get the corresponding immagine at the same index
+      const imgref = ref(storage, `immagini/${immagine}`);
+      await deleteObject(imgref);
+    });
     await deleteDoc(doc(db, 'prodotti', `${params.id}`));
     setTimeout(() => {
       router.push('/auth/admin/gestisci');
