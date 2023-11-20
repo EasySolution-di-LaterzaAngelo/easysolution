@@ -60,11 +60,7 @@ const SubHeader = ({ categories }: { categories: any }) => {
           <Menu.Items className='absolute -right-4 top-10 flex gap-10 h-12 px-4 w-screen bg-[#F9F9F9] shadow-lg focus:outline-none items-center'>
             <Menu.Item>
               <p
-                onClick={() =>
-                  setInputFromMenu(
-                    'Riparazioni smartphone / PC / Bimby / Folletto'
-                  )
-                }
+                onClick={() => ''}
                 className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
               >
                 Riparazioni smartphone / PC / Bimby / Folletto
