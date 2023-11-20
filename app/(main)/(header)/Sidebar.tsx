@@ -28,22 +28,6 @@ export const EasySolutionLogo = ({ setIsMenuOpen }: { setIsMenuOpen: any }) => {
   );
 };
 
-export const TopNavMenu = ({ setIsMenuOpen }: { setIsMenuOpen: any }) => {
-  return (
-    <div className='h-24 mx-3'>
-      <div className='flex justify-center content-start mt-2'>
-        <EasySolutionLogo setIsMenuOpen={setIsMenuOpen} />
-      </div>
-      <button
-        onClick={setIsMenuOpen}
-        className={`absolute right-6 top-7 ${styles.hamburger}`}
-      >
-        <XMarkIcon height={24} className='stroke-black' />
-      </button>
-    </div>
-  );
-};
-
 function Sidebar({ categories }: { categories: any }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
@@ -66,14 +50,12 @@ function Sidebar({ categories }: { categories: any }) {
         {isMenuOpen && (
           <div
             key={'menu'}
-            className='top-0 right-0 fixed h-screen w-full bg-[#F9F9F9] z-50'
+            className='top-[135px] right-0 fixed h-[calc(100vh-128px)] w-full bg-[#F9F9F9] z-50'
           >
-            <nav className='m-3 text-black'>
-              <TopNavMenu setIsMenuOpen={() => setIsMenuOpen(false)} />
-
+            <nav className='text-black'>
               <div
                 key={`submenu`}
-                className={`absolute top-24 left-0 right-0 bottom-0 overflow-auto overscroll-contain p-6 text-left bg-white z-50 rounded-t-xl rounded-b-md cursor-default shadow-[0_4px_24px_15px_rgba(32,33,36,.05)]`}
+                className={`absolute top-0 left-0 right-0 bottom-0 overflow-auto overscroll-contain p-6 text-left bg-white z-50 rounded-t-xl rounded-b-md cursor-default shadow-[0_4px_24px_15px_rgba(32,33,36,.05)]`}
               >
                 {/* List for the Sub Menu */}
                 <h1 className='text-xl font-semibold'>I nostri servizi</h1>
@@ -135,12 +117,22 @@ function Sidebar({ categories }: { categories: any }) {
 
   return (
     <div className='flex lg:hidden'>
-      <button
-        className={`flex items-center ${styles.hamburger}`}
-        onClick={() => setIsMenuOpen(true)}
-      >
-        <Bars3Icon height={24} className='stroke-black' />
-      </button>
+      {!isMenuOpen ? (
+        <button
+          className={`flex items-center justify-center ${styles.hamburger} h-10 w-10 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-slate-200 hover:rounded-full`}
+          onClick={() => setIsMenuOpen(true)}
+        >
+          <Bars3Icon height={24} className='stroke-black' />
+        </button>
+      ) : (
+        <button
+          className={`flex items-center justify-center ${styles.hamburger} h-10 w-10 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-slate-200 hover:rounded-full`}
+          onClick={() => setIsMenuOpen(false)}
+        >
+          <XMarkIcon height={24} className='stroke-black' />
+        </button>
+      )}
+
       <Transition
         show={isMenuOpen}
         enter='transition-opacity duration-[200ms]'

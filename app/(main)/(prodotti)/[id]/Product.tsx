@@ -59,7 +59,7 @@ function Product({ product }: any) {
     }
   }, []);
   return product ? (
-    <div className='bg-white flex mb-10 mt-36 md:mt-32 z-0 mx-auto'>
+    <div className='bg-white flex mb-10 mt-52 md:mt-36 z-0 mx-auto'>
       <div className='w-screen max-w-7xl'>
         <div className='grid grid-cols-1 md:grid-cols-2 min-w-[80%] justify-center md:justify-end md:mt-20'>
           {/* Image */}
