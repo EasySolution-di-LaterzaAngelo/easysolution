@@ -93,7 +93,7 @@ const EasySolutionLogo = () => {
 
 const EasySolutionVideo = () => {
   return (
-    <div className='fixed justify-center items-center w-[240px] h-[120px] shrink-0 top-2 left-1/2 -translate-x-[124px]'>
+    <div className='fixed justify-center items-center w-[240px] h-[120px] shrink-0 top-2 left-1/2 -translate-x-[120px]'>
       <Link title='Home' passHref href='/'>
         <div
           dangerouslySetInnerHTML={{
