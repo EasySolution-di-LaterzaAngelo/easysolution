@@ -14,12 +14,12 @@ export default async function RootLayout({
   const data: object = await getGoogleData();
 
   return (
-    <html lang='en'>
-      <Head>
+    <html lang='it'>
+      <head>
         <title>Easy Solution</title>
         <meta name='description' content='e-commerce' />
         <link rel='icon' href='/favicon.ico' />
-      </Head>
+      </head>
       <body className={`flex flex-col ${styles.main}`}>
         <ProvidersWrapper>
           <Header />
