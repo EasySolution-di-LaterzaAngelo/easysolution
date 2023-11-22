@@ -203,6 +203,7 @@ function Product({ params }: any) {
   const [initialProdotto, setInitialProdotto] = useState<Product>();
   const [prodotto, setProdotto] = useState<Prodotto>();
 
+  const [originalImages, setOriginalImages] = useState<any>([]);
   const [images, setImages] = useState<any>([]);
   const [imagesUrls, setImagesUrls] = useState<string[]>([]);
   const [categories, setCategories] = useState<any>();
@@ -243,6 +244,7 @@ function Product({ params }: any) {
       prodottiData ? setImagesUrls(prodottiData.immaginiUrl) : null;
       delete prodottiData.immaginiUrl;
       prodottiData ? setProdotto(prodottiData) : null;
+      prodottiData ? setOriginalImages(prodottiData.immagini) : null;
       prodottiData ? setInitialProdotto(prodottiData) : null;
       prodottiData ? setIsSecondHand(prodottiData.secondHand) : null;
       prodottiData ? setIsRefurbished(prodottiData.ricondizionato) : null;
@@ -490,6 +492,11 @@ function Product({ params }: any) {
           const immagine = prodotto.immagini[index]; // Get the corresponding immagine at the same index
           const imgref = ref(storage, `immagini/${immagine}`);
           await uploadBytes(imgref, compressedImage);
+        });
+
+        originalImages.map(async (image: any, index: number) => {
+          const imgref = ref(storage, `immagini/${image}`);
+          await deleteObject(imgref);
         });
 
         let adjustedInputs: any = Object.fromEntries(
