@@ -18,6 +18,7 @@ import {
   PaperAirplaneIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+import imageCompression from 'browser-image-compression';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -202,6 +203,7 @@ function Product({ params }: any) {
   const [initialProdotto, setInitialProdotto] = useState<Product>();
   const [prodotto, setProdotto] = useState<Prodotto>();
 
+  const [originalImages, setOriginalImages] = useState<any>([]);
   const [images, setImages] = useState<any>([]);
   const [imagesUrls, setImagesUrls] = useState<string[]>([]);
   const [categories, setCategories] = useState<any>();
@@ -242,6 +244,7 @@ function Product({ params }: any) {
       prodottiData ? setImagesUrls(prodottiData.immaginiUrl) : null;
       delete prodottiData.immaginiUrl;
       prodottiData ? setProdotto(prodottiData) : null;
+      prodottiData ? setOriginalImages(prodottiData.immagini) : null;
       prodottiData ? setInitialProdotto(prodottiData) : null;
       prodottiData ? setIsSecondHand(prodottiData.secondHand) : null;
       prodottiData ? setIsRefurbished(prodottiData.ricondizionato) : null;
@@ -485,9 +488,18 @@ function Product({ params }: any) {
       setOpen(true);
       if (prodotto) {
         images.map(async (imageData: any, index: number) => {
+          const compressedImage = await handleImageUpload(imageData);
           const immagine = prodotto.immagini[index]; // Get the corresponding immagine at the same index
           const imgref = ref(storage, `immagini/${immagine}`);
-          await uploadBytes(imgref, imageData);
+          await uploadBytes(imgref, compressedImage);
+        });
+
+        originalImages.map(async (image: any, index: number) => {
+          if (!prodotto.immagini.includes(image)) {
+            const imgref = ref(storage, `immagini/${image}`);
+            console.log(imgref);
+            await deleteObject(imgref);
+          }
         });
 
         let adjustedInputs: any = Object.fromEntries(
@@ -521,6 +533,32 @@ function Product({ params }: any) {
       setOpen(true);
     }
   };
+
+  async function handleImageUpload(image: any) {
+    const imageFile = image;
+    // console.log('originalFile instanceof Blob', imageFile instanceof Blob); // true
+    // console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
+
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+    try {
+      const compressedFile = await imageCompression(imageFile, options);
+      // console.log(
+      //   'compressedFile instanceof Blob',
+      //   compressedFile instanceof Blob
+      // ); // true
+      // console.log(
+      //   `compressedFile size ${compressedFile.size / 1024 / 1024} MB`
+      // ); // smaller than maxSizeMB
+      return compressedFile;
+    } catch (error) {
+      console.log(error);
+      return imageFile;
+    }
+  }
   return (
     <div className='relative m-auto flex flex-col'>
       <form onSubmit={handleEditProduct}>
