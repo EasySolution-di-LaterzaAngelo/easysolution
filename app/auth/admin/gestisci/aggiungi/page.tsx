@@ -20,6 +20,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { getProducts } from '@/pages/api/auth/getProducts';
+import imageCompression from 'browser-image-compression';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -314,6 +315,8 @@ function AddProduct() {
 
   // Inputs handler
   const handleChange = (e: any) => {
+    console.log(e);
+
     if (e.target.name === 'Prezzo' && inputs?.percentuale !== '') {
       setInputs((prevState: any) => ({
         ...prevState,
@@ -448,9 +451,10 @@ function AddProduct() {
     setSuccessOpen(true);
 
     images.map(async (imageData: any, index: number) => {
+      const compressedImage = await handleImageUpload(imageData);
       const immagine = inputs.immagini[index]; // Get the corresponding immagine at the same index
       const imgref = ref(storage, `immagini/${immagine}`);
-      await uploadBytes(imgref, imageData);
+      await uploadBytes(imgref, compressedImage);
     });
     let adjustedInputs =
       inputs &&
@@ -476,6 +480,32 @@ function AddProduct() {
     await setDoc(doc(db, 'prodotti', `${uuidv4()}`), adjustedInputs);
     router.push('/auth/admin/gestisci');
   };
+
+  async function handleImageUpload(image: any) {
+    const imageFile = image;
+    // console.log('originalFile instanceof Blob', imageFile instanceof Blob); // true
+    // console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
+
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+    try {
+      const compressedFile = await imageCompression(imageFile, options);
+      // console.log(
+      //   'compressedFile instanceof Blob',
+      //   compressedFile instanceof Blob
+      // ); // true
+      // console.log(
+      //   `compressedFile size ${compressedFile.size / 1024 / 1024} MB`
+      // ); // smaller than maxSizeMB
+      return compressedFile;
+    } catch (error) {
+      console.log(error);
+      return imageFile;
+    }
+  }
 
   const handleRemoveImage = (index: number) => {
     setInputs((prevState) => {
