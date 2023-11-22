@@ -495,8 +495,11 @@ function Product({ params }: any) {
         });
 
         originalImages.map(async (image: any, index: number) => {
-          const imgref = ref(storage, `immagini/${image}`);
-          await deleteObject(imgref);
+          if (!prodotto.immagini.includes(image)) {
+            const imgref = ref(storage, `immagini/${image}`);
+            console.log(imgref);
+            await deleteObject(imgref);
+          }
         });
 
         let adjustedInputs: any = Object.fromEntries(
