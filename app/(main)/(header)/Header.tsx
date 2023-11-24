@@ -3,8 +3,10 @@ import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { update, clear } from '@/slices/searchSlice';
+import { selectProductsValue, updateProducts } from '@/slices/setProductsSlice';
+
 import {
   HomeIcon,
   MagnifyingGlassIcon,
@@ -15,7 +17,7 @@ import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import Sidebar from './Sidebar';
 import User from './User';
-import { getProducts } from '@/pages/api/auth/getProducts';
+import { Prodotto } from '@/types';
 
 const SubHeader = ({ categories }: { categories: any }) => {
   const dispatch = useDispatch();
@@ -167,27 +169,25 @@ const Cart = () => {
   );
 };
 
-function Header() {
+function Header({ productsData }: { productsData: Prodotto[] }) {
   const pathname = usePathname();
   const [categories, setCategories] = useState<any>();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    async function fetchData() {
-      const prodottiData = await getProducts();
+    dispatch(updateProducts(productsData));
 
-      const categoriesArray: any[] = [];
+    const categoriesArray: any[] = [];
 
-      for (const product of prodottiData) {
-        if (!categoriesArray.includes(product.categoria)) {
-          categoriesArray.push(product.categoria);
-        }
+    for (const product of productsData) {
+      if (!categoriesArray.includes(product.categoria)) {
+        categoriesArray.push(product.categoria);
       }
-
-      setCategories(categoriesArray);
     }
 
-    fetchData();
-  }, []);
+    setCategories(categoriesArray);
+  }, [productsData]);
+
   return (
     <header className='z-50 fixed w-full'>
       <div className='grid grid-rows-3 grid-flow-col gap-5 lg:gap-0 items-center p-4 lg:pt-6 bg-[#F9F9F9] shadow-lg z-50'>

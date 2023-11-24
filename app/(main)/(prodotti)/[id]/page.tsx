@@ -1,27 +1,39 @@
+'use client';
 import MyLoading from '@/app/(main)/MyLoading';
-import { getProduct } from '@/pages/api/auth/getProducts';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Product from './Product';
 import { notFound } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { selectProductsValue } from '@/slices/setProductsSlice';
+import { Prodotto } from '@/types';
 
-async function ProductPage({ params }: any) {
-  const product = await getProduct(params.id);
+function ProductPage({ params }: any) {
+  const products = useSelector(selectProductsValue);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!product) {
-    notFound();
-  }
-
+  useEffect(() => {
+    if (products) {
+      const foundProduct = products.find(
+        (product: Prodotto) => product.id === params.id
+      ); // Assuming ID is present in params
+      if (foundProduct) {
+        setProduct(foundProduct);
+      } else {
+        notFound(); // Handle product not found scenario
+      }
+      setLoading(false);
+    }
+  }, [params.id, products]);
   return (
     <div className='flex flex-grow'>
-      {product ? (
-        <Product product={product} />
+      {loading ? (
+        <div className='bg-white flex justify-center items-center flex-grow z-0'>
+          <MyLoading />
+        </div>
       ) : (
-        <>
-          <div className='bg-white flex justify-center items-center flex-grow z-0'>
-            <MyLoading />
-          </div>
-        </>
+        <Product product={product} />
       )}
     </div>
   );

@@ -1,10 +1,4 @@
 'use client';
-import { auth } from '@/firebase';
-import {
-  getDiscountedProducts,
-  getFilterProducts,
-  getProducts,
-} from '@/pages/api/auth/getProducts';
 import { clear, selectSearchValue } from '@/slices/searchSlice';
 import { Prodotto } from '@/types';
 import { XMarkIcon } from '@heroicons/react/24/outline';
@@ -15,32 +9,12 @@ import Product from './Product';
 import Lottie from 'lottie-react';
 import Product404 from '../../../public/Product404.json';
 import MyLoading from '../MyLoading';
+import { selectProductsValue } from '@/slices/setProductsSlice';
 
-function Producs() {
+function Products() {
   const inputValue = useSelector(selectSearchValue);
   const dispatch = useDispatch();
-
-  const [products, setProducts] = useState<Prodotto[]>();
-
-  useEffect(() => {
-    async function fetchData() {
-      onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-          signInAnonymously(auth);
-        }
-        if (user) {
-          if (inputValue !== '') {
-            const productsFilterData = await getFilterProducts(inputValue);
-            setProducts(productsFilterData);
-          } else {
-            const productsData = await getDiscountedProducts();
-            setProducts(productsData);
-          }
-        }
-      });
-    }
-    fetchData();
-  }, [inputValue]);
+  const products = useSelector(selectProductsValue);
 
   return (
     <>
@@ -103,4 +77,4 @@ function Producs() {
   );
 }
 
-export default Producs;
+export default Products;

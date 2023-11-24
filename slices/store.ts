@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
+import setProductsReducer from './setProductsSlice';
 import searchReducer from './searchSlice';
 import googleReducer from './googleSlice';
 
 export const store = configureStore({
   reducer: {
+    setProducts: setProductsReducer,
     search: searchReducer,
     google: googleReducer,
   },
