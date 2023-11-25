@@ -4,11 +4,11 @@ import { Prodotto } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
 
-function Products({ products }: { products: Array<Prodotto> | undefined }) {
+function Product({ products }: { products: Array<Prodotto> | undefined }) {
   return (
     <>
       {products?.map((product) => (
-        <Link
+        <a
           className={`relative flex flex-col h-80 w-40 xs:w-48 m-auto p-4 bg-white shadow-sm hover:shadow-2xl hover:cursor-pointer bg-clip-padding bg-opacity-70 border border-gray-200`}
           key={product.id}
           href={`/${product.id}`}
@@ -108,10 +108,10 @@ function Products({ products }: { products: Array<Prodotto> | undefined }) {
               </svg>
             </div>
           </div>
-        </Link>
+        </a>
       ))}
     </>
   );
 }
 
-export default Products;
+export default Product;
