@@ -10,6 +10,7 @@ export interface Prodotto {
   dual_sim: boolean;
   five_g: boolean;
   nfc: boolean;
+  colore: string;
   prezzo: string;
   sconto?: string;
   percentuale?: string;

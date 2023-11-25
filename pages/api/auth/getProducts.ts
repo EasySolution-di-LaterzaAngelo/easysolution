@@ -1,41 +1,77 @@
 import { getDownloadURL, ref } from 'firebase/storage';
 import db, { storage } from '../../../firebase';
-
+import firebase from 'firebase/compat/app';
 export async function getProducts() {
-  const dbProdotti = await db
-    .collection('prodotti')
-    .orderBy('nome', 'asc')
-    .get();
+  try {
+    // Attempt to fetch data from cache
+    const dbProdotti = await db
+      .collection('prodotti')
+      .orderBy('nome', 'asc')
+      .get({ source: 'cache' });
 
-  const prodotti = await Promise.all(
-    dbProdotti.docs.map(async (prodotti) => {
-      const myarray = Object.entries(prodotti.data());
+    // If cache is empty or data is not available, fetch from server
+    if (dbProdotti.empty) {
+      // Fetch data from server
+      const serverData = await db
+        .collection('prodotti')
+        .orderBy('nome', 'asc')
+        .get({ source: 'server' });
 
-      const myObject: any = await myarray.reduce(
-        async (objPromise, [key, value]) => {
-          const obj = await objPromise;
+      // Process and return data from the server
+      return processProducts(serverData);
+    }
 
-          if (key === 'immagini') {
-            const downloadURLs = [];
-            for (let i = 0; i < value.length; i++) {
-              const downloadURL = await getDownloadURL(
-                ref(storage, `immagini/${value[i]}`)
-              );
-              downloadURLs.push(downloadURL);
+    // Process and return data from cache
+    return processProducts(dbProdotti);
+  } catch (error) {
+    // Handle any errors that might occur during the process
+    console.error('Error fetching products:', error);
+    throw error;
+  }
+}
+
+// Process products function
+async function processProducts(
+  data: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
+) {
+  try {
+    const prodotti = await Promise.all(
+      data.docs.map(async (prodotti) => {
+        const myarray = Object.entries(prodotti.data());
+
+        const myObject: any = await myarray.reduce(
+          async (objPromise, [key, value]) => {
+            const obj = await objPromise;
+
+            if (key === 'immagini') {
+              const downloadURLs = [];
+              for (let i = 0; i < value.length; i++) {
+                const downloadURL = await getDownloadURL(
+                  ref(storage, `immagini/${value[i]}`)
+                );
+                downloadURLs.push(downloadURL);
+              }
+              return { ...obj, [key]: downloadURLs };
+            } else {
+              return { ...obj, [key]: value };
             }
-            return { ...obj, [key]: downloadURLs };
-          } else {
-            return { ...obj, [key]: value };
-          }
-        },
-        Promise.resolve({})
-      );
-      myObject.id = prodotti.id;
-      return myObject;
-    })
-  );
-  prodotti.sort((a, b) => a.nome.localeCompare(b.nome));
-  return prodotti;
+          },
+          Promise.resolve({})
+        );
+
+        myObject.id = prodotti.id;
+        return myObject;
+      })
+    );
+
+    // Sort products by name
+    prodotti.sort((a, b) => a.nome.localeCompare(b.nome));
+
+    return prodotti;
+  } catch (error) {
+    console.error('Error processing products:', error);
+    throw error;
+  }
 }
 
 export async function getDiscountedProducts() {

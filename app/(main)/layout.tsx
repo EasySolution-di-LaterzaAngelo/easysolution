@@ -5,6 +5,13 @@ import styles from './Main.module.css';
 import Header from './(header)/Header';
 import Footer from './(footer)/Footer';
 import getGoogleData from './getGoogleData';
+import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
+import { auth } from '@/firebase';
+import {
+  getDiscountedProducts,
+  getProducts,
+} from '@/pages/api/auth/getProducts';
+import { Prodotto } from '@/types';
 
 export default async function RootLayout({
   children,
@@ -12,6 +19,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const data: object = await getGoogleData();
+  const productsData: Prodotto[] = await getProducts();
+  // onAuthStateChanged(auth, async (user) => {
+  //   if (!user) {
+  //     signInAnonymously(auth);
+  //   }
+  // });
 
   return (
     <html lang='it'>
@@ -22,7 +35,7 @@ export default async function RootLayout({
       </head>
       <body className={`flex flex-col ${styles.main}`}>
         <ProvidersWrapper>
-          <Header />
+          <Header productsData={productsData} />
           {children}
           <Footer googleData={data} />
         </ProvidersWrapper>

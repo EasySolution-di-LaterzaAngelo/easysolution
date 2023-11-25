@@ -10,6 +10,7 @@ import {
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import styles from './Product.module.css';
+import { Prodotto } from '@/types';
 
 const excludeKeys = [
   'nome',
@@ -21,43 +22,10 @@ const excludeKeys = [
   'prezzo',
   'sconto',
   'percentuale',
+  'id',
 ];
 
-function Product({ product }: any) {
-  const [percentuale, setPercentuale] = useState(0);
-  const [sconto, setSconto] = useState(0);
-
-  useEffect(() => {
-    if (product) {
-      const convertedPrice = product.prezzo?.replace(',', '.');
-      const convertedDiscount = product.sconto?.replace(',', '.');
-
-      if (product.sconto !== undefined || product.percentuale !== undefined) {
-        if (product.sconto !== undefined) {
-          const scontoValue = product.sconto?.replace(',', '.');
-          setSconto(Number(scontoValue));
-        } else {
-          const prezzoValue = Number(product.prezzo?.replace(',', '.'));
-          const percentualeValue = Number(
-            product.percentuale?.replace(',', '.')
-          );
-          const scontoValue = (
-            prezzoValue -
-            (prezzoValue * percentualeValue) / 100
-          ).toFixed(2);
-          setSconto(Number(scontoValue));
-        }
-
-        product.percentuale !== undefined
-          ? setPercentuale(product.percentuale)
-          : setPercentuale(
-              Math.round(
-                ((convertedPrice - convertedDiscount) / convertedPrice) * 100
-              )
-            );
-      }
-    }
-  }, []);
+function Product({ product }: { product: Prodotto | null }) {
   return product ? (
     <div className='bg-white flex mb-10 mt-52 md:mt-36 z-0 mx-auto'>
       <div className='w-screen max-w-7xl'>
@@ -91,10 +59,10 @@ function Product({ product }: any) {
                 )
               }
             >
-              {product.immaginiUrl.map((immagineUrl: string, index: number) => (
+              {product.immagini.map((immagine: any, index: number) => (
                 <div key={index}>
                   <Image
-                    src={immagineUrl}
+                    src={immagine}
                     alt=''
                     className={`rounded-xl shadow-xl md:shadow-none aspect-auto object-contain h-64 md:h-96 w-auto p-2`}
                     width={128}
@@ -107,51 +75,56 @@ function Product({ product }: any) {
             </Carousel>
           </div>
           {/* Price (Mobile View) */}
-          <div className='flex md:hidden font-medium text-2xl justify-center items-center p-5 w-full'>
-            <div>
-              {sconto !== 0 ? (
-                <>
-                  <div className='flex flex-row gap-4'>
-                    <div className='flex flex-col gap-1'>
-                      {/* Discount pill */}
-                      {sconto !== 0 ? (
-                        <div
-                          className={`${styles.card} w-20 h-8 gap-1 items-center shadow-md`}
-                        >
-                          <p className='font-bold text-sm'>-{percentuale}%</p>
-                          <Image
-                            src='/EasySolution_icon.jpg'
-                            alt='Easy Solution Icon'
-                            width={12}
-                            height={12}
-                            unoptimized={true}
-                            className='z-10 h-4 w-4'
-                            priority={true}
-                          />
-                        </div>
-                      ) : (
-                        ''
-                      )}
-                      <p className='text-base text-gray-400 line-through ml-1'>
-                        € {product.prezzo}
-                      </p>
+          {product.sconto && (
+            <div className='flex md:hidden font-medium text-2xl justify-center items-center p-5 w-full'>
+              <div>
+                {parseInt(product.sconto) !== 0 ? (
+                  <>
+                    <div className='flex flex-row gap-4'>
+                      <div className='flex flex-col gap-1'>
+                        {/* Discount pill */}
+                        {parseInt(product.sconto) !== 0 ? (
+                          <div
+                            className={`${styles.card} w-20 h-8 gap-1 items-center shadow-md`}
+                          >
+                            <p className='font-bold text-sm'>
+                              -{product.percentuale}%
+                            </p>
+                            <Image
+                              src='/EasySolution_icon.jpg'
+                              alt='Easy Solution Icon'
+                              width={12}
+                              height={12}
+                              unoptimized={true}
+                              className='z-10 h-4 w-4'
+                              priority={true}
+                            />
+                          </div>
+                        ) : (
+                          ''
+                        )}
+                        <p className='text-base text-gray-400 line-through ml-1'>
+                          € {product.prezzo}
+                        </p>
+                      </div>
+                      <div>
+                        <span className='top-0 leading-none font-semibold text-3xl'>
+                          € {product.sconto}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <span className='top-0 leading-none font-semibold text-3xl'>
-                        € {sconto}
-                      </span>
+                  </>
+                ) : (
+                  <>
+                    <div className='font-semibold text-3xl'>
+                      € {product.prezzo}
                     </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className='font-semibold text-3xl'>
-                    € {product.prezzo}
-                  </div>
-                </>
-              )}
+                  </>
+                )}
+              </div>
             </div>
-          </div>
+          )}
+
           <div
             className={`flex flex-col ${styles.background} rounded-2xl shadow-[-20px_10px_60px_-15px_rgba(0,0,0,0.3)]`}
           >
@@ -189,40 +162,21 @@ function Product({ product }: any) {
                     </p>
                   </>
                 )}
-
-                {product.colore && (
-                  <>
-                    •<p className='text-gray-500 text-sm'>Tipo di display:</p>
-                    <p className='text-black font-medium text-sm'>
-                      {product.display}
-                    </p>
-                  </>
-                )}
-
-                {product.memoria && (
-                  <>
-                    •
-                    <p className='text-gray-500 text-sm'>
-                      Capacità memoria interna:
-                    </p>
-                    <p className='text-black font-medium text-sm'>
-                      {product.memoria}
-                    </p>
-                  </>
-                )}
               </span>
               {/* Price */}
               <div className='hidden md:flex md:flex-col items-start p-5 px-0 gap-2'>
-                {sconto !== 0 && (
+                {product.sconto && parseInt(product.sconto) !== 0 && (
                   <p className='text-sm font-semibold text-[#f99417]'>
                     OFFERTA SPACIALE
                   </p>
                 )}
                 <div className='flex flex-row gap-4'>
                   <div>
-                    {sconto !== 0 ? (
+                    {product.sconto && parseInt(product.sconto) !== 0 ? (
                       <>
-                        <div className='font-semibold text-3xl'>€ {sconto}</div>
+                        <div className='font-semibold text-3xl'>
+                          € {product.sconto}
+                        </div>
                         <p className='text-sm text-gray-400 line-through'>
                           € {product.prezzo}
                         </p>
@@ -236,11 +190,13 @@ function Product({ product }: any) {
                     )}
                   </div>
                   {/* Discount pill */}
-                  {sconto !== 0 ? (
+                  {product.sconto && parseInt(product.sconto) !== 0 ? (
                     <div
                       className={`${styles.card} w-20 h-8 gap-1 items-center shadow-md`}
                     >
-                      <p className='font-bold text-xs'>-{percentuale}%</p>
+                      <p className='font-bold text-xs'>
+                        -{product.percentuale}%
+                      </p>
                       <Image
                         src='/EasySolution_icon.jpg'
                         alt='Easy Solution Icon'

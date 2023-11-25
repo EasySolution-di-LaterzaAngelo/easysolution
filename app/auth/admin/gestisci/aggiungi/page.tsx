@@ -214,6 +214,7 @@ function AddProduct() {
     dual_sim: false,
     five_g: false,
     nfc: false,
+    colore: '',
     prezzo: '',
     sconto: '',
     percentuale: '',
