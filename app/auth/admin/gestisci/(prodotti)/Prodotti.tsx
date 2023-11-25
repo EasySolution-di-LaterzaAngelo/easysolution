@@ -51,7 +51,7 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
         >
           {products?.map((product) => (
             <div key={product.id} className='border-[1px]'>
-              <Link
+              <a
                 href={`/auth/admin/gestisci/${product.id}`}
                 className='flex flex-row items-center h-16 justify-between mx-6 my-4 hover:bg-gray-300 hover:rounded-xl hover:cursor-pointer'
               >
@@ -85,7 +85,7 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
                     </p>
                   )}
                 </div>
-              </Link>
+              </a>
             </div>
           ))}
         </div>

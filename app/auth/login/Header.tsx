@@ -7,7 +7,7 @@ import '../../(main)/globals.css';
 const EasySolutionLogo = () => {
   return (
     <div className='flex w-full justify-center items-center sm:flex-grow-0 mx-auto'>
-      <Link title='Home' passHref href='/' className='flex'>
+      <a title='Home' href='/' className='flex'>
         <Image
           alt='Easy Solution Logo'
           src='/easysolutionlogo.jpeg'
@@ -16,7 +16,7 @@ const EasySolutionLogo = () => {
           className='w-[180px] lg:w-[260px] object-contain cursor-pointer'
           unoptimized={true}
         />
-      </Link>
+      </a>
     </div>
   );
 };

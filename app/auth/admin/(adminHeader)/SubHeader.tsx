@@ -50,7 +50,7 @@ function SubHeader() {
           (menu) =>
             (loggedUser || menu.text !== 'Prodotti') && (
               <li key={menu.text} className={`p-2`}>
-                <Link
+                <a
                   href={menu.page}
                   className={`flex items-center gap-1 p-2 px-4 my-4 rounded-full ring-2 ring-gray-400 bg-gray-200 shadow-lg hover:ring-2 hover:ring-black hover:bg-gray-400 ${
                     pathname === menu.page ? 'bg-gray-400' : null
@@ -58,7 +58,7 @@ function SubHeader() {
                 >
                   {menu.icon}
                   {menu.text}
-                </Link>
+                </a>
               </li>
             )
         )}

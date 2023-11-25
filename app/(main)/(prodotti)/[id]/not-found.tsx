@@ -20,12 +20,12 @@ export default function NotFound() {
           <p className='text-neutral-600 font-light not-italic text-lg font-mono text-center'>
             Ops! La pagina che stai cercando non esiste.
           </p>
-          <Link
+          <a
             href={'/'}
             className='z-10 px-4 py-2 rounded-full bg-neutral-600 bg-opacity-25 border border-gray-800 cursor-pointer hover:bg-opacity-40 hover:ease-in-out hover:duration-300'
           >
             Torna a Easy Solution
-          </Link>
+          </a>
         </div>
       </div>
     </div>

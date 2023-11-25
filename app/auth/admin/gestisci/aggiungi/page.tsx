@@ -574,13 +574,13 @@ function AddProduct() {
           className={`relative max-w-4xl h-[600px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-4 items-center justify-center bg-white content-start md:w-full md:h-2/3 rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll  ${styles.card}`}
         >
           {/* Go back */}
-          <Link
+          <a
             key={'Back'}
             href='/auth/admin/gestisci'
             className='flex absolute left-4 top-4 p-1 items-center drop-shadow-lg rounded-full text-black hover:bg-gray-300 hover:shadow-lg '
           >
             <ArrowSmallLeftIcon height={18} className='stroke-black' />
-          </Link>
+          </a>
           {/* Image field */}
           <>
             {inputs.immagini.length === 0 && (

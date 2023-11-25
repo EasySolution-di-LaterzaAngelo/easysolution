@@ -79,7 +79,7 @@ const EasySolutionLogo = () => {
   return (
     <div className='flex justify-center items-center sm:flex-grow-0 lg:fixed lg:top-2 lg:left-1/2 lg:-translate-x-[110px]'>
       {/* Traslare immagine su asse x della meta' della lunghezza della immagine*/}
-      <Link title='Home' passHref href='/'>
+      <a title='Home' href='/'>
         <Image
           alt='Easy Solution Logo'
           src='/easysolutionlogo.jpeg'
@@ -88,7 +88,7 @@ const EasySolutionLogo = () => {
           className='w-[180px] lg:w-[260px] object-contain cursor-pointer'
           unoptimized={true}
         />
-      </Link>
+      </a>
     </div>
   );
 };
@@ -96,7 +96,7 @@ const EasySolutionLogo = () => {
 const EasySolutionVideo = () => {
   return (
     <div className='fixed justify-center items-center w-[240px] h-[120px] shrink-0 top-2 left-1/2 -translate-x-[120px]'>
-      <Link title='Home' passHref href='/'>
+      <a title='Home' href='/'>
         <div
           dangerouslySetInnerHTML={{
             __html: `<video className="app__backgroundVideo" height="300" width="240" poster="/poster.png" autoplay loop muted playsinline>
@@ -105,7 +105,7 @@ const EasySolutionVideo = () => {
                     </video>`,
           }}
         />
-      </Link>
+      </a>
     </div>
   );
 };
@@ -200,7 +200,7 @@ function Header({ productsData }: { productsData: Prodotto[] }) {
           <EasySolutionVideo />
           <div className='z-20 flex flex-col lg:flex-row gap-4 items-center lg:items-start'>
             <User />
-            <Link
+            <a
               href={'/'}
               className={` ${
                 pathname === '/'
@@ -209,7 +209,7 @@ function Header({ productsData }: { productsData: Prodotto[] }) {
               } ${styles.home}`}
             >
               <HomeIcon height={24} />
-            </Link>
+            </a>
             {/* <Cart /> */}
           </div>
         </div>

@@ -85,14 +85,14 @@ export default function Footer({ googleData }: { googleData: GoogleData }) {
 
           <div className='flex flex-col items-center justify-center w-52'>
             <div className='flex justify-center items-center gap-4'>
-              <Link
+              <a
                 href={'/'}
                 className={`hover:underline hover:text-[#F6753D] ${
                   pathname === '/' ? 'hidden' : 'flex'
                 }`}
               >
                 Home
-              </Link>
+              </a>
             </div>
             <div className='flex flex-col w-full items-center justify-center gap-4'>
               <a

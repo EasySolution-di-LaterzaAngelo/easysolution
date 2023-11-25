@@ -15,7 +15,7 @@ import { update } from '@/slices/searchSlice';
 
 export const EasySolutionLogo = ({ setIsMenuOpen }: { setIsMenuOpen: any }) => {
   return (
-    <Link title='Home' passHref href='/' onClick={setIsMenuOpen}>
+    <a title='Home' href='/' onClick={setIsMenuOpen}>
       <Image
         alt='EasySolution Logo'
         src='/easysolutionlogo.jpeg'
@@ -24,7 +24,7 @@ export const EasySolutionLogo = ({ setIsMenuOpen }: { setIsMenuOpen: any }) => {
         className='object-contain cursor-pointer '
         unoptimized={true}
       />
-    </Link>
+    </a>
   );
 };
 
@@ -69,9 +69,8 @@ function Sidebar({ categories }: { categories: any }) {
                         setInputFromMenu(`${category}`);
                       }}
                     >
-                      <Link
+                      <a
                         title={category}
-                        passHref
                         href={`/`}
                         className='flex justify-between items-center'
                       >
@@ -80,7 +79,7 @@ function Sidebar({ categories }: { categories: any }) {
                           height={24}
                           className='stroke-blue-500 justify-item-end'
                         />
-                      </Link>
+                      </a>
                     </li>
                   ))}
 
@@ -93,9 +92,8 @@ function Sidebar({ categories }: { categories: any }) {
                       );
                     }}
                   >
-                    <Link
+                    <a
                       title={`Test`}
-                      passHref
                       href={`/`}
                       className='flex justify-between items-center'
                     >
@@ -104,7 +102,7 @@ function Sidebar({ categories }: { categories: any }) {
                         height={24}
                         className='stroke-blue-500 justify-item-end'
                       />
-                    </Link>
+                    </a>
                   </li>
                 </ul>
               </div>
