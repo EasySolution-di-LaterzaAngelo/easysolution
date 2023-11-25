@@ -18,9 +18,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // const data: object = await getGoogleData();
+  const data: object = await getGoogleData();
   const productsData: Prodotto[] = await getProducts();
-  const data = {};
   // onAuthStateChanged(auth, async (user) => {
   //   if (!user) {
   //     signInAnonymously(auth);
