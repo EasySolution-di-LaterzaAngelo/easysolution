@@ -114,7 +114,11 @@ const FloatingMenu = ({ loggedUser }: { loggedUser: User | undefined }) => {
               className={`${
                 active ? 'bg-[#F6753D] text-white' : 'text-gray-900'
               } group flex w-full items-center rounded-md px-2 py-2 text-sm gap-2`}
-              onClick={() => window.location.replace('/auth/admin')}
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.location.replace('/auth/admin');
+                }
+              }}
             >
               <LockClosedIcon
                 height={18}

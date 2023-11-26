@@ -47,7 +47,9 @@ function Gestisci() {
 
     if (loggedUser !== undefined) {
       if (loggedUser?.uid !== process.env.NEXT_PUBLIC_UID) {
-        window.location.replace('/');
+        if (typeof window !== 'undefined') {
+          window.location.replace('/');
+        }
       } else {
         fetchData();
       }
@@ -84,7 +86,9 @@ function Gestisci() {
 
   const handleClearSearch = () => {
     dispatch(clear()); // Clear the search value
-    localStorage.setItem('inputValue', '');
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('inputValue', '');
+    }
     const selectElement = document.getElementById(
       'grouped-native-select'
     ) as HTMLSelectElement;

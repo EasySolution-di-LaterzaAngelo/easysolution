@@ -42,8 +42,10 @@ function Sidebar({ categories }: { categories: any }) {
     const setInputFromMenu = (input: string) => {
       const trimmedValue = input.replace(/\s+/g, ' ').trim();
       dispatch(update(trimmedValue));
-      localStorage.setItem('inputValue', trimmedValue);
-      window.location.replace('/');
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('inputValue', trimmedValue);
+        window.location.replace('/');
+      }
     };
     return (
       <>

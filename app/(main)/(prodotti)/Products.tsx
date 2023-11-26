@@ -34,7 +34,10 @@ function Products() {
                 <div className='z-50 mt-[170px] lg:mt-[200px] w-full flex justify-center'>
                   <h1
                     onClick={() => {
-                      dispatch(clear()), localStorage.setItem('inputValue', '');
+                      dispatch(clear());
+                      if (typeof window !== 'undefined') {
+                        localStorage.setItem('inputValue', '');
+                      }
                     }}
                     className='flex items-center pl-4 pr-2 p-2 gap-1 rounded-full bg-zinc-300 border border-gray-400 font-medium text-xl cursor-pointer'
                   >

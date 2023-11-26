@@ -24,7 +24,9 @@ const SubHeader = ({ categories }: { categories: any }) => {
   const setInputFromMenu = (input: string) => {
     const trimmedValue = input.replace(/\s+/g, ' ').trim();
     dispatch(update(trimmedValue));
-    localStorage.setItem('inputValue', trimmedValue);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('inputValue', trimmedValue);
+    }
   };
 
   return (
@@ -119,9 +121,11 @@ const SearchBar = () => {
     e.preventDefault();
     const trimmedValue = input.replace(/\s+/g, ' ').trim();
     dispatch(update(trimmedValue));
-    localStorage.setItem('inputValue', trimmedValue);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('inputValue', trimmedValue);
+      window.location.replace('/');
+    }
     setInput('');
-    window.location.replace('/');
     if (inputRef.current) {
       inputRef.current.blur(); // Hide the keyboard
     }

@@ -473,7 +473,9 @@ function Product({ params }: any) {
     });
     await deleteDoc(doc(db, 'prodotti', `${params.id}`));
     setTimeout(() => {
-      window.location.replace('/auth/admin/gestisci');
+      if (typeof window !== 'undefined') {
+        window.location.replace('/auth/admin/gestisci');
+      }
     }, 1000);
   };
 
@@ -524,7 +526,9 @@ function Product({ params }: any) {
 
         await setDoc(doc(db, 'prodotti', `${params.id}`), adjustedInputs);
         setTimeout(() => {
-          window.location.replace('/auth/admin/gestisci');
+          if (typeof window !== 'undefined') {
+            window.location.replace('/auth/admin/gestisci');
+          }
         }, 1000);
       }
     } else {
