@@ -7,9 +7,10 @@ export interface searchState {
 }
 
 const initialState: searchState = {
-  value: localStorage.getItem('inputValue')
-    ? localStorage.getItem('inputValue')
-    : '',
+  value:
+    typeof window !== 'undefined' && localStorage.getItem('inputValue')
+      ? localStorage.getItem('inputValue')
+      : '',
 };
 
 export const searchSlice = createSlice({
