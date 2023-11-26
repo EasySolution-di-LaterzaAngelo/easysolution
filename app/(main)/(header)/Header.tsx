@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { update, clear } from '@/slices/searchSlice';
 import { selectProductsValue, updateProducts } from '@/slices/setProductsSlice';
@@ -21,25 +21,24 @@ import { Prodotto } from '@/types';
 
 const SubHeader = ({ categories }: { categories: any }) => {
   const dispatch = useDispatch();
-  const router = useRouter();
-
   const setInputFromMenu = (input: string) => {
     const trimmedValue = input.replace(/\s+/g, ' ').trim();
     dispatch(update(trimmedValue));
-    router.push('/');
+    localStorage.setItem('inputValue', trimmedValue);
   };
 
   return (
     <div className='flex w-full text-slate-900 gap-8 font-bold text-sm text-center items-center '>
       <div className='flex w-full items-center justify-start gap-8'>
         {categories?.map((category: string) => (
-          <p
+          <a
             key={category}
+            href='/'
             onClick={() => setInputFromMenu(`${category}`)}
             className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
           >
             {category}
-          </p>
+          </a>
         ))}
       </div>
 
@@ -112,7 +111,6 @@ const EasySolutionVideo = () => {
 
 const SearchBar = () => {
   const [input, setInput] = useState('');
-  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const dispatch = useDispatch();
@@ -121,8 +119,9 @@ const SearchBar = () => {
     e.preventDefault();
     const trimmedValue = input.replace(/\s+/g, ' ').trim();
     dispatch(update(trimmedValue));
+    localStorage.setItem('inputValue', trimmedValue);
     setInput('');
-    router.push('/');
+    window.location.replace('/');
     if (inputRef.current) {
       inputRef.current.blur(); // Hide the keyboard
     }

@@ -47,7 +47,7 @@ function Gestisci() {
 
     if (loggedUser !== undefined) {
       if (loggedUser?.uid !== process.env.NEXT_PUBLIC_UID) {
-        router.push('/');
+        window.location.replace('/');
       } else {
         fetchData();
       }
@@ -84,6 +84,7 @@ function Gestisci() {
 
   const handleClearSearch = () => {
     dispatch(clear()); // Clear the search value
+    localStorage.setItem('inputValue', '');
     const selectElement = document.getElementById(
       'grouped-native-select'
     ) as HTMLSelectElement;

@@ -30,7 +30,6 @@ export const EasySolutionLogo = ({ setIsMenuOpen }: { setIsMenuOpen: any }) => {
 
 function Sidebar({ categories }: { categories: any }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const router = useRouter();
   const dispatch = useDispatch();
 
   const NavMenu = () => {
@@ -43,7 +42,8 @@ function Sidebar({ categories }: { categories: any }) {
     const setInputFromMenu = (input: string) => {
       const trimmedValue = input.replace(/\s+/g, ' ').trim();
       dispatch(update(trimmedValue));
-      router.push('/');
+      localStorage.setItem('inputValue', trimmedValue);
+      window.location.replace('/');
     };
     return (
       <>
