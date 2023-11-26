@@ -10,11 +10,28 @@ import Lottie from 'lottie-react';
 import Product404 from '../../../public/Product404.json';
 import MyLoading from '../MyLoading';
 import { selectProductsValue } from '@/slices/setProductsSlice';
+import { getFilterProducts } from './FilterProducts';
 
 function Products() {
   const inputValue = useSelector(selectSearchValue);
   const dispatch = useDispatch();
-  const products = useSelector(selectProductsValue);
+  const products: Prodotto[] = useSelector(selectProductsValue);
+  const [filteredProducts, setFilteredProducts] = useState<Prodotto[]>();
+
+  useEffect(() => {
+    if (products) {
+      const foundDiscountedProducts = products.filter(
+        (product: Prodotto) => product.sconto
+      );
+      if (foundDiscountedProducts.length > 0) {
+        setFilteredProducts(foundDiscountedProducts);
+      }
+    }
+    if (inputValue !== '') {
+      const foundFilteredProducts = getFilterProducts(products, inputValue);
+      setFilteredProducts(foundFilteredProducts);
+    }
+  }, [products, inputValue]);
 
   return (
     <>
@@ -23,7 +40,7 @@ function Products() {
 
       <div className='flex justify-center flex-grow z-10'>
         <div className='mx-auto'>
-          {products ? (
+          {filteredProducts ? (
             <>
               {inputValue === '' && (
                 <h1 className='mt-[220px] lg:mt-[240px] text-center text-3xl font-bold text-slate-700'>
@@ -53,7 +70,7 @@ function Products() {
                   inputValue ? 'mt-10' : 'mt-8 xs:mt-10'
                 } ${products.length === 0 && 'mt-0'}`}
               >
-                <Product products={products} />
+                <Product products={filteredProducts} />
               </div>
               {products.length === 0 && inputValue && (
                 <div className='flex flex-col justify-center items-center mx-10 -mt-20 -z-10'>

@@ -14,6 +14,7 @@ export interface Prodotto {
   prezzo: string;
   sconto?: string;
   percentuale?: string;
+  score?: number;
 }
 
 type Menu = {

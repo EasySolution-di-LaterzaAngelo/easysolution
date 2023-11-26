@@ -17,15 +17,16 @@ function ProductPage({ params }: any) {
     if (products) {
       const foundProduct = products.find(
         (product: Prodotto) => product.id === params.id
-      ); // Assuming ID is present in params
+      );
       if (foundProduct) {
         setProduct(foundProduct);
       } else {
-        notFound(); // Handle product not found scenario
+        notFound();
       }
       setLoading(false);
     }
   }, [params.id, products]);
+
   return (
     <div className='flex flex-grow'>
       {loading ? (
