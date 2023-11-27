@@ -9,7 +9,7 @@ function Product({ products }: { products: Array<Prodotto> | undefined }) {
     <>
       {products?.map((product) => (
         <a
-          className={`relative flex flex-col h-80 w-40 xs:w-48 m-auto p-4 bg-white shadow-sm hover:shadow-2xl hover:cursor-pointer bg-clip-padding bg-opacity-70 border border-gray-200`}
+          className={`relative flex flex-col h-80 w-full xs:w-48 m-auto p-4 bg-white shadow-sm hover:shadow-2xl hover:cursor-pointer bg-clip-padding bg-opacity-70 border border-gray-200`}
           key={product.id}
           href={`/${product.id}`}
         >
@@ -27,7 +27,7 @@ function Product({ products }: { products: Array<Prodotto> | undefined }) {
             <Image
               src={product.immagini[0]}
               alt=''
-              className={`aspect-auto object-cover h-36 w-auto cursor-pointer rounded-md`}
+              className={`aspect-auto object-cover h-40 xs:h-36 w-auto cursor-pointer rounded-md`}
               width={128}
               height={80}
               unoptimized={true}
@@ -36,7 +36,7 @@ function Product({ products }: { products: Array<Prodotto> | undefined }) {
 
           <div className='mt-1'>
             <p
-              className={`font-thin leading-normal text-[8px] xs:text-[10px] text-slate-500 text-center uppercase`}
+              className={`font-light leading-normal text-[8px] xs:text-[10px] text-black text-center uppercase`}
               title={product.categoria}
             >
               {product.categoria}
@@ -56,8 +56,8 @@ function Product({ products }: { products: Array<Prodotto> | undefined }) {
           >
             {product.sconto !== undefined ? (
               <div className='flex flex-row gap-2 items-center py-2'>
-                <div className='flex flex-col xs:flex-row xs:items-center xs:gap-2'>
-                  <span className='tex-sm font-semibold'>
+                <div className='flex flex-row items-center gap-2'>
+                  <span className='text-lg font-semibold'>
                     €{product.sconto}
                   </span>
                   <span className='text-xs text-gray-500 line-through'>

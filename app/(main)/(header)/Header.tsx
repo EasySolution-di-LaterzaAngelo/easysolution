@@ -96,7 +96,7 @@ const EasySolutionLogo = () => {
 
 const EasySolutionVideo = () => {
   return (
-    <div className='fixed justify-center items-center w-[240px] h-[120px] shrink-0 top-2 left-1/2 -translate-x-[120px]'>
+    <div className='fixed justify-center items-center w-[180px] h-[90px] sm:w-[240px] sm:h-[120px] shrink-0 top-2 left-1/2 -translate-x-[90px] sm:-translate-x-[120px]'>
       <a title='Home' href='/'>
         <div
           dangerouslySetInnerHTML={{
@@ -193,7 +193,7 @@ function Header({ productsData }: { productsData: Prodotto[] }) {
 
   return (
     <header className='z-50 fixed w-full'>
-      <div className='grid grid-rows-3 grid-flow-col gap-5 lg:gap-0 items-center p-4 lg:pt-6 bg-[#F9F9F9] shadow-lg z-50'>
+      <div className='grid grid-rows-3 grid-flow-col gap-5 lg:gap-0 items-center p-2 xxs:p-4 lg:pt-6 bg-[#F9F9F9] shadow-lg z-50'>
         <div className='flex h-24 row-span-2 justify-between'>
           <Sidebar categories={categories} />
           <div className='hidden w-80 lg:flex'>

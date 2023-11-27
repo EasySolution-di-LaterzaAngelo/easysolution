@@ -16,7 +16,7 @@ type SubMenu = {
 const subMenu: Array<SubMenu> = [
   {
     page: '/',
-    text: '',
+    text: 'Home',
     icon: <HomeIcon height={18} className='stroke-black' />,
   },
   {
@@ -45,21 +45,29 @@ function SubHeader() {
   });
   return (
     <div>
-      <ul className='flex flex-row items-center justify-center gap-2'>
+      <ul className='flex max-w-[200px] xs:max-w-sm mx-auto items-center justify-center gap-3 xs:gap-4'>
         {subMenu.map(
-          (menu) =>
+          (menu, index) =>
             (loggedUser || menu.text !== 'Prodotti') && (
-              <li key={menu.text} className={`p-2`}>
-                <a
-                  href={menu.page}
-                  className={`flex items-center gap-1 p-2 px-4 my-4 rounded-full ring-2 ring-gray-400 bg-gray-200 shadow-lg hover:ring-2 hover:ring-black hover:bg-gray-400 ${
-                    pathname === menu.page ? 'bg-gray-400' : null
-                  }`}
-                >
-                  {menu.icon}
+              <div
+                key={index}
+                className='w-full mx-auto xs:col-span-1 flex flex-col gap-2'
+              >
+                <li className='flex flex-col items-center'>
+                  <a
+                    href={menu.page}
+                    className={`flex items-center gap-1 p-2 xs:px-4 mt-4 w-max xs:w-full justify-center rounded-full ring-2 ring-gray-400 bg-gray-200 shadow-lg hover:ring-2 hover:ring-black hover:bg-gray-400 ${
+                      pathname === menu.page ? 'bg-gray-400' : null
+                    }`}
+                  >
+                    {menu.icon}
+                    <span className='hidden xs:flex'>{menu.text}</span>
+                  </a>
+                </li>
+                <p className='flex xs:hidden text-xs text-center justify-center'>
                   {menu.text}
-                </a>
-              </li>
+                </p>
+              </div>
             )
         )}
       </ul>

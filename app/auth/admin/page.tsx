@@ -25,7 +25,7 @@ function Admin() {
 
   return (
     <>
-      <div className='relative m-auto flex flex-col bg-white h-64 w-64 p-10 justify-center items-center rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200'>
+      <div className='relative m-auto flex flex-col bg-white h-max w-full xxs:w-64 p-5 justify-center items-center rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200'>
         <Image
           src={loggedUser?.photoURL ? loggedUser?.photoURL : '/Admin.png'}
           alt='Profile'
@@ -38,7 +38,7 @@ function Admin() {
         {loggedUser?.email ? (
           <>
             <div className='flex flex-col justify-center items-center'>
-              <p className='text-gray-400 text-xs italic font-light mb-4'>
+              <p className='text-gray-400 text-xs italic font-light mb-4 flex break-all'>
                 {loggedUser?.email}
               </p>
               <p className='gray-500 text-2xl font-light'>Ciao,</p>

@@ -39,7 +39,7 @@ function Products() {
       <div className="fixed flex sm:hidden bg-[url('/waves_bottom_vertical.svg')] bg-cover h-screen w-screen -z-10"></div>
 
       <div className='flex justify-center flex-grow z-10'>
-        <div className='mx-auto'>
+        <div className='mx-auto px-4'>
           {filteredProducts ? (
             <>
               {inputValue === '' && (
@@ -48,7 +48,7 @@ function Products() {
                 </h1>
               )}
               {inputValue && (
-                <div className='z-50 mt-[170px] lg:mt-[200px] w-full flex justify-center'>
+                <div className='z-50 px-4 mt-[220px] lg:mt-[220px] w-full flex justify-center'>
                   <h1
                     onClick={() => {
                       dispatch(clear());
@@ -66,7 +66,7 @@ function Products() {
               <div
                 className={`grid  ${
                   products.length === 1 ? 'grid-cols-1' : ''
-                } grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-2 gap-y-4 sm:gap-x-6 sm:gap-y-6 mx-4 mb-4 ${
+                } grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-2 gap-y-4 sm:gap-x-6 sm:gap-y-6 mb-4 ${
                   inputValue ? 'mt-10' : 'mt-8 xs:mt-10'
                 } ${products.length === 0 && 'mt-0'}`}
               >
