@@ -479,7 +479,9 @@ function AddProduct() {
           ])
       );
     await setDoc(doc(db, 'prodotti', `${uuidv4()}`), adjustedInputs);
-    router.push('/auth/admin/gestisci');
+    if (typeof window !== 'undefined') {
+      window.location.replace('/auth/admin/gestisci');
+    }
   };
 
   async function handleImageUpload(image: any) {

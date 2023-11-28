@@ -114,7 +114,11 @@ const FloatingMenu = ({ loggedUser }: { loggedUser: User | undefined }) => {
               className={`${
                 active ? 'bg-[#F6753D] text-white' : 'text-gray-900'
               } group flex w-full items-center rounded-md px-2 py-2 text-sm gap-2`}
-              onClick={() => router.push('/auth/admin')}
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.location.replace('/auth/admin');
+                }
+              }}
             >
               <LockClosedIcon
                 height={18}
@@ -141,7 +145,7 @@ function User() {
   });
   return (
     <>
-      <Menu as='div' className='relative isolate text-left'>
+      <Menu as='div' className='z-50 relative isolate text-left'>
         <div>
           <Menu.Button className='inline-flex w-full justify-center items-center gap-2 rounded-md text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
             <div className='flex w-10 h-10 justify-center items-center cursor-pointer hover:bg-slate-200 hover:rounded-full'>

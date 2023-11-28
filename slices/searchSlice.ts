@@ -3,11 +3,14 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
 
 export interface searchState {
-  value: string;
+  value: string | null;
 }
 
 const initialState: searchState = {
-  value: '',
+  value:
+    typeof window !== 'undefined' && localStorage.getItem('inputValue')
+      ? localStorage.getItem('inputValue')
+      : '',
 };
 
 export const searchSlice = createSlice({

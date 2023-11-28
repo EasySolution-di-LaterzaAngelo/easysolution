@@ -45,7 +45,9 @@ function SignInButton() {
   });
 
   if (loggedUser) {
-    redirect('/');
+    if (typeof window !== 'undefined') {
+      window.location.replace('/');
+    }
   }
 
   return (

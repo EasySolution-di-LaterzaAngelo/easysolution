@@ -32,8 +32,8 @@ export default function Footer({ googleData }: { googleData: GoogleData }) {
         }  backdrop-blur-md  rounded-t-2xl`}
       >
         <div className='flex flex-col-reverse md:grid md:grid-cols-6 w-full p-4 justify-center items-center gap-8 md:gap-0'>
-          <div className='flex flex-col lg:flex-row md:col-span-4 gap-2 items-center justify-center '>
-            <div className='flex flex-col  w-72 gap-1'>
+          <div className='flex flex-col lg:flex-row md:col-span-4 gap-2 items-start md:items-center md:justify-center '>
+            <div className='flex flex-col max-w-72 gap-1 break-all'>
               <a
                 href='mailto:
                 easysolution2021@hotmail.com'
@@ -57,7 +57,7 @@ export default function Footer({ googleData }: { googleData: GoogleData }) {
                 <p>Via Cesare Battisti 115 - Taranto</p>
               </a>
             </div>
-            <div className='flex w-72 items-start gap-3'>
+            <div className='flex max-w-72 items-start gap-3'>
               <ClockIcon className='h-5' />
               <div className='flex flex-col text-sm capitalize'>
                 {googleData?.result?.opening_hours.weekday_text.map(

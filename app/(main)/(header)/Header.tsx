@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { update, clear } from '@/slices/searchSlice';
 import { selectProductsValue, updateProducts } from '@/slices/setProductsSlice';
@@ -21,25 +21,26 @@ import { Prodotto } from '@/types';
 
 const SubHeader = ({ categories }: { categories: any }) => {
   const dispatch = useDispatch();
-  const router = useRouter();
-
   const setInputFromMenu = (input: string) => {
     const trimmedValue = input.replace(/\s+/g, ' ').trim();
     dispatch(update(trimmedValue));
-    router.push('/');
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('inputValue', trimmedValue);
+    }
   };
 
   return (
     <div className='flex w-full text-slate-900 gap-8 font-bold text-sm text-center items-center '>
       <div className='flex w-full items-center justify-start gap-8'>
         {categories?.map((category: string) => (
-          <p
+          <a
             key={category}
+            href='/'
             onClick={() => setInputFromMenu(`${category}`)}
             className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
           >
             {category}
-          </p>
+          </a>
         ))}
       </div>
 
@@ -95,7 +96,7 @@ const EasySolutionLogo = () => {
 
 const EasySolutionVideo = () => {
   return (
-    <div className='fixed justify-center items-center w-[240px] h-[120px] shrink-0 top-2 left-1/2 -translate-x-[120px]'>
+    <div className='fixed justify-center items-center w-[180px] h-[90px] sm:w-[240px] sm:h-[120px] shrink-0 top-2 left-1/2 -translate-x-[90px] sm:-translate-x-[120px]'>
       <a title='Home' href='/'>
         <div
           dangerouslySetInnerHTML={{
@@ -112,7 +113,6 @@ const EasySolutionVideo = () => {
 
 const SearchBar = () => {
   const [input, setInput] = useState('');
-  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const dispatch = useDispatch();
@@ -121,8 +121,11 @@ const SearchBar = () => {
     e.preventDefault();
     const trimmedValue = input.replace(/\s+/g, ' ').trim();
     dispatch(update(trimmedValue));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('inputValue', trimmedValue);
+      window.location.replace('/');
+    }
     setInput('');
-    router.push('/');
     if (inputRef.current) {
       inputRef.current.blur(); // Hide the keyboard
     }
@@ -190,7 +193,7 @@ function Header({ productsData }: { productsData: Prodotto[] }) {
 
   return (
     <header className='z-50 fixed w-full'>
-      <div className='grid grid-rows-3 grid-flow-col gap-5 lg:gap-0 items-center p-4 lg:pt-6 bg-[#F9F9F9] shadow-lg z-50'>
+      <div className='grid grid-rows-3 grid-flow-col gap-5 lg:gap-0 items-center p-2 xxs:p-4 lg:pt-6 bg-[#F9F9F9] shadow-lg z-50'>
         <div className='flex h-24 row-span-2 justify-between'>
           <Sidebar categories={categories} />
           <div className='hidden w-80 lg:flex'>

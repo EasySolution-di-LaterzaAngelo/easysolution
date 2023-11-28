@@ -66,7 +66,7 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
                   />
                 </div>
                 <div className='items-center'>
-                  <p className='mx-2 line-clamp-2 justify-center text-center'>
+                  <p className='mx-2 text-xs xs:text-base line-clamp-2 justify-center text-center break-all'>
                     {product.nome}
                   </p>
                 </div>
@@ -91,14 +91,14 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
         </div>
       ) : products != undefined ? (
         <div
-          className={`flex m-auto items-center justify-center bg-white h-[28rem] content-start max-w-4xl md:w-full md:h-2/3 rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll ${styles.card}`}
+          className={`flex m-auto items-center justify-center bg-white  content-start max-w-4xl md:w-full md:h-2/3 rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll ${styles.card}`}
         >
-          <div className='flex flex-col justify-center items-center mx-10 -mt-20 py-10 px-5 z-10'>
+          <div className='flex flex-col justify-center items-center -mt-5 xs:-mt-10 p-5 z-10'>
             <Lottie
               animationData={Product404}
-              className='flex w-full sm:w-1/2 lg:w-1/3 z-10'
+              className='flex w-1/2 md:w-1/3 z-10'
             />
-            <p className='text-base font-mono font-light text-center md:mx-40 md:text-lg'>
+            <p className='text-xs font-mono font-light text-center md:mx-40 md:text-lg'>
               La ricerca del prodotto non è andata a buon fine. Tuttavia,
               potrebbe essersi verificato un errore nella digitazione del nome
               del prodotto.

@@ -47,7 +47,9 @@ function Gestisci() {
 
     if (loggedUser !== undefined) {
       if (loggedUser?.uid !== process.env.NEXT_PUBLIC_UID) {
-        router.push('/');
+        if (typeof window !== 'undefined') {
+          window.location.replace('/');
+        }
       } else {
         fetchData();
       }
@@ -84,6 +86,9 @@ function Gestisci() {
 
   const handleClearSearch = () => {
     dispatch(clear()); // Clear the search value
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('inputValue', '');
+    }
     const selectElement = document.getElementById(
       'grouped-native-select'
     ) as HTMLSelectElement;
@@ -94,7 +99,7 @@ function Gestisci() {
   };
 
   return (
-    <div className='relative m-auto flex flex-col gap-4 px-6'>
+    <div className='relative my-10 xxs:my-auto m-auto flex flex-col gap-4 px-6'>
       <form
         onSubmit={handleSubmit}
         className='mb-2 mx-auto w-full gap-8 flex flex-col sm:flex-row'
