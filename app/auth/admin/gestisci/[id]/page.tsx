@@ -466,7 +466,7 @@ function Product({ params }: any) {
     setSeverity('delete');
     setOpen(true);
     e.preventDefault();
-    prodotto?.immagini.map(async (imageData: any, index: number) => {
+    prodotto?.immagini?.map(async (imageData: any, index: number) => {
       const immagine = prodotto?.immagini[index]; // Get the corresponding immagine at the same index
       const imgref = ref(storage, `immagini/${immagine}`);
       await deleteObject(imgref);
@@ -489,20 +489,27 @@ function Product({ params }: any) {
       setSeverity('success');
       setOpen(true);
       if (prodotto) {
-        images.map(async (imageData: any, index: number) => {
-          const compressedImage = await handleImageUpload(imageData);
-          const immagine = prodotto.immagini[index]; // Get the corresponding immagine at the same index
-          const imgref = ref(storage, `immagini/${immagine}`);
-          await uploadBytes(imgref, compressedImage);
-        });
-
-        originalImages.map(async (image: any, index: number) => {
-          if (!prodotto.immagini.includes(image)) {
-            const imgref = ref(storage, `immagini/${image}`);
-            console.log(imgref);
-            await deleteObject(imgref);
+        const uploadPromises = images.map(
+          async (imageData: any, index: number) => {
+            const compressedImage = await handleImageUpload(imageData);
+            const immagine = prodotto.immagini[index]; // Get the corresponding immagine at the same index
+            const imgref = ref(storage, `immagini/${params.id}_${immagine}`);
+            await uploadBytes(imgref, compressedImage);
           }
-        });
+        );
+
+        const deletePromises = originalImages.map(
+          async (image: any, index: number) => {
+            if (!prodotto.immagini.includes(image)) {
+              const imgref = ref(storage, `immagini/${image}`);
+              console.log(imgref);
+              await deleteObject(imgref);
+            }
+          }
+        );
+
+        await Promise.all(uploadPromises);
+        await Promise.all(deletePromises);
 
         let adjustedInputs: any = Object.fromEntries(
           Object.entries(prodotto)
@@ -520,16 +527,25 @@ function Product({ params }: any) {
             })
             .map(([key, value]) => [
               key.startsWith('_') ? key.slice(1) : key,
-              typeof value === 'string' ? (value as string).trim() : value,
+              key === 'immagini' && Array.isArray(value)
+                ? value.map((image) => {
+                    // Check if the image name starts with params.id
+                    if (!image.startsWith(params.id + '_')) {
+                      // If it doesn't, prepend params.id to the image name
+                      return params.id + '_' + image;
+                    }
+                    return image; // Otherwise, keep the image name unchanged
+                  }) // Adjust 'immagini' value here
+                : typeof value === 'string'
+                ? (value as string).trim()
+                : value,
             ])
         );
-
         await setDoc(doc(db, 'prodotti', `${params.id}`), adjustedInputs);
-        setTimeout(() => {
-          if (typeof window !== 'undefined') {
-            window.location.replace('/auth/admin/gestisci');
-          }
-        }, 1000);
+
+        if (typeof window !== 'undefined') {
+          window.location.replace('/auth/admin/gestisci');
+        }
       }
     } else {
       setMessage('Nessuna modifica');
@@ -563,6 +579,7 @@ function Product({ params }: any) {
       return imageFile;
     }
   }
+  console.log(params);
   return (
     <div className='relative m-auto flex flex-col'>
       <form onSubmit={handleEditProduct}>
@@ -960,7 +977,7 @@ function Product({ params }: any) {
               <div className='ml-3 shrink-0'>
                 {severity === 'success' ? (
                   <p className='text-sm font-medium text-green-800'>
-                    Prodotto modificato
+                    Prodotto modificato! Attendi ...
                   </p>
                 ) : severity === 'warning' ? (
                   <p className='text-sm font-medium text-yellow-800'>
@@ -968,7 +985,7 @@ function Product({ params }: any) {
                   </p>
                 ) : (
                   <p className='text-sm font-medium text-red-800'>
-                    Prodotto eliminato
+                    Prodotto eliminato! Attendi ...
                   </p>
                 )}
               </div>
