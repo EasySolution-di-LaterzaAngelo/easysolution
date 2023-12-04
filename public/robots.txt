@@ -1,0 +1,7 @@
+User-agent: nameOfBot
+Disallow: /auth/admin/
+
+User-agent: *
+Allow: /
+
+Sitemap: https://easysolution.vercel.app/sitemap.xml
