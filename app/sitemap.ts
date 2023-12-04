@@ -4,8 +4,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: 'https://easysolution.vercel.app/',
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
+      lastModified: '2023-04-12',
+      changeFrequency: 'daily',
       priority: 1,
     },
   ];
