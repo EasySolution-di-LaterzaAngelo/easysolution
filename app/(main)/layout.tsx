@@ -30,6 +30,7 @@ export default async function RootLayout({
     <html lang='it'>
       <head>
         <title>Easy Solution Di Laterza Angelo</title>
+        <meta name="google-site-verification" content="jqHfTQkXtRhcMZeGjnR4qlPFLQuT4wHvTSOa5Dyw_jU" />
         <meta
           name='description'
           content='Esplorate la nostra cartoleria di oggetti artigianali unici. Bomboniere, incisioni su legno e metallo e molto altro, tutti creati a mano con passione.'
