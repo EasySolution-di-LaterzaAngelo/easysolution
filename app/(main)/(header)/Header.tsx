@@ -19,7 +19,7 @@ import Sidebar from './Sidebar';
 import User from './User';
 import { Prodotto } from '@/types';
 
-const SubHeader = ({ categories }: { categories: any }) => {
+const SubHeader = ({ categories }: { categories: string[] }) => {
   const dispatch = useDispatch();
   const setInputFromMenu = (input: string) => {
     const trimmedValue = input.replace(/\s+/g, ' ').trim();
@@ -29,12 +29,18 @@ const SubHeader = ({ categories }: { categories: any }) => {
     }
   };
 
+  const MAX_DISPLAY_CATEGORIES = 5;
+
+  // Split categories based on the maximum display limit
+  const displayedCategories = categories?.slice(0, MAX_DISPLAY_CATEGORIES);
+  const overflowCategories = categories?.slice(MAX_DISPLAY_CATEGORIES);
+
   return (
     <div className='flex w-full text-slate-900 gap-8 font-bold text-sm text-center items-center '>
       <div className='flex w-full items-center justify-start gap-8'>
-        {categories?.map((category: string) => (
+        {displayedCategories?.map((category: string, index) => (
           <a
-            key={category}
+            key={index}
             href='/'
             onClick={() => setInputFromMenu(`${category}`)}
             className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
@@ -42,36 +48,56 @@ const SubHeader = ({ categories }: { categories: any }) => {
             {category}
           </a>
         ))}
+        {categories?.length <= MAX_DISPLAY_CATEGORIES && (
+          <p
+            onClick={() => ''}
+            className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
+          >
+            Riparazioni smartphone / PC / Bimby / Folletto
+          </p>
+        )}
       </div>
-
-      <Menu as='div' className='flex relative isolate z-0'>
-        <Menu.Button className='inline-flex w-full justify-center items-center gap-2 rounded-md text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
-          <div className='flex text-slate-900 font-bold text-sm text-center items-center justify-center decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'>
-            Altro
-            <ChevronDownIcon height={20} className='stroke-black' />
-          </div>
-        </Menu.Button>
-
-        <Transition
-          enter='transition ease-out duration-200'
-          enterFrom='opacity-0 -translate-y-1'
-          enterTo='opacity-100 translate-y-0'
-          leave='transition ease-in duration-150'
-          leaveFrom='opacity-100 translate-y-0'
-          leaveTo='opacity-0 -translate-y-1'
-        >
-          <Menu.Items className='absolute -right-4 top-8 flex gap-10 h-12 px-4 w-screen bg-[#F9F9F9] shadow-lg focus:outline-none items-center'>
-            <Menu.Item>
-              <p
-                onClick={() => ''}
-                className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
-              >
-                Riparazioni smartphone / PC / Bimby / Folletto
-              </p>
-            </Menu.Item>
-          </Menu.Items>
-        </Transition>
-      </Menu>
+      {categories?.length > MAX_DISPLAY_CATEGORIES && (
+        <Menu as='div' className='flex relative isolate z-0'>
+          <Menu.Button className='inline-flex w-full justify-center items-center gap-2 rounded-md text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
+            <div className='flex text-slate-900 font-bold text-sm text-center items-center justify-center decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'>
+              Altro
+              <ChevronDownIcon height={20} className='stroke-black' />
+            </div>
+          </Menu.Button>
+          <Transition
+            enter='transition ease-out duration-200'
+            enterFrom='opacity-0 -translate-y-1'
+            enterTo='opacity-100 translate-y-0'
+            leave='transition ease-in duration-150'
+            leaveFrom='opacity-100 translate-y-0'
+            leaveTo='opacity-0 -translate-y-1'
+          >
+            <Menu.Items className='absolute -right-4 top-8 flex gap-10 h-12 px-4 w-screen bg-[#F9F9F9] shadow-lg focus:outline-none items-center'>
+              {overflowCategories?.map((category: string, index) => (
+                <Menu.Item key={index}>
+                  <p
+                    onClick={() => setInputFromMenu(`${category}`)}
+                    className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
+                  >
+                    {category}
+                  </p>
+                </Menu.Item>
+              ))}
+              {categories?.length > MAX_DISPLAY_CATEGORIES && (
+                <Menu.Item key={'Riparazioni'}>
+                  <p
+                    onClick={() => ''}
+                    className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
+                  >
+                    Riparazioni smartphone / PC / Bimby / Folletto
+                  </p>
+                </Menu.Item>
+              )}
+            </Menu.Items>
+          </Transition>
+        </Menu>
+      )}
     </div>
   );
 };

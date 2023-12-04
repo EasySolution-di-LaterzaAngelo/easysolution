@@ -451,12 +451,17 @@ function AddProduct() {
 
     setSuccessOpen(true);
 
-    images.map(async (imageData: any, index: number) => {
+    const uuid = uuidv4();
+
+    const uploadPromises = images.map(async (imageData: any, index: number) => {
       const compressedImage = await handleImageUpload(imageData);
       const immagine = inputs.immagini[index]; // Get the corresponding immagine at the same index
-      const imgref = ref(storage, `immagini/${immagine}`);
+      const imgref = ref(storage, `immagini/${uuid}_${immagine}`);
       await uploadBytes(imgref, compressedImage);
     });
+
+    await Promise.all(uploadPromises);
+
     let adjustedInputs =
       inputs &&
       Object.fromEntries(
@@ -475,10 +480,15 @@ function AddProduct() {
           })
           .map(([key, value]) => [
             key.startsWith('_') ? key.slice(1) : key,
-            typeof value === 'string' ? (value as string).trim() : value,
+            key === 'immagini' && Array.isArray(value)
+              ? value.map((image) => uuid + '_' + image) // Adjust 'immagini' value here
+              : typeof value === 'string'
+              ? (value as string).trim()
+              : value,
           ])
       );
-    await setDoc(doc(db, 'prodotti', `${uuidv4()}`), adjustedInputs);
+    await setDoc(doc(db, 'prodotti', `${uuid}`), adjustedInputs);
+
     if (typeof window !== 'undefined') {
       window.location.replace('/auth/admin/gestisci');
     }
@@ -864,7 +874,7 @@ function AddProduct() {
             </div>
             <div className='ml-3'>
               <p className='text-sm font-medium text-green-800'>
-                Successfully uploaded
+                Prodotto aggiunto! Attendi ...
               </p>
             </div>
             <div className='ml-auto pl-3'>
