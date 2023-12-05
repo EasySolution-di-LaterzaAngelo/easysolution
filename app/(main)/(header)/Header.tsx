@@ -48,14 +48,6 @@ const SubHeader = ({ categories }: { categories: string[] }) => {
             {category}
           </a>
         ))}
-        {categories?.length <= MAX_DISPLAY_CATEGORIES && (
-          <p
-            onClick={() => ''}
-            className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
-          >
-            Riparazioni smartphone / PC / Bimby / Folletto
-          </p>
-        )}
       </div>
       {categories?.length > MAX_DISPLAY_CATEGORIES && (
         <Menu as='div' className='flex relative isolate z-0'>
@@ -84,16 +76,6 @@ const SubHeader = ({ categories }: { categories: string[] }) => {
                   </p>
                 </Menu.Item>
               ))}
-              {categories?.length > MAX_DISPLAY_CATEGORIES && (
-                <Menu.Item key={'Riparazioni'}>
-                  <p
-                    onClick={() => ''}
-                    className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
-                  >
-                    Riparazioni smartphone / PC / Bimby / Folletto
-                  </p>
-                </Menu.Item>
-              )}
             </Menu.Items>
           </Transition>
         </Menu>
