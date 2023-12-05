@@ -15,7 +15,7 @@ import { auth } from '@/firebase';
 const FloatingMenu = ({ loggedUser }: { loggedUser: User | undefined }) => {
   const router = useRouter();
   return (
-    <Menu.Items className='absolute z-10 right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none'>
+    <Menu.Items className='absolute z-10 right-0 mt-2 w-max origin-top-right divide-y divide-gray-100 rounded-[10px] bg-white ring-1 ring-black ring-opacity-5 focus:outline-none shadow-xl shadow-[#F6753D]/30 border-2 border-[#F6753D]'>
       {/* {loggedUser && (
         <div className='px-1 py-1 '>
           <Menu.Item>
@@ -107,13 +107,13 @@ const FloatingMenu = ({ loggedUser }: { loggedUser: User | undefined }) => {
           </>
         )}
       </div> */}
-      <div className='px-1 py-1'>
+      <div className='px-1 py-1 w-max'>
         <Menu.Item>
           {({ active }) => (
             <button
               className={`${
                 active ? 'bg-[#F6753D] text-white' : 'text-gray-900'
-              } group flex w-full items-center rounded-md px-2 py-2 text-sm gap-2`}
+              } group flex w-max items-center rounded-md px-2 py-2 text-sm gap-2`}
               onClick={() => {
                 if (typeof window !== 'undefined') {
                   window.location.replace('/auth/admin');
@@ -165,9 +165,6 @@ function User() {
           leaveFrom='transform opacity-100 scale-100'
           leaveTo='transform opacity-0 scale-95'
         >
-          <div
-            className={`absolute -top-14 lg:-top-[68px] -right-4  h-screen w-screen bg-gray-500 opacity-25`}
-          />
           <FloatingMenu loggedUser={loggedUser} />
         </Transition>
       </Menu>
