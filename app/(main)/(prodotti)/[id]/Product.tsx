@@ -127,7 +127,7 @@ function Product({
           </div>
           {/* Price (Mobile View) */}
           {product.sconto && (
-            <div className='flex flex-col gap-4 md:hidden font-medium text-2xl justify-center items-center p-5 w-full'>
+            <div className='flex flex-col gap-8 md:hidden font-medium text-2xl justify-center items-center p-5 w-full'>
               <div>
                 {parseInt(product.sconto) !== 0 ? (
                   <>
@@ -173,7 +173,10 @@ function Product({
                   </>
                 )}
               </div>
-              <WhatsAppButton product={product} googleData={googleData} />
+              <div className='flex flex-col gap-2 items-center'>
+                <p className='text-base font-light'>Per info e prenotazioni:</p>
+                <WhatsAppButton product={product} googleData={googleData} />
+              </div>
             </div>
           )}
 
@@ -272,7 +275,8 @@ function Product({
                   </div>
                 </div>
               </div>
-              <div className='hidden md:flex'>
+              <div className='hidden md:flex md:flex-col gap-2 mt-4'>
+                <p className='text-base font-light'>Per info e prenotazioni:</p>
                 <WhatsAppButton product={product} googleData={googleData} />
               </div>
             </div>
