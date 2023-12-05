@@ -12,6 +12,16 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import styles from './Product.module.css';
 import { Prodotto } from '@/types';
 
+interface GoogleData {
+  result?: {
+    opening_hours: {
+      weekday_text: string[];
+    };
+    international_phone_number: string;
+    url: string;
+  };
+}
+
 const excludeKeys = [
   'nome',
   'marca',
@@ -25,10 +35,26 @@ const excludeKeys = [
   'id',
 ];
 
-const WhatsAppButton = ({ product }: { product: Prodotto | null }) => {
+const WhatsAppButton = ({
+  product,
+  googleData,
+}: {
+  product: Prodotto | null;
+  googleData: GoogleData;
+}) => {
+  // Function to reformat the phone number
+  const formatPhoneNumber = (phoneNumber: string): string => {
+    // Remove all non-digit characters (e.g., spaces, +)
+    return phoneNumber.replace(/\D/g, '');
+  };
+
+  const formattedPhoneNumber = googleData?.result?.international_phone_number
+    ? formatPhoneNumber(googleData.result.international_phone_number)
+    : '';
+
   return (
     <a
-      href={`https://wa.me/393923762092?text=Buongiorno, vorrei avere informazioni riguardo al prodotto "${product?.nome}" -> https://easysolutiontaranto.com/${product?.id}`}
+      href={`https://wa.me/${formattedPhoneNumber}?text=Buongiorno, vorrei avere informazioni riguardo al prodotto "${product?.nome}" -> https://easysolutiontaranto.com/${product?.id}`}
       className='flex w-max gap-2 py-2 px-4 bg-[#24D366] text-white rounded-lg font-medium text-base shadow-md hover:shadow-lg'
     >
       <Image
@@ -44,7 +70,13 @@ const WhatsAppButton = ({ product }: { product: Prodotto | null }) => {
   );
 };
 
-function Product({ product }: { product: Prodotto | null }) {
+function Product({
+  product,
+  googleData,
+}: {
+  product: Prodotto | null;
+  googleData: GoogleData;
+}) {
   return product ? (
     <div className='bg-white flex mb-10 mt-52 md:mt-36 z-0 mx-auto'>
       <div className='w-screen max-w-7xl'>
@@ -141,7 +173,7 @@ function Product({ product }: { product: Prodotto | null }) {
                   </>
                 )}
               </div>
-              <WhatsAppButton product={product} />
+              <WhatsAppButton product={product} googleData={googleData} />
             </div>
           )}
 
@@ -241,7 +273,7 @@ function Product({ product }: { product: Prodotto | null }) {
                 </div>
               </div>
               <div className='hidden md:flex'>
-                <WhatsAppButton product={product} />
+                <WhatsAppButton product={product} googleData={googleData} />
               </div>
             </div>
             {/* Description */}
