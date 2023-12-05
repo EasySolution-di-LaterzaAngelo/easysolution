@@ -25,6 +25,25 @@ const excludeKeys = [
   'id',
 ];
 
+const WhatsAppButton = ({ product }: { product: Prodotto | null }) => {
+  return (
+    <a
+      href={`https://wa.me/393923762092?text=Buongiorno, vorrei avere informazioni riguardo al prodotto "${product?.nome}" -> https://easysolutiontaranto.com/${product?.id}`}
+      className='flex w-max gap-2 py-2 px-4 bg-[#24D366] text-white rounded-lg font-medium text-base shadow-md hover:shadow-lg'
+    >
+      <Image
+        src={'/whatsapp.png'}
+        alt='WhatsApp'
+        width={24}
+        height={24}
+        unoptimized={true}
+        priority={true}
+      />
+      Contattaci su WhatsApp
+    </a>
+  );
+};
+
 function Product({ product }: { product: Prodotto | null }) {
   return product ? (
     <div className='bg-white flex mb-10 mt-52 md:mt-36 z-0 mx-auto'>
@@ -76,7 +95,7 @@ function Product({ product }: { product: Prodotto | null }) {
           </div>
           {/* Price (Mobile View) */}
           {product.sconto && (
-            <div className='flex md:hidden font-medium text-2xl justify-center items-center p-5 w-full'>
+            <div className='flex flex-col gap-4 md:hidden font-medium text-2xl justify-center items-center p-5 w-full'>
               <div>
                 {parseInt(product.sconto) !== 0 ? (
                   <>
@@ -122,6 +141,7 @@ function Product({ product }: { product: Prodotto | null }) {
                   </>
                 )}
               </div>
+              <WhatsAppButton product={product} />
             </div>
           )}
 
@@ -219,6 +239,9 @@ function Product({ product }: { product: Prodotto | null }) {
                     </svg>
                   </div>
                 </div>
+              </div>
+              <div className='hidden md:flex'>
+                <WhatsAppButton product={product} />
               </div>
             </div>
             {/* Description */}
