@@ -48,14 +48,6 @@ const SubHeader = ({ categories }: { categories: string[] }) => {
             {category}
           </a>
         ))}
-        {categories?.length <= MAX_DISPLAY_CATEGORIES && (
-          <p
-            onClick={() => ''}
-            className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
-          >
-            Riparazioni smartphone / PC / Bimby / Folletto
-          </p>
-        )}
       </div>
       {categories?.length > MAX_DISPLAY_CATEGORIES && (
         <Menu as='div' className='flex relative isolate z-0'>
@@ -84,16 +76,6 @@ const SubHeader = ({ categories }: { categories: string[] }) => {
                   </p>
                 </Menu.Item>
               ))}
-              {categories?.length > MAX_DISPLAY_CATEGORIES && (
-                <Menu.Item key={'Riparazioni'}>
-                  <p
-                    onClick={() => ''}
-                    className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
-                  >
-                    Riparazioni smartphone / PC / Bimby / Folletto
-                  </p>
-                </Menu.Item>
-              )}
             </Menu.Items>
           </Transition>
         </Menu>
@@ -122,16 +104,34 @@ const EasySolutionLogo = () => {
 
 const EasySolutionVideo = () => {
   return (
-    <div className='fixed justify-center items-center w-[180px] h-[90px] sm:w-[240px] sm:h-[120px] shrink-0 top-2 left-1/2 -translate-x-[90px] sm:-translate-x-[120px]'>
+    <div className='fixed justify-center items-center w-[180px] h-[90px] sm:w-[540px] sm:h-[120px] shrink-0 top-2 left-1/2 -translate-x-[90px] sm:-translate-x-[270px]'>
       <a title='Home' href='/'>
-        <div
-          dangerouslySetInnerHTML={{
-            __html: `<video className="app__backgroundVideo" height="300" width="240" poster="/poster.png" autoplay loop muted playsinline>
-                      <source src="/easysolutionvideo.mp4" type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>`,
-          }}
-        />
+        <video
+          width='540px'
+          height='120px'
+          poster='/poster.png'
+          autoPlay
+          loop
+          muted
+          playsInline
+          className='hidden sm:flex'
+        >
+          <source src='/easysolutionvideo.mp4' type='video/mp4' />
+          Your browser does not support the video tag.
+        </video>
+        <video
+          width='180px'
+          height='90px'
+          poster='/poster_sm.png'
+          autoPlay
+          loop
+          muted
+          playsInline
+          className='flex sm:hidden'
+        >
+          <source src='/easysolutionvideo_sm.mp4' type='video/mp4' />
+          Your browser does not support the video tag.
+        </video>
       </a>
     </div>
   );
@@ -164,7 +164,7 @@ const SearchBar = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className={`flex flex-grow lg:w-4/6 items-center text-xs rounded-full h-10 cursor-pointer shadow-md ${styles.searchbar}`}
+      className={`flex flex-grow xl:w-4/6 items-center text-xs rounded-full h-10 cursor-pointer shadow-md ${styles.searchbar}`}
     >
       <input
         ref={inputRef}
@@ -218,11 +218,11 @@ function Header({ productsData }: { productsData: Prodotto[] }) {
   }, [productsData]);
 
   return (
-    <header className='z-50 fixed w-full'>
-      <div className='grid grid-rows-3 grid-flow-col gap-5 lg:gap-0 items-center p-2 xxs:p-4 lg:pt-6 bg-[#F9F9F9] shadow-lg z-50'>
+    <header className='z-50 fixed w-full bg-[#F9F9F9] shadow-lg'>
+      <div className='grid grid-rows-3 grid-flow-col gap-5 lg:gap-0 items-center p-2 xxs:p-4 lg:pt-6 z-50 max-w-[1440px] mx-auto'>
         <div className='flex h-24 row-span-2 justify-between'>
           <Sidebar categories={categories} />
-          <div className='hidden w-80 lg:flex'>
+          <div className='hidden lg:w-52 xl:w-80 lg:flex'>
             <SearchBar />
           </div>
           {/* <EasySolutionLogo /> */}

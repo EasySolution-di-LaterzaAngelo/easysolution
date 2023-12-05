@@ -9,6 +9,8 @@ import Link from 'next/link';
 import React from 'react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { update } from '@/slices/googleSlice';
+import { useDispatch } from 'react-redux';
 
 interface GoogleData {
   result?: {
@@ -22,6 +24,19 @@ interface GoogleData {
 
 export default function Footer({ googleData }: { googleData: GoogleData }) {
   const pathname = usePathname();
+  const dispatch = useDispatch();
+  dispatch(update(googleData));
+
+  // Function to reformat the phone number
+  const formatPhoneNumber = (phoneNumber: string): string => {
+    // Remove all non-digit characters (e.g., spaces, +)
+    return phoneNumber.replace(/\D/g, '');
+  };
+
+  const formattedPhoneNumber = googleData?.result?.international_phone_number
+    ? formatPhoneNumber(googleData.result.international_phone_number)
+    : '';
+
   return (
     <div className='relative w-screen'>
       <div
@@ -83,7 +98,7 @@ export default function Footer({ googleData }: { googleData: GoogleData }) {
             </div>
           </div>
 
-          <div className='flex flex-col items-center justify-center w-52'>
+          <div className='flex flex-col items-center justify-center min-w-[200px] w-max gap-4'>
             <div className='flex justify-center items-center gap-4'>
               <a
                 href={'/'}
@@ -97,7 +112,7 @@ export default function Footer({ googleData }: { googleData: GoogleData }) {
             <div className='flex flex-col w-full items-center justify-center gap-4'>
               <a
                 href='https://www.facebook.com/hanamiwithlove'
-                className={`flex items-center gap-2 hover:underline hover:text-[#F6753D] cursor-pointer`}
+                className={`flex items-center gap-2 hover:underline hover:text-[#1878F2] cursor-pointer`}
               >
                 <Image
                   src={'/facebook.png'}
@@ -113,6 +128,22 @@ export default function Footer({ googleData }: { googleData: GoogleData }) {
                   Easy Solution
                   <br /> Di Laterza Angelo{' '}
                 </p>
+              </a>
+              <a
+                href={`https://wa.me/${formattedPhoneNumber}?text=Buongiorno`}
+                className={`flex w-full items-center gap-2 hover:underline hover:text-[#24D366] cursor-pointer`}
+              >
+                <Image
+                  src={'/whatsapp_green.png'}
+                  title='WhatsApp'
+                  alt='WhatsApp'
+                  className={`h-8 w-auto aspect-auto object-contain cursor-pointer`}
+                  width={512}
+                  height={512}
+                  unoptimized={true}
+                  priority={true}
+                />
+                <p className='shrink-0'>Contattaci su WhatsApp</p>
               </a>
               {/* <a
                 href='https://www.instagram.com/easy_solution_taranto'
