@@ -61,9 +61,7 @@ const Field = ({
       {productKey !== 'Prezzo' &&
       productKey !== 'Sconto' &&
       productKey !== 'Percentuale' ? (
-        productKey === 'Nome' ||
-        productKey === 'Marca' ||
-        productKey === 'Descrizione' ? (
+        productKey === 'Nome' || productKey === 'Descrizione' ? (
           // Required field
           <div className='flex flex-row w-full items-center justify-center'>
             <div className='relative flex flex-row w-full items-center justify-center py-4'>
@@ -227,7 +225,6 @@ function Product({ params }: any) {
 
   const excludeKeys = [
     'nome',
-    'marca',
     'categoria',
     'descrizione',
     'immagini',
@@ -656,12 +653,6 @@ function Product({ params }: any) {
             key={'Nome'}
             productKey='Nome'
             value={typeof prodotto?.nome === 'string' ? prodotto.nome : ''}
-            handleChange={handleChange}
-          />
-          <Field
-            key={'Marca'}
-            productKey='Marca'
-            value={typeof prodotto?.marca === 'string' ? prodotto.marca : ''}
             handleChange={handleChange}
           />
 

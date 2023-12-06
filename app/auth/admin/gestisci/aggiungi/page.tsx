@@ -77,9 +77,7 @@ const Field = ({
       {productKey !== 'Prezzo' &&
       productKey !== 'Sconto' &&
       productKey !== 'Percentuale' ? (
-        productKey === 'Nome' ||
-        productKey === 'Marca' ||
-        productKey === 'Descrizione' ? (
+        productKey === 'Nome' || productKey === 'Descrizione' ? (
           // Required field
           <div className='relative flex flex-row w-full items-center justify-center py-4'>
             <label
@@ -638,13 +636,6 @@ function AddProduct() {
           {/* Name field */}
           <Field
             productKey='Nome'
-            handleChange={handleChange}
-            inputs={inputs}
-          />
-
-          {/* Brand field */}
-          <Field
-            productKey='Marca'
             handleChange={handleChange}
             inputs={inputs}
           />
