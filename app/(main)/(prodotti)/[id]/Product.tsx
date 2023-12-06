@@ -85,6 +85,20 @@ function Product({
           <div className='flex justify-center p-5 md:pl-10'>
             <Carousel
               statusFormatter={(current, total) => `${current} di ${total}`}
+              showThumbs={true}
+              renderThumbs={() =>
+                product.immagini.map((thumbnail, index) => (
+                  <Image
+                    src={thumbnail}
+                    alt={product.nome}
+                    key={index}
+                    width={40}
+                    height={40}
+                    unoptimized={true}
+                    priority={true}
+                  />
+                ))
+              }
               renderArrowPrev={(onClickHandler, hasPrev, label) =>
                 hasPrev && (
                   <button
