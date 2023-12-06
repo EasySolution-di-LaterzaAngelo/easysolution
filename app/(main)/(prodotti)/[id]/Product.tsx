@@ -294,6 +294,7 @@ function Product({
                     {({ open }) => (
                       <>
                         <Disclosure.Button
+                          role='button'
                           className={`flex flex-row justify-between w-full py-2 ${styles.disclosureButton}`}
                         >
                           <div className='flex flex-row gap-2 items-center'>
@@ -338,6 +339,7 @@ function Product({
                       {({ open }) => (
                         <>
                           <Disclosure.Button
+                            role='button'
                             className={`flex flex-row justify-between w-full py-2 ${styles.disclosureButton}`}
                           >
                             <div className='flex flex-row gap-2 items-center'>

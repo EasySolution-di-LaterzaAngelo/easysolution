@@ -579,7 +579,7 @@ function Product({ params }: any) {
       return imageFile;
     }
   }
-  console.log(params);
+
   return (
     <div className='relative m-auto flex flex-col'>
       <form onSubmit={handleEditProduct}>
@@ -919,6 +919,7 @@ function Product({ params }: any) {
         >
           <div>
             <button
+              role='button'
               type='button'
               onClick={handleDeleteProduct}
               className='flex mx-auto p-4 items-center drop-shadow-lg text-white bg-red-400 rounded-full ring-2 ring-red-500 shadow-lg hover:ring-2 hover:ring-red-700 hover:bg-red-500'
@@ -931,6 +932,7 @@ function Product({ params }: any) {
           </div>
           <div key={'Update'}>
             <button
+              role='button'
               type='submit'
               className='flex mx-auto p-4 items-center drop-shadow-lg text-white bg-yellow-400 rounded-full ring-2 ring-yellow-500 shadow-lg hover:ring-2 hover:ring-yellow-700 hover:bg-yellow-500'
             >

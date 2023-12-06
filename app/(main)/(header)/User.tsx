@@ -111,6 +111,8 @@ const FloatingMenu = ({ loggedUser }: { loggedUser: User | undefined }) => {
         <Menu.Item>
           {({ active }) => (
             <button
+              role='button'
+              title='Amministratore'
               className={`${
                 active ? 'bg-[#F6753D] text-white' : 'text-gray-900'
               } group flex w-max items-center rounded-md px-2 py-2 text-sm gap-2`}
@@ -147,7 +149,11 @@ function User() {
     <>
       <Menu as='div' className='z-50 relative isolate text-left'>
         <div>
-          <Menu.Button className='inline-flex w-full justify-center items-center gap-2 rounded-md text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
+          <Menu.Button
+            role='button'
+            title='Utente'
+            className='inline-flex w-full justify-center items-center gap-2 rounded-md text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
+          >
             <div className='flex w-10 h-10 justify-center items-center cursor-pointer hover:bg-slate-200 hover:rounded-full'>
               <UserIcon
                 width={20}

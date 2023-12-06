@@ -84,28 +84,6 @@ function Sidebar({ categories }: { categories: any }) {
                       </a>
                     </li>
                   ))}
-
-                  <li
-                    className='text-sm px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer'
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setInputFromMenu(
-                        'Riparazioni smartphone / PC / Bimby / Folletto'
-                      );
-                    }}
-                  >
-                    <a
-                      title={`Test`}
-                      href={`/`}
-                      className='flex justify-between items-center'
-                    >
-                      Riparazioni smartphone / PC / Bimby / Folletto
-                      <ChevronRightIcon
-                        height={24}
-                        className='stroke-blue-500 justify-item-end'
-                      />
-                    </a>
-                  </li>
                 </ul>
               </div>
             </nav>
@@ -119,6 +97,8 @@ function Sidebar({ categories }: { categories: any }) {
     <div className='flex lg:hidden'>
       {!isMenuOpen ? (
         <button
+          role='button'
+          title='Menú'
           className={`flex items-center justify-center ${styles.hamburger} h-10 w-10 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-slate-200 hover:rounded-full`}
           onClick={() => setIsMenuOpen(true)}
         >
@@ -126,6 +106,8 @@ function Sidebar({ categories }: { categories: any }) {
         </button>
       ) : (
         <button
+          role='button'
+          title='Chiudi Menú'
           className={`flex items-center justify-center ${styles.hamburger} h-10 w-10 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-slate-200 hover:rounded-full`}
           onClick={() => setIsMenuOpen(false)}
         >
