@@ -30,6 +30,7 @@ export default async function RootLayout({
     <html lang='it'>
       <head>
         <title>Easy Solution Di Laterza Angelo</title>
+        <meta name="google-site-verification" content="PKpk9-yodBKS9a6F2HtMEeXuNG-JCI7KQb5BGcAMBWE" />
         <meta name="google-site-verification" content="jqHfTQkXtRhcMZeGjnR4qlPFLQuT4wHvTSOa5Dyw_jU" />
         <meta
           name='description'
