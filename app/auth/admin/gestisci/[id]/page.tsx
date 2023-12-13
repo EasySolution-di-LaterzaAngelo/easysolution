@@ -204,6 +204,9 @@ function Product({ params }: any) {
   const [originalImages, setOriginalImages] = useState<any>([]);
   const [images, setImages] = useState<any>([]);
   const [imagesUrls, setImagesUrls] = useState<string[]>([]);
+  const [originalVideo, setOriginalVideo] = useState<any>();
+  const [video, setVideo] = useState<any>();
+  const [videoUrl, setVideoUrl] = useState<string>();
   const [categories, setCategories] = useState<any>();
 
   const [isDualSim, setIsDualSim] = useState(
@@ -228,20 +231,23 @@ function Product({ params }: any) {
     'categoria',
     'descrizione',
     'immagini',
+    'video',
     'prezzo',
     'sconto',
     'percentuale',
   ];
 
   const router = useRouter();
-
   useEffect(() => {
     async function fetchData(params: any) {
       const prodottiData = await getProduct(params.id);
       prodottiData ? setImagesUrls(prodottiData.immaginiUrl) : null;
       delete prodottiData.immaginiUrl;
+      prodottiData ? setVideoUrl(prodottiData.videoUrl) : null;
+      delete prodottiData.videoUrl;
       prodottiData ? setProdotto(prodottiData) : null;
       prodottiData ? setOriginalImages(prodottiData.immagini) : null;
+      prodottiData ? setOriginalVideo(prodottiData.video) : null;
       prodottiData ? setInitialProdotto(prodottiData) : null;
       prodottiData ? setIsSecondHand(prodottiData.secondHand) : null;
       prodottiData ? setIsRefurbished(prodottiData.ricondizionato) : null;
@@ -430,31 +436,36 @@ function Product({ params }: any) {
       }));
     }
     if (e.target.files && e.target.files[0] && prodotto) {
-      // Update the image name in the 'immagini' array
-      const updatedImages = [...prodotto.immagini];
-      updatedImages[parseInt(e.target.name)] = e.target.files[0].name;
+      if (e.target.name === 'Immagine') {
+        // Update the image name in the 'immagini' array
+        const updatedImages = [...prodotto.immagini];
+        updatedImages[parseInt(e.target.name)] = e.target.files[0].name;
 
-      // Update the 'images' state by creating a new array with the updated image
-      setImages((prevImages: any) => {
-        const updatedImages = [...prevImages];
-        updatedImages[parseInt(e.target.name)] = e.target.files[0];
-        return updatedImages;
-      });
+        // Update the 'images' state by creating a new array with the updated image
+        setImages((prevImages: any) => {
+          const updatedImages = [...prevImages];
+          updatedImages[parseInt(e.target.name)] = e.target.files[0];
+          return updatedImages;
+        });
 
-      // Update the 'imagesUrls' state by creating a new array with the updated image URL
-      setImagesUrls((prevImageUrls: any) => {
-        const updatedUrls = [...prevImageUrls];
-        updatedUrls[parseInt(e.target.name)] = URL.createObjectURL(
-          e.target.files[0]
-        );
-        return updatedUrls;
-      });
+        // Update the 'imagesUrls' state by creating a new array with the updated image URL
+        setImagesUrls((prevImageUrls: any) => {
+          const updatedUrls = [...prevImageUrls];
+          updatedUrls[parseInt(e.target.name)] = URL.createObjectURL(
+            e.target.files[0]
+          );
+          return updatedUrls;
+        });
 
-      // Update the 'immagini' state with the updated image names
-      setProdotto((prevInputs: any) => ({
-        ...prevInputs,
-        immagini: updatedImages,
-      }));
+        // Update the 'immagini' state with the updated image names
+        setProdotto((prevInputs: any) => ({
+          ...prevInputs,
+          immagini: updatedImages,
+        }));
+      }
+      if (e.target.name === 'Video') {
+        // Edit video code here
+      }
     }
   };
 
@@ -495,18 +506,34 @@ function Product({ params }: any) {
           }
         );
 
-        const deletePromises = originalImages.map(
+        const uploadVideoPromise = async () => {
+          const videoInput = prodotto.video; // Get the corresponding immagine at the same index
+          const vidref = ref(storage, `video/${params.id}_${videoInput}`);
+          await uploadBytes(vidref, video);
+        };
+
+        const deleteImagesPromises = originalImages.map(
           async (image: any, index: number) => {
             if (!prodotto.immagini.includes(image)) {
               const imgref = ref(storage, `immagini/${image}`);
-              console.log(imgref);
               await deleteObject(imgref);
             }
           }
         );
 
+        const deleteVideoPromises = async () => {
+          if (!prodotto.immagini.includes(originalVideo)) {
+            const imgref = ref(storage, `video/${originalVideo}`);
+            await deleteObject(imgref);
+          }
+        };
+
         await Promise.all(uploadPromises);
-        await Promise.all(deletePromises);
+        await Promise.all(deleteImagesPromises);
+        const videoUploadPromise = uploadVideoPromise();
+        await videoUploadPromise;
+        const videoDeletePromise = deleteVideoPromises();
+        await videoDeletePromise;
 
         let adjustedInputs: any = Object.fromEntries(
           Object.entries(prodotto)
@@ -576,7 +603,6 @@ function Product({ params }: any) {
       return imageFile;
     }
   }
-
   return (
     <div className='relative m-auto flex flex-col'>
       <form onSubmit={handleEditProduct}>
@@ -590,6 +616,36 @@ function Product({ params }: any) {
           >
             <ArrowSmallLeftIcon height={18} className='stroke-black' />
           </a>
+
+          {prodotto?.video && (
+            <div className='flex flex-col w-full items-center justify-center'>
+              <video controls width='240px' height='120px' className='flex'>
+                <source src={videoUrl} type='video/mp4' />
+                Your browser does not support the video tag.
+              </video>
+
+              <label
+                className={`flex flex-row items-center gap-1 p-2 px-4 my-4 rounded-xl ring-2 ring-gray-400 bg-gray-200 shadow-lg hover:ring-2 hover:ring-black hover:bg-yellow-400 cursor-pointer text-sm ${styles.drop_container}`}
+              >
+                <span className={styles.drop_title}>Cambia Video</span>
+                <input
+                  accept='video/*'
+                  type='file'
+                  name='Video'
+                  onChange={handleChange}
+                  style={{
+                    position: 'absolute',
+                    clip: 'rect(1px, 1px, 1px, 1px)',
+                    padding: 0,
+                    border: 0,
+                    height: '1px',
+                    width: '1px',
+                    overflow: 'hidden',
+                  }}
+                />
+              </label>
+            </div>
+          )}
           {prodotto?.immagini?.map((imageName, index) => (
             <>
               <div
@@ -619,7 +675,7 @@ function Product({ params }: any) {
                   <input
                     accept='image/*'
                     type='file'
-                    name={`${index}`}
+                    name='Immagine'
                     onChange={handleChange}
                     style={{
                       position: 'absolute',

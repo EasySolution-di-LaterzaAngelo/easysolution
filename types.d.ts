@@ -5,6 +5,7 @@ export interface Prodotto {
   categoria: string;
   descrizione: string;
   immagini: string[];
+  video: string;
   usato: boolean;
   ricondizionato: boolean;
   dual_sim: boolean;

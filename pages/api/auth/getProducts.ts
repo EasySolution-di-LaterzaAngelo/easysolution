@@ -133,6 +133,11 @@ export async function getProduct(id: any) {
             downloadURLs.push(downloadURL);
           }
           return { ...obj, [key]: value, immaginiUrl: downloadURLs };
+        } else if (key === 'video') {
+          const downloadURL = await getDownloadURL(
+            ref(storage, `video/${value}`)
+          );
+          return { ...obj, [key]: value, videoUrl: downloadURL };
         } else {
           return { ...obj, [key]: value };
         }

@@ -18,6 +18,7 @@ import {
   CheckCircleIcon,
   PaperAirplaneIcon,
   XMarkIcon,
+  VideoCameraIcon,
 } from '@heroicons/react/24/outline';
 import { getProducts } from '@/pages/api/auth/getProducts';
 import imageCompression from 'browser-image-compression';
@@ -207,6 +208,7 @@ function AddProduct() {
     categoria: '',
     descrizione: '',
     immagini: [],
+    video: '',
     usato: false,
     ricondizionato: false,
     dual_sim: false,
@@ -220,6 +222,8 @@ function AddProduct() {
 
   const [images, setImages] = useState<any>([]);
   const [imagesUrls, setImagesUrls] = useState<string[]>([]);
+  const [video, setVideo] = useState<any>('');
+  const [videoUrl, setVideoUrl] = useState<string>('');
   const router = useRouter();
 
   const [isSecondHand, setIsSecondHand] = useState(false);
@@ -434,12 +438,19 @@ function AddProduct() {
             e.target.value.replace(/\n/g, ''),
         }));
       if (e.target.files && e.target.files[0]) {
-        inputs.immagini.push(e.target.files[0].name);
-        setImages((prevImage: any) => [...prevImage, e.target.files[0]]);
-        setImagesUrls((prevImageUrls) => [
-          ...prevImageUrls,
-          URL.createObjectURL(e.target.files[0]),
-        ]);
+        if (e.target.name === 'Immagine') {
+          inputs.immagini.push(e.target.files[0].name);
+          setImages((prevImage: any) => [...prevImage, e.target.files[0]]);
+          setImagesUrls((prevImageUrls) => [
+            ...prevImageUrls,
+            URL.createObjectURL(e.target.files[0]),
+          ]);
+        }
+        if (e.target.name === 'Video') {
+          inputs.video = e.target.files[0].name;
+          setVideo(e.target.files[0]);
+          setVideoUrl(URL.createObjectURL(e.target.files[0]));
+        }
       }
     }
   };
@@ -451,14 +462,25 @@ function AddProduct() {
 
     const uuid = uuidv4();
 
-    const uploadPromises = images.map(async (imageData: any, index: number) => {
-      const compressedImage = await handleImageUpload(imageData);
-      const immagine = inputs.immagini[index]; // Get the corresponding immagine at the same index
-      const imgref = ref(storage, `immagini/${uuid}_${immagine}`);
-      await uploadBytes(imgref, compressedImage);
-    });
+    const uploadImagesPromises = images.map(
+      async (imageData: any, index: number) => {
+        const compressedImage = await handleImageUpload(imageData);
+        const immagine = inputs.immagini[index]; // Get the corresponding immagine at the same index
+        const imgref = ref(storage, `immagini/${uuid}_${immagine}`);
+        await uploadBytes(imgref, compressedImage);
+      }
+    );
 
-    await Promise.all(uploadPromises);
+    const uploadVideoPromise = async () => {
+      const videoInput = inputs.video; // Get the corresponding immagine at the same index
+      const vidref = ref(storage, `video/${uuid}_${videoInput}`);
+      await uploadBytes(vidref, video);
+    };
+
+    const videoUploadPromise = uploadVideoPromise();
+
+    await Promise.all(uploadImagesPromises);
+    await videoUploadPromise;
 
     let adjustedInputs =
       inputs &&
@@ -467,7 +489,10 @@ function AddProduct() {
           .filter(([key, value]) => {
             if (key === 'immagini' && Array.isArray(value)) {
               return true; // Keep the "immagine" key with an array value
-            } else if (
+            } else if (key === 'video') {
+              return true; // Keep the "video" key
+            }
+            if (
               typeof value === 'string'
                 ? (value as string).trim() !== ''
                 : typeof value === 'boolean' && value === true
@@ -480,6 +505,8 @@ function AddProduct() {
             key.startsWith('_') ? key.slice(1) : key,
             key === 'immagini' && Array.isArray(value)
               ? value.map((image) => uuid + '_' + image) // Adjust 'immagini' value here
+              : key === 'video'
+              ? uuid + '_' + value
               : typeof value === 'string'
               ? (value as string).trim()
               : value,
@@ -487,9 +514,9 @@ function AddProduct() {
       );
     await setDoc(doc(db, 'prodotti', `${uuid}`), adjustedInputs);
 
-    if (typeof window !== 'undefined') {
-      window.location.replace('/auth/admin/gestisci');
-    }
+    // if (typeof window !== 'undefined') {
+    //   window.location.replace('/auth/admin/gestisci');
+    // }
   };
 
   async function handleImageUpload(image: any) {
@@ -527,6 +554,13 @@ function AddProduct() {
     imagesUrls.splice(index, 1);
   };
 
+  const handleRemoveVideo = () => {
+    setInputs((prevState) => {
+      return { ...prevState, video: '' };
+    });
+    setVideoUrl('');
+  };
+
   const renderImage = (src: string, label: string, index: number) => (
     <div
       key={index}
@@ -552,9 +586,30 @@ function AddProduct() {
     </div>
   );
 
+  const renderVideo = (src: string, index: number) => (
+    <div
+      key={index}
+      className='flex flex-col w-full items-center justify-center'
+    >
+      <video controls width='240px' height='120px' className='flex'>
+        <source src={src} type='video/mp4' />
+        Your browser does not support the video tag.
+      </video>
+
+      <button
+        role='button'
+        type='button'
+        onClick={() => handleRemoveVideo()}
+        className='flex items-center gap-1 p-2 px-4 my-4 rounded-xl ring-2 ring-gray-400 bg-gray-200 shadow-lg hover:ring-2 hover:ring-black hover:bg-red-400 cursor-pointer text-sm'
+      >
+        Rimuovi Video
+      </button>
+    </div>
+  );
+
   const renderImageUploader = () => (
     <label className={`flex flex-row w-3/5 mx-auto ${styles.drop_container}`}>
-      <span className={styles.drop_title}>Carica una foto</span>
+      <span className={styles.drop_title}>Carica una Foto</span>
 
       <input
         required={inputs.immagini.length === 0}
@@ -577,6 +632,31 @@ function AddProduct() {
     </label>
   );
 
+  const renderVideoUploader = () => (
+    <label className={`flex flex-row w-3/5 mx-auto ${styles.drop_container}`}>
+      <span className={styles.drop_title}>Carica un Video</span>
+
+      <input
+        required={inputs.immagini.length === 0}
+        ref={inputRefImage}
+        accept='video/*'
+        type='file'
+        name='Video'
+        onChange={handleChange}
+        style={{
+          position: 'absolute',
+          clip: 'rect(1px, 1px, 1px, 1px)',
+          padding: 0,
+          border: 0,
+          height: '1px',
+          width: '1px',
+          overflow: 'hidden',
+        }}
+      />
+      <VideoCameraIcon height={22} className='stroke-black stroke-2' />
+    </label>
+  );
+
   return (
     <div className='relative w-full flex flex-col px-6'>
       {/* Form */}
@@ -592,6 +672,16 @@ function AddProduct() {
           >
             <ArrowSmallLeftIcon height={18} className='stroke-black' />
           </a>
+
+          {/* Video field */}
+          <>
+            {inputs.video === '' ? (
+              <> {renderVideoUploader()}</>
+            ) : (
+              <>{renderVideo(videoUrl, 0)}</>
+            )}
+          </>
+
           {/* Image field */}
           <>
             {inputs.immagini.length === 0 && (
