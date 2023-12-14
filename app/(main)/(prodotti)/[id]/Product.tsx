@@ -2,7 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Disclosure, Transition } from '@headlessui/react';
-import { ChevronUpIcon } from '@heroicons/react/20/solid';
+import {
+  ArrowLeftCircleIcon,
+  ArrowRightCircleIcon,
+  ChevronUpIcon,
+} from '@heroicons/react/20/solid';
 import {
   ClipboardDocumentListIcon,
   Cog6ToothIcon,
@@ -29,6 +33,8 @@ const excludeKeys = [
   'descrizione',
   'immagini',
   'immaginiUrl',
+  'video',
+  'videoUrl',
   'prezzo',
   'sconto',
   'percentuale',
@@ -77,6 +83,17 @@ function Product({
   product: Prodotto | null;
   googleData: GoogleData;
 }) {
+  const correctFormatProduct = {
+    nome: product?.nome,
+    categoria: product?.categoria,
+    descrizione: product?.descrizione,
+    prezzo: product?.prezzo,
+    media: [
+      ...(product?.video ? [product?.video] : []),
+      ...(product?.immagini ? product?.immagini : []),
+    ],
+    id: product?.id,
+  };
   return product ? (
     <div className='bg-white flex mb-10 mt-52 md:mt-36 z-0 mx-auto'>
       <div className='w-screen max-w-7xl'>
@@ -87,17 +104,37 @@ function Product({
               statusFormatter={(current, total) => `${current} di ${total}`}
               showThumbs={true}
               renderThumbs={() =>
-                product.immagini.map((thumbnail, index) => (
-                  <Image
-                    src={thumbnail}
-                    alt={product.nome}
-                    key={index}
-                    width={40}
-                    height={40}
-                    unoptimized={true}
-                    priority={true}
-                  />
-                ))
+                correctFormatProduct.media.map((media: any, index: number) =>
+                  product.video && index === 0 ? (
+                    <>
+                      <div key={index}>
+                        <video
+                          muted
+                          width={128}
+                          height={80}
+                          className={`rounded-md shadow-xl md:shadow-none aspect-auto object-contain h-auto max-h-16 w-auto max-w-16 mx-auto`}
+                        >
+                          <source src={media} type='video/mp4' />
+                          Your browser does not support the video tag.
+                        </video>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div key={index}>
+                        <Image
+                          src={media}
+                          alt=''
+                          className={`rounded-md shadow-xl md:shadow-none aspect-auto object-contain h-auto max-h-16 w-auto max-w-16 mx-auto`}
+                          width={128}
+                          height={80}
+                          unoptimized={true}
+                          priority={true}
+                        />
+                      </div>
+                    </>
+                  )
+                )
               }
               renderArrowPrev={(onClickHandler, hasPrev, label) =>
                 hasPrev && (
@@ -105,9 +142,9 @@ function Product({
                     type='button'
                     onClick={onClickHandler}
                     title={label}
-                    className='absolute rounded-full bg-gray-200 z-10 h-6 w-6 cursor-pointer top-1/2 left-2 hover:bg-gray-300'
+                    className='absolute rounded-full bg-white z-10 h-10 w-10 cursor-pointer top-1/2 left-2 hover:brightness-125 hover:bg-slate-800'
                   >
-                    {'<'}
+                    <ArrowLeftCircleIcon className='fill-slate-800 hover:fill-white' />
                   </button>
                 )
               }
@@ -117,26 +154,42 @@ function Product({
                     type='button'
                     onClick={onClickHandler}
                     title={label}
-                    className='absolute rounded-full bg-gray-200 z-10 h-6 w-6 cursor-pointer top-1/2 right-2 hover:bg-gray-300'
+                    className='absolute rounded-full bg-white z-10 h-10 w-10 cursor-pointer top-1/2 right-2 hover:brightness-125 hover:bg-slate-800'
                   >
-                    {'>'}
+                    <ArrowRightCircleIcon className='fill-slate-800 hover:fill-white' />
                   </button>
                 )
               }
             >
-              {product.immagini.map((immagine: any, index: number) => (
-                <div key={index}>
-                  <Image
-                    src={immagine}
-                    alt=''
-                    className={`rounded-xl shadow-xl md:shadow-none aspect-auto object-contain h-64 md:h-96 w-auto p-2`}
-                    width={128}
-                    height={80}
-                    unoptimized={true}
-                    priority={true}
-                  />
-                </div>
-              ))}
+              {correctFormatProduct.media.map((media: any, index: number) =>
+                product.video && index === 0 ? (
+                  <>
+                    <div key={index}>
+                      <video
+                        controls
+                        className={`rounded-xl shadow-xl md:shadow-none aspect-auto object-contain h-80 md:h-[500px] w-auto p-2 mx-auto`}
+                      >
+                        <source src={media} type='video/mp4' />
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div key={index}>
+                      <Image
+                        src={media}
+                        alt=''
+                        className={`rounded-xl shadow-xl md:shadow-none aspect-auto object-contain h-80 md:h-[500px] w-auto p-2 mx-auto`}
+                        width={128}
+                        height={80}
+                        unoptimized={true}
+                        priority={true}
+                      />
+                    </div>
+                  </>
+                )
+              )}
             </Carousel>
           </div>
           {/* Price (Mobile View) */}

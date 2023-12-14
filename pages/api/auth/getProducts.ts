@@ -52,6 +52,11 @@ async function processProducts(
                 downloadURLs.push(downloadURL);
               }
               return { ...obj, [key]: downloadURLs };
+            } else if (key === 'video') {
+              const downloadURL = await getDownloadURL(
+                ref(storage, `video/${value}`)
+              );
+              return { ...obj, [key]: downloadURL };
             } else {
               return { ...obj, [key]: value };
             }
@@ -98,6 +103,11 @@ export async function getDiscountedProducts() {
               downloadURLs.push(downloadURL);
             }
             return { ...obj, [key]: downloadURLs };
+          } else if (key === 'video') {
+            const downloadURL = await getDownloadURL(
+              ref(storage, `video/${value}`)
+            );
+            return { ...obj, [key]: downloadURL };
           } else {
             return { ...obj, [key]: value };
           }
