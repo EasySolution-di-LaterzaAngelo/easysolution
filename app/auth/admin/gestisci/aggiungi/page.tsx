@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './Aggiungi.module.css';
 import Link from 'next/link';
-import db from '@/firebase';
+import db, { auth } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import { ref, uploadBytes } from 'firebase/storage';
@@ -22,6 +22,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { getProducts } from '@/pages/api/auth/getProducts';
 import imageCompression from 'browser-image-compression';
+import { User, onAuthStateChanged } from 'firebase/auth';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -219,6 +220,7 @@ function AddProduct() {
     sconto: '',
     percentuale: '',
   });
+  const [loggedUser, setLoggedUser] = useState<User | false>();
 
   const [images, setImages] = useState<any>([]);
   const [imagesUrls, setImagesUrls] = useState<string[]>([]);
@@ -255,8 +257,27 @@ function AddProduct() {
       setCategories(categoriesArray);
     }
 
-    fetchData();
-  }, []);
+    onAuthStateChanged(auth, (user) => {
+      if (user?.email) {
+        setLoggedUser(user);
+      } else {
+        setLoggedUser(false);
+      }
+    });
+    if (loggedUser !== false && loggedUser !== undefined) {
+      if (loggedUser?.uid !== process.env.NEXT_PUBLIC_UID) {
+        if (typeof window !== 'undefined') {
+          window.location.replace('/');
+        }
+      } else {
+        fetchData();
+      }
+    } else if (loggedUser !== undefined) {
+      if (typeof window !== 'undefined') {
+        window.location.replace('/');
+      }
+    }
+  }, [loggedUser]);
 
   useEffect(() => {
     let input = document.querySelector(

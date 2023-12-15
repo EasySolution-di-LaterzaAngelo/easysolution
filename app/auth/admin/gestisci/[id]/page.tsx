@@ -4,7 +4,7 @@ import { Prodotto } from '@/types';
 import { getProduct, getProducts } from '@/pages/api/auth/getProducts';
 import styles from './Prodotto.module.css';
 import Link from 'next/link';
-import db, { storage } from '@/firebase';
+import db, { auth, storage } from '@/firebase';
 import { doc, deleteDoc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -19,6 +19,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import imageCompression from 'browser-image-compression';
+import { User, onAuthStateChanged } from 'firebase/auth';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -200,6 +201,7 @@ function Product({ params }: any) {
   }
   const [initialProdotto, setInitialProdotto] = useState<Product>();
   const [prodotto, setProdotto] = useState<Prodotto>();
+  const [loggedUser, setLoggedUser] = useState<User | false>();
 
   const [originalImages, setOriginalImages] = useState<any>([]);
   const [images, setImages] = useState<any>([]);
@@ -255,7 +257,6 @@ function Product({ params }: any) {
       prodottiData ? setIsNFC(prodottiData.nfc) : null;
       prodottiData ? setIsDualSim(prodottiData.dual_sim) : null;
     }
-    fetchData(params);
 
     async function fetchDataForCategories() {
       const prodottiData = await getProducts();
@@ -271,8 +272,29 @@ function Product({ params }: any) {
       setCategories(categoriesArray);
     }
 
-    fetchDataForCategories();
-  }, []);
+    onAuthStateChanged(auth, (user) => {
+      if (user?.email) {
+        setLoggedUser(user);
+      } else {
+        setLoggedUser(false);
+      }
+    });
+
+    if (loggedUser !== false && loggedUser !== undefined) {
+      if (loggedUser?.uid !== process.env.NEXT_PUBLIC_UID) {
+        if (typeof window !== 'undefined') {
+          window.location.replace('/');
+        }
+      } else {
+        fetchData(params);
+        fetchDataForCategories();
+      }
+    } else if (loggedUser !== undefined) {
+      if (typeof window !== 'undefined') {
+        window.location.replace('/');
+      }
+    }
+  }, [loggedUser, params]);
 
   useEffect(() => {
     setProdotto((prevState: any) => ({
@@ -619,8 +641,16 @@ function Product({ params }: any) {
 
           {prodotto?.video && (
             <div className='flex flex-col w-full items-center justify-center'>
-              <video controls width='240px' height='120px' className='flex'>
-                <source src={videoUrl} type='video/mp4' />
+              <video
+                controls
+                className={`rounded-xl shadow-xl md:shadow-none aspect-auto object-contain h-64 w-auto p-2 mx-auto`}
+              >
+                <source
+                  src={videoUrl}
+                  type='video/mp4'
+                  width={'160px'}
+                  className='w-40 max-h-40'
+                />
                 Your browser does not support the video tag.
               </video>
 

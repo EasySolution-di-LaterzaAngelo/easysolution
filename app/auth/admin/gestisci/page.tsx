@@ -19,7 +19,7 @@ import { auth } from '@/firebase';
 function Gestisci() {
   const [prodotti, setProdotti] = useState<Prodotto[]>();
   const [categories, setCategories] = useState<any>();
-  const [loggedUser, setLoggedUser] = useState<User>();
+  const [loggedUser, setLoggedUser] = useState<User | false>();
 
   useEffect(() => {
     async function fetchData() {
@@ -41,17 +41,20 @@ function Gestisci() {
       if (user?.email) {
         setLoggedUser(user);
       } else {
-        setLoggedUser(undefined);
+        setLoggedUser(false);
       }
     });
-
-    if (loggedUser !== undefined) {
+    if (loggedUser !== false && loggedUser !== undefined) {
       if (loggedUser?.uid !== process.env.NEXT_PUBLIC_UID) {
         if (typeof window !== 'undefined') {
           window.location.replace('/');
         }
       } else {
         fetchData();
+      }
+    } else if (loggedUser !== undefined) {
+      if (typeof window !== 'undefined') {
+        window.location.replace('/');
       }
     }
   }, [loggedUser]);
