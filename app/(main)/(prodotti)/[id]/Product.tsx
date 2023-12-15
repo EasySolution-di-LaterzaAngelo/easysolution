@@ -109,12 +109,11 @@ function Product({
                     <>
                       <div key={index}>
                         <video
-                          muted
                           width={128}
                           height={80}
                           className={`rounded-md shadow-xl md:shadow-none aspect-auto object-contain h-auto max-h-16 w-auto max-w-16 mx-auto`}
                         >
-                          <source src={media} type='video/mp4' />
+                          <source src={`${media}#t=0.1`} type='video/mp4' />
                           Your browser does not support the video tag.
                         </video>
                       </div>
@@ -160,6 +159,7 @@ function Product({
                   </button>
                 )
               }
+              showIndicators={false}
             >
               {correctFormatProduct.media.map((media: any, index: number) =>
                 product.video && index === 0 ? (
@@ -169,7 +169,7 @@ function Product({
                         controls
                         className={`rounded-xl shadow-xl md:shadow-none aspect-auto object-contain h-80 md:h-[500px] w-auto p-2 mx-auto`}
                       >
-                        <source src={media} type='video/mp4' />
+                        <source src={`${media}#t=0.1`} type='video/mp4' />
                         Your browser does not support the video tag.
                       </video>
                     </div>
