@@ -25,13 +25,18 @@ export default async function RootLayout({
   //     signInAnonymously(auth);
   //   }
   // });
-
   return (
     <html lang='it'>
       <head>
         <title>Easy Solution Di Laterza Angelo</title>
-        <meta name="google-site-verification" content="PKpk9-yodBKS9a6F2HtMEeXuNG-JCI7KQb5BGcAMBWE" />
-        <meta name="google-site-verification" content="jqHfTQkXtRhcMZeGjnR4qlPFLQuT4wHvTSOa5Dyw_jU" />
+        <meta
+          name='google-site-verification'
+          content='PKpk9-yodBKS9a6F2HtMEeXuNG-JCI7KQb5BGcAMBWE'
+        />
+        <meta
+          name='google-site-verification'
+          content='jqHfTQkXtRhcMZeGjnR4qlPFLQuT4wHvTSOa5Dyw_jU'
+        />
         <meta
           name='description'
           content='Esplorate la nostra cartoleria di oggetti artigianali unici. Bomboniere, incisioni su legno e metallo e molto altro, tutti creati a mano con passione.'

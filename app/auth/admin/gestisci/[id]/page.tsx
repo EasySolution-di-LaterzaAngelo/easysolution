@@ -4,7 +4,7 @@ import { Prodotto } from '@/types';
 import { getProduct, getProducts } from '@/pages/api/auth/getProducts';
 import styles from './Prodotto.module.css';
 import Link from 'next/link';
-import db, { storage } from '@/firebase';
+import db, { auth, storage } from '@/firebase';
 import { doc, deleteDoc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -19,6 +19,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import imageCompression from 'browser-image-compression';
+import { User, onAuthStateChanged } from 'firebase/auth';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -61,9 +62,7 @@ const Field = ({
       {productKey !== 'Prezzo' &&
       productKey !== 'Sconto' &&
       productKey !== 'Percentuale' ? (
-        productKey === 'Nome' ||
-        productKey === 'Marca' ||
-        productKey === 'Descrizione' ? (
+        productKey === 'Nome' || productKey === 'Descrizione' ? (
           // Required field
           <div className='flex flex-row w-full items-center justify-center'>
             <div className='relative flex flex-row w-full items-center justify-center py-4'>
@@ -202,10 +201,14 @@ function Product({ params }: any) {
   }
   const [initialProdotto, setInitialProdotto] = useState<Product>();
   const [prodotto, setProdotto] = useState<Prodotto>();
+  const [loggedUser, setLoggedUser] = useState<User | false>();
 
   const [originalImages, setOriginalImages] = useState<any>([]);
   const [images, setImages] = useState<any>([]);
   const [imagesUrls, setImagesUrls] = useState<string[]>([]);
+  const [originalVideo, setOriginalVideo] = useState<any>();
+  const [video, setVideo] = useState<any>();
+  const [videoUrl, setVideoUrl] = useState<string>();
   const [categories, setCategories] = useState<any>();
 
   const [isDualSim, setIsDualSim] = useState(
@@ -227,24 +230,26 @@ function Product({ params }: any) {
 
   const excludeKeys = [
     'nome',
-    'marca',
     'categoria',
     'descrizione',
     'immagini',
+    'video',
     'prezzo',
     'sconto',
     'percentuale',
   ];
 
   const router = useRouter();
-
   useEffect(() => {
     async function fetchData(params: any) {
       const prodottiData = await getProduct(params.id);
       prodottiData ? setImagesUrls(prodottiData.immaginiUrl) : null;
       delete prodottiData.immaginiUrl;
+      prodottiData ? setVideoUrl(prodottiData.videoUrl) : null;
+      delete prodottiData.videoUrl;
       prodottiData ? setProdotto(prodottiData) : null;
       prodottiData ? setOriginalImages(prodottiData.immagini) : null;
+      prodottiData ? setOriginalVideo(prodottiData.video) : null;
       prodottiData ? setInitialProdotto(prodottiData) : null;
       prodottiData ? setIsSecondHand(prodottiData.secondHand) : null;
       prodottiData ? setIsRefurbished(prodottiData.ricondizionato) : null;
@@ -252,7 +257,6 @@ function Product({ params }: any) {
       prodottiData ? setIsNFC(prodottiData.nfc) : null;
       prodottiData ? setIsDualSim(prodottiData.dual_sim) : null;
     }
-    fetchData(params);
 
     async function fetchDataForCategories() {
       const prodottiData = await getProducts();
@@ -268,8 +272,29 @@ function Product({ params }: any) {
       setCategories(categoriesArray);
     }
 
-    fetchDataForCategories();
-  }, []);
+    onAuthStateChanged(auth, (user) => {
+      if (user?.email) {
+        setLoggedUser(user);
+      } else {
+        setLoggedUser(false);
+      }
+    });
+
+    if (loggedUser !== false && loggedUser !== undefined) {
+      if (loggedUser?.uid !== process.env.NEXT_PUBLIC_UID) {
+        if (typeof window !== 'undefined') {
+          window.location.replace('/');
+        }
+      } else {
+        fetchData(params);
+        fetchDataForCategories();
+      }
+    } else if (loggedUser !== undefined) {
+      if (typeof window !== 'undefined') {
+        window.location.replace('/');
+      }
+    }
+  }, [loggedUser, params]);
 
   useEffect(() => {
     setProdotto((prevState: any) => ({
@@ -433,31 +458,50 @@ function Product({ params }: any) {
       }));
     }
     if (e.target.files && e.target.files[0] && prodotto) {
-      // Update the image name in the 'immagini' array
-      const updatedImages = [...prodotto.immagini];
-      updatedImages[parseInt(e.target.name)] = e.target.files[0].name;
+      if (
+        e.target.name === 'Immagine_0' ||
+        e.target.name === 'Immagine_1' ||
+        e.target.name === 'Immagine_2'
+      ) {
+        const parts = e.target.name.split('_');
+        const index = parts[parts.length - 1];
+        // Update the image name in the 'immagini' array
+        const updatedImages = [...prodotto.immagini];
+        updatedImages[parseInt(index)] = e.target.files[0].name;
 
-      // Update the 'images' state by creating a new array with the updated image
-      setImages((prevImages: any) => {
-        const updatedImages = [...prevImages];
-        updatedImages[parseInt(e.target.name)] = e.target.files[0];
-        return updatedImages;
-      });
+        // Update the 'images' state by creating a new array with the updated image
+        setImages((prevImages: any) => {
+          const updatedImages = [...prevImages];
+          updatedImages[parseInt(index)] = e.target.files[0];
+          return updatedImages;
+        });
 
-      // Update the 'imagesUrls' state by creating a new array with the updated image URL
-      setImagesUrls((prevImageUrls: any) => {
-        const updatedUrls = [...prevImageUrls];
-        updatedUrls[parseInt(e.target.name)] = URL.createObjectURL(
-          e.target.files[0]
-        );
-        return updatedUrls;
-      });
+        // Update the 'imagesUrls' state by creating a new array with the updated image URL
+        setImagesUrls((prevImageUrls: any) => {
+          const updatedUrls = [...prevImageUrls];
+          updatedUrls[parseInt(index)] = URL.createObjectURL(e.target.files[0]);
+          return updatedUrls;
+        });
 
-      // Update the 'immagini' state with the updated image names
-      setProdotto((prevInputs: any) => ({
-        ...prevInputs,
-        immagini: updatedImages,
-      }));
+        // Update the 'immagini' state with the updated image names
+        setProdotto((prevInputs: any) => ({
+          ...prevInputs,
+          immagini: updatedImages,
+        }));
+      }
+      if (e.target.name === 'Video') {
+        const selectedFile = e.target.files[0];
+        const maxSizeInBytes = 3 * 1024 * 1024; // 3MB in bytes
+
+        if (selectedFile.size > maxSizeInBytes) {
+          setSeverity('error');
+          setOpen(true);
+        } else {
+          prodotto.video = selectedFile.name;
+          setVideo(selectedFile);
+          setVideoUrl(URL.createObjectURL(selectedFile));
+        }
+      }
     }
   };
 
@@ -498,18 +542,34 @@ function Product({ params }: any) {
           }
         );
 
-        const deletePromises = originalImages.map(
+        const uploadVideoPromise = async () => {
+          const videoInput = prodotto.video; // Get the corresponding immagine at the same index
+          const vidref = ref(storage, `video/${params.id}_${videoInput}`);
+          await uploadBytes(vidref, video);
+        };
+
+        const deleteImagesPromises = originalImages.map(
           async (image: any, index: number) => {
             if (!prodotto.immagini.includes(image)) {
               const imgref = ref(storage, `immagini/${image}`);
-              console.log(imgref);
               await deleteObject(imgref);
             }
           }
         );
 
+        const deleteVideoPromises = async () => {
+          if (!prodotto.immagini.includes(originalVideo)) {
+            const vidref = ref(storage, `video/${originalVideo}`);
+            await deleteObject(vidref);
+          }
+        };
+
         await Promise.all(uploadPromises);
-        await Promise.all(deletePromises);
+        await Promise.all(deleteImagesPromises);
+        const videoUploadPromise = uploadVideoPromise();
+        await videoUploadPromise;
+        const videoDeletePromise = deleteVideoPromises();
+        await videoDeletePromise;
 
         let adjustedInputs: any = Object.fromEntries(
           Object.entries(prodotto)
@@ -536,6 +596,8 @@ function Product({ params }: any) {
                     }
                     return image; // Otherwise, keep the image name unchanged
                   }) // Adjust 'immagini' value here
+                : key === 'video'
+                ? params.id + '_' + value
                 : typeof value === 'string'
                 ? (value as string).trim()
                 : value,
@@ -579,7 +641,6 @@ function Product({ params }: any) {
       return imageFile;
     }
   }
-  console.log(params);
   return (
     <div className='relative m-auto flex flex-col'>
       <form onSubmit={handleEditProduct}>
@@ -593,6 +654,45 @@ function Product({ params }: any) {
           >
             <ArrowSmallLeftIcon height={18} className='stroke-black' />
           </a>
+
+          {prodotto?.video && (
+            <div className='flex flex-col w-full items-center justify-center'>
+              <video
+                key={videoUrl}
+                controls
+                className={`rounded-xl shadow-xl md:shadow-none aspect-auto object-contain h-64 w-auto p-2 mx-auto`}
+              >
+                <source
+                  src={videoUrl}
+                  type='video/mp4'
+                  width={'160px'}
+                  className='w-40 max-h-40'
+                />
+                Your browser does not support the video tag.
+              </video>
+
+              <label
+                className={`flex flex-row items-center gap-1 p-2 px-4 my-4 rounded-xl ring-2 ring-gray-400 bg-gray-200 shadow-lg hover:ring-2 hover:ring-black hover:bg-yellow-400 cursor-pointer text-sm ${styles.drop_container}`}
+              >
+                <span className={styles.drop_title}>Cambia Video</span>
+                <input
+                  accept='video/*'
+                  type='file'
+                  name='Video'
+                  onChange={handleChange}
+                  style={{
+                    position: 'absolute',
+                    clip: 'rect(1px, 1px, 1px, 1px)',
+                    padding: 0,
+                    border: 0,
+                    height: '1px',
+                    width: '1px',
+                    overflow: 'hidden',
+                  }}
+                />
+              </label>
+            </div>
+          )}
           {prodotto?.immagini?.map((imageName, index) => (
             <>
               <div
@@ -622,7 +722,7 @@ function Product({ params }: any) {
                   <input
                     accept='image/*'
                     type='file'
-                    name={`${index}`}
+                    name={`Immagine_${index}`}
                     onChange={handleChange}
                     style={{
                       position: 'absolute',
@@ -656,12 +756,6 @@ function Product({ params }: any) {
             key={'Nome'}
             productKey='Nome'
             value={typeof prodotto?.nome === 'string' ? prodotto.nome : ''}
-            handleChange={handleChange}
-          />
-          <Field
-            key={'Marca'}
-            productKey='Marca'
-            value={typeof prodotto?.marca === 'string' ? prodotto.marca : ''}
             handleChange={handleChange}
           />
 
@@ -919,6 +1013,7 @@ function Product({ params }: any) {
         >
           <div>
             <button
+              role='button'
               type='button'
               onClick={handleDeleteProduct}
               className='flex mx-auto p-4 items-center drop-shadow-lg text-white bg-red-400 rounded-full ring-2 ring-red-500 shadow-lg hover:ring-2 hover:ring-red-700 hover:bg-red-500'
@@ -931,6 +1026,7 @@ function Product({ params }: any) {
           </div>
           <div key={'Update'}>
             <button
+              role='button'
               type='submit'
               className='flex mx-auto p-4 items-center drop-shadow-lg text-white bg-yellow-400 rounded-full ring-2 ring-yellow-500 shadow-lg hover:ring-2 hover:ring-yellow-700 hover:bg-yellow-500'
             >
@@ -982,6 +1078,10 @@ function Product({ params }: any) {
                 ) : severity === 'warning' ? (
                   <p className='text-sm font-medium text-yellow-800'>
                     Nessuna modifica
+                  </p>
+                ) : severity === 'error' ? (
+                  <p className='text-sm font-medium text-red-800'>
+                    Video troppo grande. Massimo 3 Mb.
                   </p>
                 ) : (
                   <p className='text-sm font-medium text-red-800'>

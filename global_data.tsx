@@ -12,4 +12,4 @@ export const orderedCategories = [
   'Admin',
 ];
 
-export const optionalInputs = ['Colore', 'Peso', 'Dimensioni'];
+export const optionalInputs = ['Marca', 'Colore', 'Peso', 'Dimensioni'];

@@ -40,7 +40,9 @@ const SubHeader = ({ categories }: { categories: string[] }) => {
       <div className='flex w-full items-center justify-start gap-8'>
         {displayedCategories?.map((category: string, index) => (
           <a
+            role='button'
             key={index}
+            title={category}
             href='/'
             onClick={() => setInputFromMenu(`${category}`)}
             className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
@@ -51,7 +53,11 @@ const SubHeader = ({ categories }: { categories: string[] }) => {
       </div>
       {categories?.length > MAX_DISPLAY_CATEGORIES && (
         <Menu as='div' className='flex relative isolate z-0'>
-          <Menu.Button className='inline-flex w-full justify-center items-center gap-2 rounded-md text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
+          <Menu.Button
+            role='button'
+            title='Altro'
+            className='inline-flex w-full justify-center items-center gap-2 rounded-md text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
+          >
             <div className='flex text-slate-900 font-bold text-sm text-center items-center justify-center decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'>
               Altro
               <ChevronDownIcon height={20} className='stroke-black' />
@@ -69,6 +75,8 @@ const SubHeader = ({ categories }: { categories: string[] }) => {
               {overflowCategories?.map((category: string, index) => (
                 <Menu.Item key={index}>
                   <p
+                    role='button'
+                    title={category}
                     onClick={() => setInputFromMenu(`${category}`)}
                     className='decoration-2 hover:underline hover:underline-offset-8 hover:cursor-pointer'
                   >
@@ -176,6 +184,8 @@ const SearchBar = () => {
         onChange={handleChange}
       />
       <button
+        role='button'
+        title='Cerca'
         className='flex-none h-10 px-4 py-2 bg-white rounded-r-full'
         onClick={() => handleSubmit}
       >
@@ -231,6 +241,8 @@ function Header({ productsData }: { productsData: Prodotto[] }) {
             <User />
             <a
               href={'/'}
+              role='button'
+              title='Home'
               className={` ${
                 pathname === '/'
                   ? 'hidden'

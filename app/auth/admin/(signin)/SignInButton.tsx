@@ -41,6 +41,7 @@ function SignInButton() {
         Object.values(providers).map((provider) => (
           <div key={provider.name}>
             <button
+              role='button'
               className='flex items-center justify-center p-2 gap-2 shadow-md border border-[#888] rounded w-full  cursor-pointer text-black hover:bg-gray-100'
               onClick={() => signIn()}
             >

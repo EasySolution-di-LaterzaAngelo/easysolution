@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './Aggiungi.module.css';
 import Link from 'next/link';
-import db from '@/firebase';
+import db, { auth } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import { ref, uploadBytes } from 'firebase/storage';
@@ -18,9 +18,12 @@ import {
   CheckCircleIcon,
   PaperAirplaneIcon,
   XMarkIcon,
+  VideoCameraIcon,
+  ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { getProducts } from '@/pages/api/auth/getProducts';
 import imageCompression from 'browser-image-compression';
+import { User, onAuthStateChanged } from 'firebase/auth';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -77,9 +80,7 @@ const Field = ({
       {productKey !== 'Prezzo' &&
       productKey !== 'Sconto' &&
       productKey !== 'Percentuale' ? (
-        productKey === 'Nome' ||
-        productKey === 'Marca' ||
-        productKey === 'Descrizione' ? (
+        productKey === 'Nome' || productKey === 'Descrizione' ? (
           // Required field
           <div className='relative flex flex-row w-full items-center justify-center py-4'>
             <label
@@ -209,6 +210,7 @@ function AddProduct() {
     categoria: '',
     descrizione: '',
     immagini: [],
+    video: '',
     usato: false,
     ricondizionato: false,
     dual_sim: false,
@@ -219,9 +221,12 @@ function AddProduct() {
     sconto: '',
     percentuale: '',
   });
+  const [loggedUser, setLoggedUser] = useState<User | false>();
 
   const [images, setImages] = useState<any>([]);
   const [imagesUrls, setImagesUrls] = useState<string[]>([]);
+  const [video, setVideo] = useState<any>('');
+  const [videoUrl, setVideoUrl] = useState<string>('');
   const router = useRouter();
 
   const [isSecondHand, setIsSecondHand] = useState(false);
@@ -253,8 +258,27 @@ function AddProduct() {
       setCategories(categoriesArray);
     }
 
-    fetchData();
-  }, []);
+    onAuthStateChanged(auth, (user) => {
+      if (user?.email) {
+        setLoggedUser(user);
+      } else {
+        setLoggedUser(false);
+      }
+    });
+    if (loggedUser !== false && loggedUser !== undefined) {
+      if (loggedUser?.uid !== process.env.NEXT_PUBLIC_UID) {
+        if (typeof window !== 'undefined') {
+          window.location.replace('/');
+        }
+      } else {
+        fetchData();
+      }
+    } else if (loggedUser !== undefined) {
+      if (typeof window !== 'undefined') {
+        window.location.replace('/');
+      }
+    }
+  }, [loggedUser]);
 
   useEffect(() => {
     let input = document.querySelector(
@@ -312,7 +336,8 @@ function AddProduct() {
   }, [isRefurbished]);
 
   // Snackbar
-  const [successOpen, setSuccessOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [severity, setSeverity] = useState('');
 
   // Inputs handler
   const handleChange = (e: any) => {
@@ -436,12 +461,27 @@ function AddProduct() {
             e.target.value.replace(/\n/g, ''),
         }));
       if (e.target.files && e.target.files[0]) {
-        inputs.immagini.push(e.target.files[0].name);
-        setImages((prevImage: any) => [...prevImage, e.target.files[0]]);
-        setImagesUrls((prevImageUrls) => [
-          ...prevImageUrls,
-          URL.createObjectURL(e.target.files[0]),
-        ]);
+        if (e.target.name === 'Immagine') {
+          inputs.immagini.push(e.target.files[0].name);
+          setImages((prevImage: any) => [...prevImage, e.target.files[0]]);
+          setImagesUrls((prevImageUrls) => [
+            ...prevImageUrls,
+            URL.createObjectURL(e.target.files[0]),
+          ]);
+        }
+        if (e.target.name === 'Video') {
+          const selectedFile = e.target.files[0];
+          const maxSizeInBytes = 3 * 1024 * 1024; // 3MB in bytes
+
+          if (selectedFile.size > maxSizeInBytes) {
+            setSeverity('error');
+            setOpen(true);
+          } else {
+            inputs.video = selectedFile.name;
+            setVideo(selectedFile);
+            setVideoUrl(URL.createObjectURL(selectedFile));
+          }
+        }
       }
     }
   };
@@ -449,18 +489,30 @@ function AddProduct() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    setSuccessOpen(true);
+    setSeverity('success');
+    setOpen(true);
 
     const uuid = uuidv4();
 
-    const uploadPromises = images.map(async (imageData: any, index: number) => {
-      const compressedImage = await handleImageUpload(imageData);
-      const immagine = inputs.immagini[index]; // Get the corresponding immagine at the same index
-      const imgref = ref(storage, `immagini/${uuid}_${immagine}`);
-      await uploadBytes(imgref, compressedImage);
-    });
+    const uploadImagesPromises = images.map(
+      async (imageData: any, index: number) => {
+        const compressedImage = await handleImageUpload(imageData);
+        const immagine = inputs.immagini[index]; // Get the corresponding immagine at the same index
+        const imgref = ref(storage, `immagini/${uuid}_${immagine}`);
+        await uploadBytes(imgref, compressedImage);
+      }
+    );
 
-    await Promise.all(uploadPromises);
+    const uploadVideoPromise = async () => {
+      const videoInput = inputs.video; // Get the corresponding immagine at the same index
+      const vidref = ref(storage, `video/${uuid}_${videoInput}`);
+      await uploadBytes(vidref, video);
+    };
+
+    const videoUploadPromise = uploadVideoPromise();
+
+    await Promise.all(uploadImagesPromises);
+    await videoUploadPromise;
 
     let adjustedInputs =
       inputs &&
@@ -469,7 +521,10 @@ function AddProduct() {
           .filter(([key, value]) => {
             if (key === 'immagini' && Array.isArray(value)) {
               return true; // Keep the "immagine" key with an array value
-            } else if (
+            } else if (key === 'video') {
+              return true; // Keep the "video" key
+            }
+            if (
               typeof value === 'string'
                 ? (value as string).trim() !== ''
                 : typeof value === 'boolean' && value === true
@@ -482,6 +537,8 @@ function AddProduct() {
             key.startsWith('_') ? key.slice(1) : key,
             key === 'immagini' && Array.isArray(value)
               ? value.map((image) => uuid + '_' + image) // Adjust 'immagini' value here
+              : key === 'video'
+              ? uuid + '_' + value
               : typeof value === 'string'
               ? (value as string).trim()
               : value,
@@ -529,6 +586,13 @@ function AddProduct() {
     imagesUrls.splice(index, 1);
   };
 
+  const handleRemoveVideo = () => {
+    setInputs((prevState) => {
+      return { ...prevState, video: '' };
+    });
+    setVideoUrl('');
+  };
+
   const renderImage = (src: string, label: string, index: number) => (
     <div
       key={index}
@@ -544,6 +608,7 @@ function AddProduct() {
       />
       <p>{label}</p>
       <button
+        role='button'
         type='button'
         onClick={() => handleRemoveImage(index)}
         className='flex items-center gap-1 p-2 px-4 my-4 rounded-xl ring-2 ring-gray-400 bg-gray-200 shadow-lg hover:ring-2 hover:ring-black hover:bg-red-400 cursor-pointer text-sm'
@@ -553,9 +618,30 @@ function AddProduct() {
     </div>
   );
 
+  const renderVideo = (src: string, index: number) => (
+    <div
+      key={index}
+      className='flex flex-col w-full items-center justify-center'
+    >
+      <video controls width='240px' height='120px' className='flex'>
+        <source src={src} type='video/mp4' />
+        Your browser does not support the video tag.
+      </video>
+
+      <button
+        role='button'
+        type='button'
+        onClick={() => handleRemoveVideo()}
+        className='flex items-center gap-1 p-2 px-4 my-4 rounded-xl ring-2 ring-gray-400 bg-gray-200 shadow-lg hover:ring-2 hover:ring-black hover:bg-red-400 cursor-pointer text-sm'
+      >
+        Rimuovi Video
+      </button>
+    </div>
+  );
+
   const renderImageUploader = () => (
     <label className={`flex flex-row w-3/5 mx-auto ${styles.drop_container}`}>
-      <span className={styles.drop_title}>Carica una foto</span>
+      <span className={styles.drop_title}>Carica una Foto</span>
 
       <input
         required={inputs.immagini.length === 0}
@@ -578,6 +664,31 @@ function AddProduct() {
     </label>
   );
 
+  const renderVideoUploader = () => (
+    <label className={`flex flex-row w-3/5 mx-auto ${styles.drop_container}`}>
+      <span className={styles.drop_title}>Carica un Video</span>
+
+      <input
+        required={inputs.immagini.length === 0}
+        ref={inputRefImage}
+        accept='video/*'
+        type='file'
+        name='Video'
+        onChange={handleChange}
+        style={{
+          position: 'absolute',
+          clip: 'rect(1px, 1px, 1px, 1px)',
+          padding: 0,
+          border: 0,
+          height: '1px',
+          width: '1px',
+          overflow: 'hidden',
+        }}
+      />
+      <VideoCameraIcon height={22} className='stroke-black stroke-2' />
+    </label>
+  );
+
   return (
     <div className='relative w-full flex flex-col px-6'>
       {/* Form */}
@@ -593,6 +704,16 @@ function AddProduct() {
           >
             <ArrowSmallLeftIcon height={18} className='stroke-black' />
           </a>
+
+          {/* Video field */}
+          <>
+            {inputs.video === '' ? (
+              <> {renderVideoUploader()}</>
+            ) : (
+              <>{renderVideo(videoUrl, 0)}</>
+            )}
+          </>
+
           {/* Image field */}
           <>
             {inputs.immagini.length === 0 && (
@@ -637,13 +758,6 @@ function AddProduct() {
           {/* Name field */}
           <Field
             productKey='Nome'
-            handleChange={handleChange}
-            inputs={inputs}
-          />
-
-          {/* Brand field */}
-          <Field
-            productKey='Marca'
             handleChange={handleChange}
             inputs={inputs}
           />
@@ -853,6 +967,7 @@ function AddProduct() {
         {/* Add product button */}
         <div className='flex flex-col mt-4 items-center justify-center gap-2'>
           <button
+            role='button'
             type='submit'
             className='flex mx-auto p-4 items-center drop-shadow-lg text-white bg-green-400 rounded-full ring-2 ring-green-500 shadow-lg hover:ring-2 hover:ring-green-700 hover:bg-green-500'
           >
@@ -862,30 +977,58 @@ function AddProduct() {
         </div>
       </form>
 
-      {/* Snackbar for success */}
-      {successOpen && (
-        <div className='rounded-md bg-green-50 p-4'>
-          <div className='flex'>
-            <div className='flex-shrink-0'>
-              <CheckCircleIcon
-                className='h-5 w-5 text-green-400'
-                aria-hidden='true'
-              />
-            </div>
-            <div className='ml-3'>
-              <p className='text-sm font-medium text-green-800'>
-                Prodotto aggiunto! Attendi ...
-              </p>
-            </div>
-            <div className='ml-auto pl-3'>
-              <div className='-mx-1.5 -my-1.5'>
-                <button
-                  type='button'
-                  className='inline-flex rounded-md bg-green-50 p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50'
-                >
-                  <span className='sr-only'>Dismiss</span>
-                  <XMarkIcon className='h-5 w-5' aria-hidden='true' />
-                </button>
+      {open && (
+        <div className='z-50 fixed w-full left-0 bottom-20'>
+          <div
+            className={` flex w-min mx-auto items-center shadow-2xl ring-2 rounded-md p-4 ${
+              severity === 'success'
+                ? ' bg-green-50 ring-green-300'
+                : 'bg-red-50 ring-red-300'
+            }`}
+          >
+            <div className='flex w-max'>
+              <div className='flex-shrink-0'>
+                {severity === 'success' ? (
+                  <CheckCircleIcon
+                    className='h-5 w-5 text-green-400'
+                    aria-hidden='true'
+                  />
+                ) : (
+                  <ExclamationCircleIcon
+                    className='h-5 w-5 text-red-400'
+                    aria-hidden='true'
+                  />
+                )}
+              </div>
+              <div className='ml-3 shrink-0'>
+                {severity === 'success' ? (
+                  <p className='text-sm font-medium text-green-800'>
+                    Prodotto aggiunto! Attendi ...
+                  </p>
+                ) : (
+                  <p className='text-sm font-medium text-red-800'>
+                    Video troppo grande. Massimo 3 Mb.
+                  </p>
+                )}
+              </div>
+              <div className='ml-auto pl-3'>
+                <div className='-mx-1.5 -my-1.5'>
+                  <button
+                    type='button'
+                    className={`inline-flex rounded-md ${
+                      severity === 'success'
+                        ? 'bg-green-50 p-1.5 text-green-500 hover:bg-green-100  focus:ring-green-600 focus:ring-offset-green-50'
+                        : 'bg-red-50 p-1.5 text-red-500 hover:bg-red-100  focus:ring-red-600 focus:ring-offset-red-50'
+                    }  focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                  >
+                    <span className='sr-only'>Dismiss</span>
+                    <XMarkIcon
+                      className='h-5 w-5'
+                      aria-hidden='true'
+                      onClick={() => setOpen(false)}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
