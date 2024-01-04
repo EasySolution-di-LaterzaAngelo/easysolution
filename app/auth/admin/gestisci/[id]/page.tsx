@@ -543,9 +543,11 @@ function Product({ params }: any) {
         );
 
         const uploadVideoPromise = async () => {
-          const videoInput = prodotto.video; // Get the corresponding immagine at the same index
-          const vidref = ref(storage, `video/${params.id}_${videoInput}`);
-          await uploadBytes(vidref, video);
+          if (!(params.id + '_' + prodotto.video).includes(originalVideo)) {
+            const videoInput = prodotto.video; // Get the corresponding immagine at the same index
+            const vidref = ref(storage, `video/${params.id}_${videoInput}`);
+            await uploadBytes(vidref, video);
+          }
         };
 
         const deleteImagesPromises = originalImages.map(
@@ -558,7 +560,7 @@ function Product({ params }: any) {
         );
 
         const deleteVideoPromises = async () => {
-          if (!prodotto.immagini.includes(originalVideo)) {
+          if (!(params.id + '_' + prodotto.video).includes(originalVideo)) {
             const vidref = ref(storage, `video/${originalVideo}`);
             await deleteObject(vidref);
           }
@@ -596,7 +598,8 @@ function Product({ params }: any) {
                     }
                     return image; // Otherwise, keep the image name unchanged
                   }) // Adjust 'immagini' value here
-                : key === 'video'
+                : key === 'video' &&
+                  !(params.id + '_' + prodotto.video).includes(originalVideo)
                 ? params.id + '_' + value
                 : typeof value === 'string'
                 ? (value as string).trim()
