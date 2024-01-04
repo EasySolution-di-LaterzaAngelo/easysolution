@@ -19,6 +19,7 @@ import {
   PaperAirplaneIcon,
   XMarkIcon,
   VideoCameraIcon,
+  ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { getProducts } from '@/pages/api/auth/getProducts';
 import imageCompression from 'browser-image-compression';
@@ -335,7 +336,8 @@ function AddProduct() {
   }, [isRefurbished]);
 
   // Snackbar
-  const [successOpen, setSuccessOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [severity, setSeverity] = useState('');
 
   // Inputs handler
   const handleChange = (e: any) => {
@@ -468,9 +470,17 @@ function AddProduct() {
           ]);
         }
         if (e.target.name === 'Video') {
-          inputs.video = e.target.files[0].name;
-          setVideo(e.target.files[0]);
-          setVideoUrl(URL.createObjectURL(e.target.files[0]));
+          const selectedFile = e.target.files[0];
+          const maxSizeInBytes = 3 * 1024 * 1024; // 3MB in bytes
+
+          if (selectedFile.size > maxSizeInBytes) {
+            setSeverity('error');
+            setOpen(true);
+          } else {
+            inputs.video = selectedFile.name;
+            setVideo(selectedFile);
+            setVideoUrl(URL.createObjectURL(selectedFile));
+          }
         }
       }
     }
@@ -479,7 +489,8 @@ function AddProduct() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    setSuccessOpen(true);
+    setSeverity('success');
+    setOpen(true);
 
     const uuid = uuidv4();
 
@@ -535,9 +546,9 @@ function AddProduct() {
       );
     await setDoc(doc(db, 'prodotti', `${uuid}`), adjustedInputs);
 
-    // if (typeof window !== 'undefined') {
-    //   window.location.replace('/auth/admin/gestisci');
-    // }
+    if (typeof window !== 'undefined') {
+      window.location.replace('/auth/admin/gestisci');
+    }
   };
 
   async function handleImageUpload(image: any) {
@@ -966,31 +977,58 @@ function AddProduct() {
         </div>
       </form>
 
-      {/* Snackbar for success */}
-      {successOpen && (
-        <div className='rounded-md bg-green-50 p-4'>
-          <div className='flex'>
-            <div className='flex-shrink-0'>
-              <CheckCircleIcon
-                className='h-5 w-5 text-green-400'
-                aria-hidden='true'
-              />
-            </div>
-            <div className='ml-3'>
-              <p className='text-sm font-medium text-green-800'>
-                Prodotto aggiunto! Attendi ...
-              </p>
-            </div>
-            <div className='ml-auto pl-3'>
-              <div className='-mx-1.5 -my-1.5'>
-                <button
-                  role='button'
-                  type='button'
-                  className='inline-flex rounded-md bg-green-50 p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50'
-                >
-                  <span className='sr-only'>Dismiss</span>
-                  <XMarkIcon className='h-5 w-5' aria-hidden='true' />
-                </button>
+      {open && (
+        <div className='z-50 fixed w-full left-0 bottom-20'>
+          <div
+            className={` flex w-min mx-auto items-center shadow-2xl ring-2 rounded-md p-4 ${
+              severity === 'success'
+                ? ' bg-green-50 ring-green-300'
+                : 'bg-red-50 ring-red-300'
+            }`}
+          >
+            <div className='flex w-max'>
+              <div className='flex-shrink-0'>
+                {severity === 'success' ? (
+                  <CheckCircleIcon
+                    className='h-5 w-5 text-green-400'
+                    aria-hidden='true'
+                  />
+                ) : (
+                  <ExclamationCircleIcon
+                    className='h-5 w-5 text-red-400'
+                    aria-hidden='true'
+                  />
+                )}
+              </div>
+              <div className='ml-3 shrink-0'>
+                {severity === 'success' ? (
+                  <p className='text-sm font-medium text-green-800'>
+                    Prodotto aggiunto! Attendi ...
+                  </p>
+                ) : (
+                  <p className='text-sm font-medium text-red-800'>
+                    Video troppo grande. Massimo 3 Mb.
+                  </p>
+                )}
+              </div>
+              <div className='ml-auto pl-3'>
+                <div className='-mx-1.5 -my-1.5'>
+                  <button
+                    type='button'
+                    className={`inline-flex rounded-md ${
+                      severity === 'success'
+                        ? 'bg-green-50 p-1.5 text-green-500 hover:bg-green-100  focus:ring-green-600 focus:ring-offset-green-50'
+                        : 'bg-red-50 p-1.5 text-red-500 hover:bg-red-100  focus:ring-red-600 focus:ring-offset-red-50'
+                    }  focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                  >
+                    <span className='sr-only'>Dismiss</span>
+                    <XMarkIcon
+                      className='h-5 w-5'
+                      aria-hidden='true'
+                      onClick={() => setOpen(false)}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
           </div>

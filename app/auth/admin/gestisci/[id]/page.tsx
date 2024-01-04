@@ -458,24 +458,28 @@ function Product({ params }: any) {
       }));
     }
     if (e.target.files && e.target.files[0] && prodotto) {
-      if (e.target.name === 'Immagine') {
+      if (
+        e.target.name === 'Immagine_0' ||
+        e.target.name === 'Immagine_1' ||
+        e.target.name === 'Immagine_2'
+      ) {
+        const parts = e.target.name.split('_');
+        const index = parts[parts.length - 1];
         // Update the image name in the 'immagini' array
         const updatedImages = [...prodotto.immagini];
-        updatedImages[parseInt(e.target.name)] = e.target.files[0].name;
+        updatedImages[parseInt(index)] = e.target.files[0].name;
 
         // Update the 'images' state by creating a new array with the updated image
         setImages((prevImages: any) => {
           const updatedImages = [...prevImages];
-          updatedImages[parseInt(e.target.name)] = e.target.files[0];
+          updatedImages[parseInt(index)] = e.target.files[0];
           return updatedImages;
         });
 
         // Update the 'imagesUrls' state by creating a new array with the updated image URL
         setImagesUrls((prevImageUrls: any) => {
           const updatedUrls = [...prevImageUrls];
-          updatedUrls[parseInt(e.target.name)] = URL.createObjectURL(
-            e.target.files[0]
-          );
+          updatedUrls[parseInt(index)] = URL.createObjectURL(e.target.files[0]);
           return updatedUrls;
         });
 
@@ -486,7 +490,17 @@ function Product({ params }: any) {
         }));
       }
       if (e.target.name === 'Video') {
-        // Edit video code here
+        const selectedFile = e.target.files[0];
+        const maxSizeInBytes = 3 * 1024 * 1024; // 3MB in bytes
+
+        if (selectedFile.size > maxSizeInBytes) {
+          setSeverity('error');
+          setOpen(true);
+        } else {
+          prodotto.video = selectedFile.name;
+          setVideo(selectedFile);
+          setVideoUrl(URL.createObjectURL(selectedFile));
+        }
       }
     }
   };
@@ -545,8 +559,8 @@ function Product({ params }: any) {
 
         const deleteVideoPromises = async () => {
           if (!prodotto.immagini.includes(originalVideo)) {
-            const imgref = ref(storage, `video/${originalVideo}`);
-            await deleteObject(imgref);
+            const vidref = ref(storage, `video/${originalVideo}`);
+            await deleteObject(vidref);
           }
         };
 
@@ -582,6 +596,8 @@ function Product({ params }: any) {
                     }
                     return image; // Otherwise, keep the image name unchanged
                   }) // Adjust 'immagini' value here
+                : key === 'video'
+                ? params.id + '_' + value
                 : typeof value === 'string'
                 ? (value as string).trim()
                 : value,
@@ -642,6 +658,7 @@ function Product({ params }: any) {
           {prodotto?.video && (
             <div className='flex flex-col w-full items-center justify-center'>
               <video
+                key={videoUrl}
                 controls
                 className={`rounded-xl shadow-xl md:shadow-none aspect-auto object-contain h-64 w-auto p-2 mx-auto`}
               >
@@ -705,7 +722,7 @@ function Product({ params }: any) {
                   <input
                     accept='image/*'
                     type='file'
-                    name='Immagine'
+                    name={`Immagine_${index}`}
                     onChange={handleChange}
                     style={{
                       position: 'absolute',
@@ -1061,6 +1078,10 @@ function Product({ params }: any) {
                 ) : severity === 'warning' ? (
                   <p className='text-sm font-medium text-yellow-800'>
                     Nessuna modifica
+                  </p>
+                ) : severity === 'error' ? (
+                  <p className='text-sm font-medium text-red-800'>
+                    Video troppo grande. Massimo 3 Mb.
                   </p>
                 ) : (
                   <p className='text-sm font-medium text-red-800'>
