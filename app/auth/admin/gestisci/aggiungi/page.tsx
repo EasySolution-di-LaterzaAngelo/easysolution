@@ -66,11 +66,13 @@ const Field = ({
         value !== null &&
         value !== undefined
       ) {
-        const pattern = /^[0-9]+,[0-9]+$/;
+        const pattern = /^[0-9]+([,.][0-9]{1,2})?$/;
         const inputValue = inputRef.current.value;
 
         inputRef.current.setCustomValidity(
-          !pattern.test(inputValue) ? 'Deve seguire il formato 123,45' : ''
+          !pattern.test(inputValue)
+            ? 'Deve seguire il formato 123 o 123,45 o 123.45'
+            : ''
         );
       }
     }
@@ -494,25 +496,25 @@ function AddProduct() {
 
     const uuid = uuidv4();
 
-    const uploadImagesPromises = images.map(
-      async (imageData: any, index: number) => {
-        const compressedImage = await handleImageUpload(imageData);
-        const immagine = inputs.immagini[index]; // Get the corresponding immagine at the same index
-        const imgref = ref(storage, `immagini/${uuid}_${immagine}`);
-        await uploadBytes(imgref, compressedImage);
-      }
-    );
+    // const uploadImagesPromises = images.map(
+    //   async (imageData: any, index: number) => {
+    //     const compressedImage = await handleImageUpload(imageData);
+    //     const immagine = inputs.immagini[index]; // Get the corresponding immagine at the same index
+    //     const imgref = ref(storage, `immagini/${uuid}_${immagine}`);
+    //     await uploadBytes(imgref, compressedImage);
+    //   }
+    // );
 
-    const uploadVideoPromise = async () => {
-      const videoInput = inputs.video; // Get the corresponding immagine at the same index
-      const vidref = ref(storage, `video/${uuid}_${videoInput}`);
-      await uploadBytes(vidref, video);
-    };
+    // const uploadVideoPromise = async () => {
+    //   const videoInput = inputs.video; // Get the corresponding immagine at the same index
+    //   const vidref = ref(storage, `video/${uuid}_${videoInput}`);
+    //   await uploadBytes(vidref, video);
+    // };
 
-    const videoUploadPromise = uploadVideoPromise();
+    // const videoUploadPromise = uploadVideoPromise();
 
-    await Promise.all(uploadImagesPromises);
-    await videoUploadPromise;
+    // await Promise.all(uploadImagesPromises);
+    // await videoUploadPromise;
 
     let adjustedInputs =
       inputs &&
@@ -539,16 +541,22 @@ function AddProduct() {
               ? value.map((image) => uuid + '_' + image) // Adjust 'immagini' value here
               : key === 'video'
               ? uuid + '_' + value
+              : key === 'prezzo' && !isNaN(parseFloat(value))
+              ? parseFloat(value.replace(',', '.')).toFixed(2).replace('.', ',') // Convert 'prezzo' to fixed format with comma as decimal separator
+              : key === 'sconto' && !isNaN(parseFloat(value))
+              ? parseFloat(value.replace(',', '.')).toFixed(2).replace('.', ',') // Convert 'prezzo' to fixed format with comma as decimal separator
               : typeof value === 'string'
               ? (value as string).trim()
               : value,
           ])
       );
-    await setDoc(doc(db, 'prodotti', `${uuid}`), adjustedInputs);
 
-    if (typeof window !== 'undefined') {
-      window.location.replace('/auth/admin/gestisci');
-    }
+    console.log(adjustedInputs);
+    // await setDoc(doc(db, 'prodotti', `${uuid}`), adjustedInputs);
+
+    // if (typeof window !== 'undefined') {
+    //   window.location.replace('/auth/admin/gestisci');
+    // }
   };
 
   async function handleImageUpload(image: any) {
@@ -669,7 +677,6 @@ function AddProduct() {
       <span className={styles.drop_title}>Carica un Video</span>
 
       <input
-        required={inputs.immagini.length === 0}
         ref={inputRefImage}
         accept='video/*'
         type='file'
