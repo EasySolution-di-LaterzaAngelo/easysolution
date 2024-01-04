@@ -544,7 +544,7 @@ function AddProduct() {
               : key === 'prezzo' && !isNaN(parseFloat(value))
               ? parseFloat(value.replace(',', '.')).toFixed(2).replace('.', ',') // Convert 'prezzo' to fixed format with comma as decimal separator
               : key === 'sconto' && !isNaN(parseFloat(value))
-              ? parseFloat(value.replace(',', '.')).toFixed(2).replace('.', ',') // Convert 'prezzo' to fixed format with comma as decimal separator
+              ? parseFloat(value.replace(',', '.')).toFixed(2).replace('.', ',') // Convert 'sconto' to fixed format with comma as decimal separator
               : typeof value === 'string'
               ? (value as string).trim()
               : value,

@@ -47,11 +47,13 @@ const Field = ({
     }
     if (productKey === 'Prezzo' || productKey === 'Sconto') {
       if (inputRef.current !== null && value !== '') {
-        const pattern = /^[0-9]+,[0-9]+$/;
+        const pattern = /^[0-9]+([,.][0-9]{1,2})?$/;
         const inputValue = inputRef.current.value;
 
         inputRef.current.setCustomValidity(
-          !pattern.test(inputValue) ? 'Deve seguire il formato 123,45' : ''
+          !pattern.test(inputValue)
+            ? 'Deve seguire il formato 123 o 123,45 o 123.45'
+            : ''
         );
       }
     }
@@ -601,6 +603,14 @@ function Product({ params }: any) {
                 : key === 'video' &&
                   !(params.id + '_' + prodotto.video).includes(originalVideo)
                 ? params.id + '_' + value
+                : key === 'prezzo' && !isNaN(parseFloat(value))
+                ? parseFloat(value.replace(',', '.'))
+                    .toFixed(2)
+                    .replace('.', ',') // Convert 'prezzo' to fixed format with comma as decimal separator
+                : key === 'sconto' && !isNaN(parseFloat(value))
+                ? parseFloat(value.replace(',', '.'))
+                    .toFixed(2)
+                    .replace('.', ',') // Convert 'sconto' to fixed format with comma as decimal separator
                 : typeof value === 'string'
                 ? (value as string).trim()
                 : value,
