@@ -41,7 +41,7 @@ export default async function RootLayout({
           name='description'
           content='Esplorate la nostra cartoleria di oggetti artigianali unici. Bomboniere, incisioni su legno e metallo e molto altro, tutti creati a mano con passione.'
         />
-        <link rel='canonical' href='https://easysolution.vercel.app/' />
+        <link rel='canonical' href='https://easysolutiontaranto.com/' />
         {/* IE */}
         <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
         {/* other browsers */}
