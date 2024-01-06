@@ -13,13 +13,13 @@ import Image from 'next/image';
 import { Switch } from '@headlessui/react';
 import { optionalInputs } from '../../../../../global_data';
 import {
-  ArrowSmallLeftIcon,
   CameraIcon,
   CheckCircleIcon,
   PaperAirplaneIcon,
   XMarkIcon,
   VideoCameraIcon,
   ExclamationCircleIcon,
+  ArrowLeftIcon,
 } from '@heroicons/react/24/outline';
 import { getProducts } from '@/pages/api/auth/getProducts';
 import imageCompression from 'browser-image-compression';
@@ -697,21 +697,23 @@ function AddProduct() {
   );
 
   return (
-    <div className='relative w-full flex flex-col px-6'>
+    <div className='relative w-full flex flex-col px-6 py-10 h-[calc(100dvh-74px)] md:h-[calc(100dvh-56px)]'>
       {/* Form */}
-      <form onSubmit={handleSubmit}>
-        <div
-          className={`relative max-w-4xl h-[600px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-4 items-center justify-center bg-white content-start md:w-full md:h-2/3 rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll  ${styles.card}`}
+      <form
+        onSubmit={handleSubmit}
+        className='relative flex flex-col h-full gap-4'
+      >
+        {/* Go back */}
+        <a
+          key={'Back'}
+          href='/auth/admin/gestisci'
+          className='z-50 flex absolute left-5 top-5 p-1 items-center drop-shadow-lg rounded-full text-black hover:bg-gray-300 hover:shadow-lg '
         >
-          {/* Go back */}
-          <a
-            key={'Back'}
-            href='/auth/admin/gestisci'
-            className='flex absolute left-4 top-4 p-1 items-center drop-shadow-lg rounded-full text-black hover:bg-gray-300 hover:shadow-lg '
-          >
-            <ArrowSmallLeftIcon height={18} className='stroke-black' />
-          </a>
-
+          <ArrowLeftIcon height={18} className='stroke-black' />
+        </a>
+        <div
+          className={`relative w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-4 items-center justify-center bg-white content-start md:w-full max-h-min md:h-2/3 rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll  ${styles.card}`}
+        >
           {/* Video field */}
           <>
             {inputs.video === '' ? (

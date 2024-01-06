@@ -47,7 +47,7 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
     <>
       {products != undefined && products?.length > 0 ? (
         <div
-          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 m-auto items-center justify-center bg-white h-[28rem] content-start max-w-4xl md:w-full md:h-2/3 rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll ${styles.card}`}
+          className={`relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-center justify-center bg-white content-start max-w-4xl max-h-min md:w-full rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll ${styles.card}`}
         >
           {products?.map((product) => (
             <div key={product.id} className='border-[1px]'>

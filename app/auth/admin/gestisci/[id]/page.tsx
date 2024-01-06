@@ -12,7 +12,7 @@ import { Switch } from '@headlessui/react';
 import { optionalInputs } from '../../../../../global_data';
 import { deleteObject, ref, uploadBytes } from 'firebase/storage';
 import {
-  ArrowSmallLeftIcon,
+  ArrowLeftIcon,
   CheckCircleIcon,
   ExclamationCircleIcon,
   PaperAirplaneIcon,
@@ -655,19 +655,21 @@ function Product({ params }: any) {
     }
   }
   return (
-    <div className='relative m-auto flex flex-col'>
-      <form onSubmit={handleEditProduct}>
-        <div
-          className={`relative  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 m-auto p-4 items-center justify-center bg-white h-[28rem] w-full xxs:w-80 content-start md:w-full md:h-2/3 rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll ${styles.card}`}
+    <div className='relative px-5 pt-5 pb-10 max-w-7xl flex flex-col h-[calc(100dvh-74px)] md:h-[calc(100dvh-56px)]'>
+      <form
+        onSubmit={handleEditProduct}
+        className='relative flex flex-col h-full gap-4'
+      >
+        <a
+          key={'Back'}
+          href='/auth/admin/gestisci'
+          className='z-50 flex absolute left-5 top-5 p-1 items-center drop-shadow-lg rounded-full text-black hover:bg-gray-300 hover:shadow-lg '
         >
-          <a
-            key={'Back'}
-            href='/auth/admin/gestisci'
-            className='flex absolute left-2 xxs:left-4 top-2 xxs:top-4 p-1 items-center drop-shadow-lg rounded-full text-black hover:bg-gray-300 hover:shadow-lg '
-          >
-            <ArrowSmallLeftIcon height={18} className='stroke-black' />
-          </a>
-
+          <ArrowLeftIcon height={18} className='stroke-black' />
+        </a>
+        <div
+          className={`relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 m-auto p-4 items-center justify-center bg-white w-full content-start md:w-full max-h-min rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll ${styles.card}`}
+        >
           {prodotto?.video && (
             <div className='flex flex-col w-full items-center justify-center'>
               <video
@@ -1022,7 +1024,7 @@ function Product({ params }: any) {
 
         <div
           key={'Buttons'}
-          className='flex flex-row mt-4 items-center justify-center gap-2'
+          className='flex flex-row h-fit items-center justify-center gap-2'
         >
           <div>
             <button

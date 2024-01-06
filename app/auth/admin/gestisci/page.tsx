@@ -102,10 +102,10 @@ function Gestisci() {
   };
 
   return (
-    <div className='relative my-10 xxs:my-auto m-auto flex flex-col gap-4 px-6'>
+    <div className='relative py-10 m-auto flex flex-col gap-4 px-6 h-[calc(100dvh-74px)] md:h-[calc(100dvh-56px)] justify-center'>
       <form
         onSubmit={handleSubmit}
-        className='mb-2 mx-auto w-full gap-8 flex flex-col sm:flex-row'
+        className='mb-2 mx-auto w-full gap-8 flex flex-col sm:flex-row h-fit'
       >
         <input
           ref={inputRef}
@@ -141,7 +141,7 @@ function Gestisci() {
         </div>
       </form>
       {inputValue && (
-        <div className=' w-full flex justify-center'>
+        <div className='w-full flex justify-center'>
           <h1
             onClick={handleClearSearch}
             className='flex items-center pl-4 pr-2 p-1 md:p-2 gap-1 rounded-full bg-zinc-300 border border-gray-400 font-medium text-sm md:text-xl cursor-pointer'
@@ -151,11 +151,10 @@ function Gestisci() {
           </h1>
         </div>
       )}
-      <div className='relative w-full flex flex-col'>
-        <Prodotti prodotti={prodotti} />
-      </div>
 
-      <div className='flex flex-col items-center gap-2'>
+      <Prodotti prodotti={prodotti} />
+
+      <div className='flex flex-col items-center gap-2 h-fit'>
         <a
           href='/auth/admin/gestisci/aggiungi'
           className='flex mx-auto p-4 items-center drop-shadow-lg text-white bg-green-400 rounded-full ring-2 ring-green-500 shadow-lg hover:ring-2 hover:ring-green-700 hover:bg-green-500'
