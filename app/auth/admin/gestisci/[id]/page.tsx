@@ -245,20 +245,23 @@ function Product({ params }: any) {
   useEffect(() => {
     async function fetchData(params: any) {
       const prodottiData = await getProduct(params.id);
-      // TODO -> Mettere if prodottiData null o undefined e gestire not found
-      prodottiData ? setImagesUrls(prodottiData.immaginiUrl) : null;
-      delete prodottiData.immaginiUrl;
-      prodottiData ? setVideoUrl(prodottiData.videoUrl) : null;
-      delete prodottiData.videoUrl;
-      prodottiData ? setProdotto(prodottiData) : null;
-      prodottiData ? setOriginalImages(prodottiData.immagini) : null;
-      prodottiData ? setOriginalVideo(prodottiData.video) : null;
-      prodottiData ? setInitialProdotto(prodottiData) : null;
-      prodottiData ? setIsSecondHand(prodottiData.secondHand) : null;
-      prodottiData ? setIsRefurbished(prodottiData.ricondizionato) : null;
-      prodottiData ? setIs5G(prodottiData.five_g) : null;
-      prodottiData ? setIsNFC(prodottiData.nfc) : null;
-      prodottiData ? setIsDualSim(prodottiData.dual_sim) : null;
+      if (prodottiData === null || prodottiData === undefined) {
+        window.location.replace('/auth/admin/gestisci/404-not-found');
+      } else {
+        prodottiData ? setImagesUrls(prodottiData.immaginiUrl) : null;
+        delete prodottiData.immaginiUrl;
+        prodottiData ? setVideoUrl(prodottiData.videoUrl) : null;
+        delete prodottiData.videoUrl;
+        prodottiData ? setProdotto(prodottiData) : null;
+        prodottiData ? setOriginalImages(prodottiData.immagini) : null;
+        prodottiData ? setOriginalVideo(prodottiData.video) : null;
+        prodottiData ? setInitialProdotto(prodottiData) : null;
+        prodottiData ? setIsSecondHand(prodottiData.secondHand) : null;
+        prodottiData ? setIsRefurbished(prodottiData.ricondizionato) : null;
+        prodottiData ? setIs5G(prodottiData.five_g) : null;
+        prodottiData ? setIsNFC(prodottiData.nfc) : null;
+        prodottiData ? setIsDualSim(prodottiData.dual_sim) : null;
+      }
     }
 
     async function fetchDataForCategories() {

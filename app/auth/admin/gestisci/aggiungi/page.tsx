@@ -804,7 +804,7 @@ function AddProduct() {
                 type='text'
                 id='InputCategoria'
                 name='Categoria'
-                placeholder='Inserisci una nuova categoria'
+                placeholder='Nuova categoria'
                 onChange={handleChange}
                 className='mt-2 p-2 rounded-md border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-[70%] sm:text-sm'
               />
