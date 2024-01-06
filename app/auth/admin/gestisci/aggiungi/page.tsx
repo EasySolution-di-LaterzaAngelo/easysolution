@@ -496,25 +496,25 @@ function AddProduct() {
 
     const uuid = uuidv4();
 
-    // const uploadImagesPromises = images.map(
-    //   async (imageData: any, index: number) => {
-    //     const compressedImage = await handleImageUpload(imageData);
-    //     const immagine = inputs.immagini[index]; // Get the corresponding immagine at the same index
-    //     const imgref = ref(storage, `immagini/${uuid}_${immagine}`);
-    //     await uploadBytes(imgref, compressedImage);
-    //   }
-    // );
+    const uploadImagesPromises = images.map(
+      async (imageData: any, index: number) => {
+        const compressedImage = await handleImageUpload(imageData);
+        const immagine = inputs.immagini[index]; // Get the corresponding immagine at the same index
+        const imgref = ref(storage, `immagini/${uuid}_${immagine}`);
+        await uploadBytes(imgref, compressedImage);
+      }
+    );
 
-    // const uploadVideoPromise = async () => {
-    //   const videoInput = inputs.video; // Get the corresponding immagine at the same index
-    //   const vidref = ref(storage, `video/${uuid}_${videoInput}`);
-    //   await uploadBytes(vidref, video);
-    // };
+    const uploadVideoPromise = async () => {
+      const videoInput = inputs.video; // Get the corresponding immagine at the same index
+      const vidref = ref(storage, `video/${uuid}_${videoInput}`);
+      await uploadBytes(vidref, video);
+    };
 
-    // const videoUploadPromise = uploadVideoPromise();
+    const videoUploadPromise = uploadVideoPromise();
 
-    // await Promise.all(uploadImagesPromises);
-    // await videoUploadPromise;
+    await Promise.all(uploadImagesPromises);
+    await videoUploadPromise;
 
     let adjustedInputs =
       inputs &&
@@ -552,11 +552,11 @@ function AddProduct() {
       );
 
     console.log(adjustedInputs);
-    // await setDoc(doc(db, 'prodotti', `${uuid}`), adjustedInputs);
+    await setDoc(doc(db, 'prodotti', `${uuid}`), adjustedInputs);
 
-    // if (typeof window !== 'undefined') {
-    //   window.location.replace('/auth/admin/gestisci');
-    // }
+    if (typeof window !== 'undefined') {
+      window.location.replace('/auth/admin/gestisci');
+    }
   };
 
   async function handleImageUpload(image: any) {
