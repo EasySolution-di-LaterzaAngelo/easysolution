@@ -91,7 +91,7 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
         </div>
       ) : products != undefined ? (
         <div
-          className={`flex m-auto items-center justify-center bg-white  content-start max-w-4xl md:w-full md:h-2/3 rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll ${styles.card}`}
+          className={`flex items-center justify-center bg-white  content-start max-w-4xl md:w-full md:h-2/3 rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll ${styles.card}`}
         >
           <div className='flex flex-col justify-center items-center -mt-5 xs:-mt-10 p-5 z-10'>
             <Lottie
@@ -107,7 +107,7 @@ function Prodotti({ prodotti }: { prodotti: Array<Prodotto> | undefined }) {
         </div>
       ) : (
         <div
-          className={`flex m-auto items-center justify-center bg-white h-96 w-80 md:w-96 content-start max-w-4xl rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll ${styles.card}`}
+          className={`flex items-center justify-center bg-white h-96 w-80 md:w-96 content-start max-w-4xl rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll ${styles.card}`}
         >
           <MyLoading />
         </div>
