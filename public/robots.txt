@@ -4,4 +4,4 @@ Disallow: /auth/admin/
 User-agent: *
 Allow: /
 
-Sitemap: https://easysolution.vercel.app/sitemap.xml
+Sitemap: https://easysolutiontaranto.com/sitemap.xml
