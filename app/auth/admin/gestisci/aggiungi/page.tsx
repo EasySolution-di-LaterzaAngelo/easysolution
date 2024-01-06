@@ -343,8 +343,6 @@ function AddProduct() {
 
   // Inputs handler
   const handleChange = (e: any) => {
-    console.log(e);
-
     if (e.target.name === 'Prezzo' && inputs?.percentuale !== '') {
       setInputs((prevState: any) => ({
         ...prevState,
@@ -523,7 +521,7 @@ function AddProduct() {
           .filter(([key, value]) => {
             if (key === 'immagini' && Array.isArray(value)) {
               return true; // Keep the "immagine" key with an array value
-            } else if (key === 'video') {
+            } else if (key === 'video' && value != '') {
               return true; // Keep the "video" key
             }
             if (

@@ -678,7 +678,7 @@ function Product({ params }: any) {
             className={`relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-4 items-center justify-center w-full content-start md:w-full max-h-min`}
           >
             {prodotto?.video && (
-              <div className='flex flex-col w-full items-center justify-center'>
+              <div className='flex flex-col w-4/5 mx-auto items-center justify-center'>
                 <video
                   key={videoUrl}
                   controls
