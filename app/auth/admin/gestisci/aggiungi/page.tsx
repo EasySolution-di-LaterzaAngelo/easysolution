@@ -13,13 +13,13 @@ import Image from 'next/image';
 import { Switch } from '@headlessui/react';
 import { optionalInputs } from '../../../../../global_data';
 import {
-  ArrowSmallLeftIcon,
   CameraIcon,
   CheckCircleIcon,
   PaperAirplaneIcon,
   XMarkIcon,
   VideoCameraIcon,
   ExclamationCircleIcon,
+  ArrowLeftIcon,
 } from '@heroicons/react/24/outline';
 import { getProducts } from '@/pages/api/auth/getProducts';
 import imageCompression from 'browser-image-compression';
@@ -66,11 +66,13 @@ const Field = ({
         value !== null &&
         value !== undefined
       ) {
-        const pattern = /^[0-9]+,[0-9]+$/;
+        const pattern = /^[0-9]+([,.][0-9]{1,2})?$/;
         const inputValue = inputRef.current.value;
 
         inputRef.current.setCustomValidity(
-          !pattern.test(inputValue) ? 'Deve seguire il formato 123,45' : ''
+          !pattern.test(inputValue)
+            ? 'Deve seguire il formato 123 o 123,45 o 123.45'
+            : ''
         );
       }
     }
@@ -341,8 +343,6 @@ function AddProduct() {
 
   // Inputs handler
   const handleChange = (e: any) => {
-    console.log(e);
-
     if (e.target.name === 'Prezzo' && inputs?.percentuale !== '') {
       setInputs((prevState: any) => ({
         ...prevState,
@@ -521,7 +521,7 @@ function AddProduct() {
           .filter(([key, value]) => {
             if (key === 'immagini' && Array.isArray(value)) {
               return true; // Keep the "immagine" key with an array value
-            } else if (key === 'video') {
+            } else if (key === 'video' && value != '') {
               return true; // Keep the "video" key
             }
             if (
@@ -539,11 +539,17 @@ function AddProduct() {
               ? value.map((image) => uuid + '_' + image) // Adjust 'immagini' value here
               : key === 'video'
               ? uuid + '_' + value
+              : key === 'prezzo' && !isNaN(parseFloat(value))
+              ? parseFloat(value.replace(',', '.')).toFixed(2).replace('.', ',') // Convert 'prezzo' to fixed format with comma as decimal separator
+              : key === 'sconto' && !isNaN(parseFloat(value))
+              ? parseFloat(value.replace(',', '.')).toFixed(2).replace('.', ',') // Convert 'sconto' to fixed format with comma as decimal separator
               : typeof value === 'string'
               ? (value as string).trim()
               : value,
           ])
       );
+
+    console.log(adjustedInputs);
     await setDoc(doc(db, 'prodotti', `${uuid}`), adjustedInputs);
 
     if (typeof window !== 'undefined') {
@@ -669,7 +675,6 @@ function AddProduct() {
       <span className={styles.drop_title}>Carica un Video</span>
 
       <input
-        required={inputs.immagini.length === 0}
         ref={inputRefImage}
         accept='video/*'
         type='file'
@@ -690,278 +695,284 @@ function AddProduct() {
   );
 
   return (
-    <div className='relative w-full flex flex-col px-6'>
+    <div className='relative flex flex-col mx-auto w-full px-5 pt-5 pb-10 max-w-7xl h-[calc(100dvh-74px)] md:h-[calc(100dvh-56px)]'>
       {/* Form */}
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={handleSubmit}
+        className='relative flex flex-col h-full gap-4 justify-center w-full'
+      >
         <div
-          className={`relative max-w-4xl h-[600px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-4 items-center justify-center bg-white content-start md:w-full md:h-2/3 rounded-3xl shadow-lg bg-clip-padding bg-opacity-60 border border-gray-200 overflow-y-scroll  ${styles.card}`}
+          className={`relative flex h-fit max-h-min w-full bg-white shadow-lg rounded-3xl border border-gray-200 overflow-y-scroll ${styles.card}`}
         >
           {/* Go back */}
           <a
             key={'Back'}
             href='/auth/admin/gestisci'
-            className='flex absolute left-4 top-4 p-1 items-center drop-shadow-lg rounded-full text-black hover:bg-gray-300 hover:shadow-lg '
+            className='z-50 flex absolute left-5 top-5 p-1 items-center drop-shadow-lg rounded-full text-black hover:bg-gray-300 hover:shadow-lg '
           >
-            <ArrowSmallLeftIcon height={18} className='stroke-black' />
+            <ArrowLeftIcon height={18} className='stroke-black' />
           </a>
-
-          {/* Video field */}
-          <>
-            {inputs.video === '' ? (
-              <> {renderVideoUploader()}</>
-            ) : (
-              <>{renderVideo(videoUrl, 0)}</>
-            )}
-          </>
-
-          {/* Image field */}
-          <>
-            {inputs.immagini.length === 0 && (
-              <>
-                {renderImageUploader()}
-                {renderImageUploader()}
-                {renderImageUploader()}
-              </>
-            )}
-            {inputs.immagini.length === 1 && (
-              <>
-                {renderImage(imagesUrls[0], 'Prima immagine', 0)}
-                {renderImageUploader()}
-                {renderImageUploader()}
-              </>
-            )}
-            {inputs.immagini.length === 2 && (
-              <>
-                {renderImage(imagesUrls[0], 'Prima immagine', 0)}
-                {renderImage(imagesUrls[1], 'Seconda immagine', 1)}
-                {renderImageUploader()}
-              </>
-            )}
-            {inputs.immagini.length >= 3 && (
-              <>
-                {renderImage(imagesUrls[0], 'Prima immagine', 0)}
-                {renderImage(imagesUrls[1], 'Seconda immagine', 1)}
-                {renderImage(imagesUrls[2], 'Terza immagine', 2)}
-              </>
-            )}
-          </>
-
-          {/* Description field */}
-          <div className='flex lg:col-span-2'>
-            <Field
-              productKey='Descrizione'
-              handleChange={handleChange}
-              inputs={inputs}
-            />
-          </div>
-
-          {/* Name field */}
-          <Field
-            productKey='Nome'
-            handleChange={handleChange}
-            inputs={inputs}
-          />
-
-          {/* Category field */}
           <div
-            aria-required
-            className='relative flex flex-col  items-center justify-center py-4'
+            className={`relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-4 items-center justify-center w-full content-start max-h-min`}
           >
-            <label
-              htmlFor='Categoria'
-              className='absolute z-50 top-2 inline-block bg-white px-1 text-xs font-medium text-gray-900'
-            >
-              Categoria
-            </label>
-            <select
-              defaultValue=''
-              id='grouped-native-select'
-              name='Categoria'
-              onChange={handleChange}
-              autoComplete='country-name'
-              className='relative block w-[70%] rounded-md border-0 bg-transparent py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-            >
-              <option aria-label='None' value='' />
-              {categories?.map((category: any) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-            <input
-              type='text'
-              id='InputCategoria'
-              name='Categoria'
-              placeholder='Inserisci una nuova categoria'
-              onChange={handleChange}
-              className='mt-2 p-2 rounded-md border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-[70%] sm:text-sm'
-            />
-          </div>
+            {/* Video field */}
+            <>
+              {inputs.video === '' ? (
+                <> {renderVideoUploader()}</>
+              ) : (
+                <>{renderVideo(videoUrl, 0)}</>
+              )}
+            </>
 
-          {/* Checkboxes */}
-          <div className='flex flex-row items-center justify-center py-4'>
-            <div className='flex flex-wrap max-w-[200px] items-center justify-center gap-3'>
-              <Switch.Group as='div' className='flex flex-col items-center'>
-                <Switch
-                  checked={isSecondHand}
-                  onChange={setIsSecondHand}
-                  name='usato'
-                  className={classNames(
-                    isSecondHand ? 'bg-indigo-600' : 'bg-gray-200',
-                    'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2'
-                  )}
-                >
-                  <span className='sr-only'>Use setting</span>
-                  <span
-                    className={classNames(
-                      isSecondHand ? 'translate-x-5' : 'translate-x-0',
-                      'pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
-                    )}
-                  >
-                    <span
-                      className={classNames(
-                        isSecondHand
-                          ? 'opacity-0 duration-100 ease-out'
-                          : 'opacity-100 duration-200 ease-in',
-                        'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity'
-                      )}
-                      aria-hidden='true'
-                    >
-                      <svg
-                        className='h-3 w-3 text-gray-400'
-                        fill='none'
-                        viewBox='0 0 12 12'
-                      >
-                        <path
-                          d='M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2'
-                          stroke='currentColor'
-                          strokeWidth={2}
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      className={classNames(
-                        isSecondHand
-                          ? 'opacity-100 duration-200 ease-in'
-                          : 'opacity-0 duration-100 ease-out',
-                        'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity'
-                      )}
-                      aria-hidden='true'
-                    >
-                      <svg
-                        className='h-3 w-3 text-indigo-600'
-                        fill='currentColor'
-                        viewBox='0 0 12 12'
-                      >
-                        <path d='M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z' />
-                      </svg>
-                    </span>
-                  </span>
-                </Switch>
-                <Switch.Label as='p' className='text-sm'>
-                  <span className='font-medium text-xs text-gray-900'>
-                    Usato
-                  </span>
-                </Switch.Label>
-              </Switch.Group>
+            {/* Image field */}
+            <>
+              {inputs.immagini.length === 0 && (
+                <>
+                  {renderImageUploader()}
+                  {renderImageUploader()}
+                  {renderImageUploader()}
+                </>
+              )}
+              {inputs.immagini.length === 1 && (
+                <>
+                  {renderImage(imagesUrls[0], 'Prima immagine', 0)}
+                  {renderImageUploader()}
+                  {renderImageUploader()}
+                </>
+              )}
+              {inputs.immagini.length === 2 && (
+                <>
+                  {renderImage(imagesUrls[0], 'Prima immagine', 0)}
+                  {renderImage(imagesUrls[1], 'Seconda immagine', 1)}
+                  {renderImageUploader()}
+                </>
+              )}
+              {inputs.immagini.length >= 3 && (
+                <>
+                  {renderImage(imagesUrls[0], 'Prima immagine', 0)}
+                  {renderImage(imagesUrls[1], 'Seconda immagine', 1)}
+                  {renderImage(imagesUrls[2], 'Terza immagine', 2)}
+                </>
+              )}
+            </>
 
-              <Switch.Group as='div' className='flex flex-col items-center'>
-                <Switch
-                  checked={isRefurbished}
-                  onChange={setIsRefurbished}
-                  name='usato'
-                  className={classNames(
-                    isRefurbished ? 'bg-indigo-600' : 'bg-gray-200',
-                    'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2'
-                  )}
-                >
-                  <span className='sr-only'>Use setting</span>
-                  <span
-                    className={classNames(
-                      isRefurbished ? 'translate-x-5' : 'translate-x-0',
-                      'pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
-                    )}
-                  >
-                    <span
-                      className={classNames(
-                        isRefurbished
-                          ? 'opacity-0 duration-100 ease-out'
-                          : 'opacity-100 duration-200 ease-in',
-                        'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity'
-                      )}
-                      aria-hidden='true'
-                    >
-                      <svg
-                        className='h-3 w-3 text-gray-400'
-                        fill='none'
-                        viewBox='0 0 12 12'
-                      >
-                        <path
-                          d='M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2'
-                          stroke='currentColor'
-                          strokeWidth={2}
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      className={classNames(
-                        isRefurbished
-                          ? 'opacity-100 duration-200 ease-in'
-                          : 'opacity-0 duration-100 ease-out',
-                        'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity'
-                      )}
-                      aria-hidden='true'
-                    >
-                      <svg
-                        className='h-3 w-3 text-indigo-600'
-                        fill='currentColor'
-                        viewBox='0 0 12 12'
-                      >
-                        <path d='M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z' />
-                      </svg>
-                    </span>
-                  </span>
-                </Switch>
-                <Switch.Label as='p' className='text-sm'>
-                  <span className='font-medium text-xs text-gray-900'>
-                    Ricondizionato
-                  </span>
-                </Switch.Label>
-              </Switch.Group>
+            {/* Description field */}
+            <div className='flex lg:col-span-2'>
+              <Field
+                productKey='Descrizione'
+                handleChange={handleChange}
+                inputs={inputs}
+              />
             </div>
-          </div>
 
-          {/* Optional fields */}
-          {optionalInputs.map((key) => (
+            {/* Name field */}
             <Field
-              key={key}
-              productKey={key}
+              productKey='Nome'
               handleChange={handleChange}
               inputs={inputs}
             />
-          ))}
 
-          <Field
-            productKey='Prezzo'
-            handleChange={handleChange}
-            inputs={inputs}
-          />
+            {/* Category field */}
+            <div
+              aria-required
+              className='relative flex flex-col  items-center justify-center py-4'
+            >
+              <label
+                htmlFor='Categoria'
+                className='absolute z-50 top-2 inline-block bg-white px-1 text-xs font-medium text-gray-900'
+              >
+                Categoria
+              </label>
+              <select
+                defaultValue=''
+                id='grouped-native-select'
+                name='Categoria'
+                onChange={handleChange}
+                autoComplete='country-name'
+                className='relative block w-[70%] rounded-md border-0 bg-transparent py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+              >
+                <option aria-label='None' value='' />
+                {categories?.map((category: any) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+              <input
+                type='text'
+                id='InputCategoria'
+                name='Categoria'
+                placeholder='Nuova categoria'
+                onChange={handleChange}
+                className='mt-2 p-2 rounded-md border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-[70%] sm:text-sm'
+              />
+            </div>
 
-          <Field
-            productKey='Sconto'
-            handleChange={handleChange}
-            inputs={inputs}
-          />
+            {/* Checkboxes */}
+            <div className='flex flex-row items-center justify-center py-4'>
+              <div className='flex flex-wrap max-w-[200px] items-center justify-center gap-3'>
+                <Switch.Group as='div' className='flex flex-col items-center'>
+                  <Switch
+                    checked={isSecondHand}
+                    onChange={setIsSecondHand}
+                    name='usato'
+                    className={classNames(
+                      isSecondHand ? 'bg-indigo-600' : 'bg-gray-200',
+                      'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2'
+                    )}
+                  >
+                    <span className='sr-only'>Use setting</span>
+                    <span
+                      className={classNames(
+                        isSecondHand ? 'translate-x-5' : 'translate-x-0',
+                        'pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
+                      )}
+                    >
+                      <span
+                        className={classNames(
+                          isSecondHand
+                            ? 'opacity-0 duration-100 ease-out'
+                            : 'opacity-100 duration-200 ease-in',
+                          'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity'
+                        )}
+                        aria-hidden='true'
+                      >
+                        <svg
+                          className='h-3 w-3 text-gray-400'
+                          fill='none'
+                          viewBox='0 0 12 12'
+                        >
+                          <path
+                            d='M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2'
+                            stroke='currentColor'
+                            strokeWidth={2}
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        className={classNames(
+                          isSecondHand
+                            ? 'opacity-100 duration-200 ease-in'
+                            : 'opacity-0 duration-100 ease-out',
+                          'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity'
+                        )}
+                        aria-hidden='true'
+                      >
+                        <svg
+                          className='h-3 w-3 text-indigo-600'
+                          fill='currentColor'
+                          viewBox='0 0 12 12'
+                        >
+                          <path d='M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z' />
+                        </svg>
+                      </span>
+                    </span>
+                  </Switch>
+                  <Switch.Label as='p' className='text-sm'>
+                    <span className='font-medium text-xs text-gray-900'>
+                      Usato
+                    </span>
+                  </Switch.Label>
+                </Switch.Group>
 
-          <Field
-            productKey='Percentuale'
-            handleChange={handleChange}
-            inputs={inputs}
-          />
+                <Switch.Group as='div' className='flex flex-col items-center'>
+                  <Switch
+                    checked={isRefurbished}
+                    onChange={setIsRefurbished}
+                    name='usato'
+                    className={classNames(
+                      isRefurbished ? 'bg-indigo-600' : 'bg-gray-200',
+                      'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2'
+                    )}
+                  >
+                    <span className='sr-only'>Use setting</span>
+                    <span
+                      className={classNames(
+                        isRefurbished ? 'translate-x-5' : 'translate-x-0',
+                        'pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
+                      )}
+                    >
+                      <span
+                        className={classNames(
+                          isRefurbished
+                            ? 'opacity-0 duration-100 ease-out'
+                            : 'opacity-100 duration-200 ease-in',
+                          'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity'
+                        )}
+                        aria-hidden='true'
+                      >
+                        <svg
+                          className='h-3 w-3 text-gray-400'
+                          fill='none'
+                          viewBox='0 0 12 12'
+                        >
+                          <path
+                            d='M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2'
+                            stroke='currentColor'
+                            strokeWidth={2}
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        className={classNames(
+                          isRefurbished
+                            ? 'opacity-100 duration-200 ease-in'
+                            : 'opacity-0 duration-100 ease-out',
+                          'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity'
+                        )}
+                        aria-hidden='true'
+                      >
+                        <svg
+                          className='h-3 w-3 text-indigo-600'
+                          fill='currentColor'
+                          viewBox='0 0 12 12'
+                        >
+                          <path d='M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z' />
+                        </svg>
+                      </span>
+                    </span>
+                  </Switch>
+                  <Switch.Label as='p' className='text-sm'>
+                    <span className='font-medium text-xs text-gray-900'>
+                      Ricondizionato
+                    </span>
+                  </Switch.Label>
+                </Switch.Group>
+              </div>
+            </div>
+
+            {/* Optional fields */}
+            {optionalInputs.map((key) => (
+              <Field
+                key={key}
+                productKey={key}
+                handleChange={handleChange}
+                inputs={inputs}
+              />
+            ))}
+
+            <Field
+              productKey='Prezzo'
+              handleChange={handleChange}
+              inputs={inputs}
+            />
+
+            <Field
+              productKey='Sconto'
+              handleChange={handleChange}
+              inputs={inputs}
+            />
+
+            <Field
+              productKey='Percentuale'
+              handleChange={handleChange}
+              inputs={inputs}
+            />
+          </div>
         </div>
 
         {/* Add product button */}

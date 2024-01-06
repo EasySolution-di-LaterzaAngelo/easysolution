@@ -1,7 +1,6 @@
 import React from 'react';
 import SubHeader from './(adminHeader)/SubHeader';
 import ProvidersWrapper from '@/app/(main)/ProvidersWrapper';
-import styles from './Admin.module.css';
 
 export default function RootLayout({
   children,
@@ -22,7 +21,7 @@ export default function RootLayout({
         {/* other browsers */}
         <link rel='icon' type='image/x-icon' href='/favicon.ico' />
       </head>
-      <body className={`flex flex-col bg-slate-50 ${styles.main}`}>
+      <body className={`relative flex flex-col bg-slate-50 h-dvh`}>
         <ProvidersWrapper>
           <SubHeader />
           {children}
