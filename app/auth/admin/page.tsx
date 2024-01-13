@@ -18,6 +18,7 @@ function Admin() {
   onAuthStateChanged(auth, (user) => {
     if (user?.email) {
       setLoggedUser(user);
+      localStorage.setItem('loggedUser', JSON.stringify(user));
     } else {
       setLoggedUser(undefined);
     }
@@ -56,7 +57,9 @@ function Admin() {
         {loggedUser && (
           <button
             role='button'
-            onClick={() => signOut(auth)}
+            onClick={() => (
+              signOut(auth), localStorage.removeItem('loggedUser')
+            )}
             className='flex flex-row px-4 py-2 gap-2 items-center border-solid border-2 hover:border-red-600 hover:bg-red-400 hover:text-white rounded-md shadow-lg'
           >
             <p className='ml-1'>Esci</p>

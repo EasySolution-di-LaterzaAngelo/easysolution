@@ -135,16 +135,18 @@ const FloatingMenu = ({ loggedUser }: { loggedUser: User | undefined }) => {
   );
 };
 
-function User() {
+function Account() {
   const [loggedUser, setLoggedUser] = useState<User>();
 
   onAuthStateChanged(auth, (user) => {
     if (user?.email) {
       setLoggedUser(user);
+      localStorage.setItem('loggedUser', JSON.stringify(user));
     } else {
       setLoggedUser(undefined);
     }
   });
+
   return (
     <>
       <Menu as='div' className='z-50 relative isolate text-left'>
@@ -178,4 +180,4 @@ function User() {
   );
 }
 
-export default User;
+export default Account;
