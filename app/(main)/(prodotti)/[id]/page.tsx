@@ -11,7 +11,7 @@ import { selectGoogleValue } from '@/slices/googleSlice';
 function ProductPage({ params }: any) {
   const products = useSelector(selectProductsValue);
   const googleData = useSelector(selectGoogleValue);
-  const [product, setProduct] = useState(null);
+  const [product, setProduct] = useState(undefined);
   const [google, setGoogle] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -37,7 +37,7 @@ function ProductPage({ params }: any) {
           <MyLoading />
         </div>
       ) : (
-        <Product product={product} googleData={google} />
+        <Product product={product} googleData={google} params={params} />
       )}
     </div>
   );

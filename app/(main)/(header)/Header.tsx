@@ -16,8 +16,10 @@ import styles from './Header.module.css';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import Sidebar from './Sidebar';
-import User from './User';
+import Account from './Account';
 import { Prodotto } from '@/types';
+import { User, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/firebase';
 
 const SubHeader = ({ categories }: { categories: string[] }) => {
   const dispatch = useDispatch();
@@ -211,6 +213,7 @@ const Cart = () => {
 function Header({ productsData }: { productsData: Prodotto[] }) {
   const pathname = usePathname();
   const [categories, setCategories] = useState<any>();
+  const [loggedUser, setLoggedUser] = useState<User>();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -225,6 +228,14 @@ function Header({ productsData }: { productsData: Prodotto[] }) {
     }
 
     setCategories(categoriesArray);
+
+    onAuthStateChanged(auth, (user) => {
+      if (user?.email) {
+        setLoggedUser(user);
+      } else {
+        setLoggedUser(undefined);
+      }
+    });
   }, [productsData]);
 
   return (
@@ -238,7 +249,7 @@ function Header({ productsData }: { productsData: Prodotto[] }) {
           {/* <EasySolutionLogo /> */}
           <EasySolutionVideo />
           <div className='z-20 flex flex-col lg:flex-row gap-4 items-center lg:items-start'>
-            <User />
+            <Account />
             <a
               href={'/'}
               role='button'
